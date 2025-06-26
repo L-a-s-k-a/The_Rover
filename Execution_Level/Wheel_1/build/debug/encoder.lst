@@ -1,0 +1,457 @@
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccoLz8VI.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"encoder.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Core/Src/encoder.c"
+  18              		.global	__aeabi_fcmpeq
+  19              		.section	.text.encoder_init,"ax",%progbits
+  20              		.align	1
+  21              		.global	encoder_init
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	encoder_init:
+  27              	.LVL0:
+  28              	.LFB65:
+   1:Core/Src/encoder.c **** /*
+   2:Core/Src/encoder.c ****  * encoder.c
+   3:Core/Src/encoder.c ****  *
+   4:Core/Src/encoder.c ****  *  Created on: 25/06/2023
+   5:Core/Src/encoder.c ****  *      Author: JV4K
+   6:Core/Src/encoder.c ****  */
+   7:Core/Src/encoder.c **** 
+   8:Core/Src/encoder.c **** #include <encoder.h>
+   9:Core/Src/encoder.c **** 
+  10:Core/Src/encoder.c **** /*
+  11:Core/Src/encoder.c ****  * 	Initialization of created encoder instance. Arguments:
+  12:Core/Src/encoder.c ****  * 1. Pointer to encoder instance
+  13:Core/Src/encoder.c ****  * 2. Pointer to handler of timer in encoder mode
+  14:Core/Src/encoder.c ****  * 3. Counts per revolution of encoder (encoder PPR*4 when both channels and rising/falling edges a
+  15:Core/Src/encoder.c ****  * 4. Gear ratio (e.g. if your motor has gear ratio of 1:21.3, pass 21.3). If no gearbox, pass 1;
+  16:Core/Src/encoder.c ****  */
+  17:Core/Src/encoder.c **** void encoder_init(encoder_t *encoder, TIM_HandleTypeDef *timerHandle, uint16_t CPR, float dt, float
+  29              		.loc 1 17 112 view -0
+  30              		.cfi_startproc
+  31              		@ args = 4, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		.loc 1 17 112 is_stmt 0 view .LVU1
+  34 0000 38B5     		push	{r3, r4, r5, lr}
+  35              		.cfi_def_cfa_offset 16
+  36              		.cfi_offset 3, -16
+  37              		.cfi_offset 4, -12
+  38              		.cfi_offset 5, -8
+  39              		.cfi_offset 14, -4
+  40 0002 0446     		mov	r4, r0
+  41 0004 049D     		ldr	r5, [sp, #16]	@ float
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccoLz8VI.s 			page 2
+
+
+  18:Core/Src/encoder.c **** 	encoder->htim = timerHandle;
+  42              		.loc 1 18 2 is_stmt 1 view .LVU2
+  43              		.loc 1 18 16 is_stmt 0 view .LVU3
+  44 0006 0160     		str	r1, [r0]
+  19:Core/Src/encoder.c **** 	encoder->countsPerRevolution = CPR;
+  45              		.loc 1 19 2 is_stmt 1 view .LVU4
+  46              		.loc 1 19 31 is_stmt 0 view .LVU5
+  47 0008 8280     		strh	r2, [r0, #4]	@ movhi
+  20:Core/Src/encoder.c **** 	encoder->dt = dt;
+  48              		.loc 1 20 2 is_stmt 1 view .LVU6
+  49              		.loc 1 20 14 is_stmt 0 view .LVU7
+  50 000a 8361     		str	r3, [r0, #24]	@ float
+  21:Core/Src/encoder.c **** 	if (gearRatio) {
+  51              		.loc 1 21 2 is_stmt 1 view .LVU8
+  52              		.loc 1 21 5 is_stmt 0 view .LVU9
+  53 000c 0021     		movs	r1, #0
+  54              	.LVL1:
+  55              		.loc 1 21 5 view .LVU10
+  56 000e 2846     		mov	r0, r5
+  57              	.LVL2:
+  58              		.loc 1 21 5 view .LVU11
+  59 0010 FFF7FEFF 		bl	__aeabi_fcmpeq
+  60              	.LVL3:
+  61              		.loc 1 21 5 view .LVU12
+  62 0014 08B9     		cbnz	r0, .L6
+  22:Core/Src/encoder.c **** 		encoder->gearRatio = gearRatio;
+  63              		.loc 1 22 3 is_stmt 1 view .LVU13
+  64              		.loc 1 22 22 is_stmt 0 view .LVU14
+  65 0016 E561     		str	r5, [r4, #28]	@ float
+  66              	.L1:
+  23:Core/Src/encoder.c **** 	} else {
+  24:Core/Src/encoder.c **** 		encoder->gearRatio = 1;
+  25:Core/Src/encoder.c **** 	}
+  26:Core/Src/encoder.c **** }
+  67              		.loc 1 26 1 view .LVU15
+  68 0018 38BD     		pop	{r3, r4, r5, pc}
+  69              	.LVL4:
+  70              	.L6:
+  24:Core/Src/encoder.c **** 	}
+  71              		.loc 1 24 3 is_stmt 1 view .LVU16
+  24:Core/Src/encoder.c **** 	}
+  72              		.loc 1 24 22 is_stmt 0 view .LVU17
+  73 001a 4FF07E53 		mov	r3, #1065353216
+  74 001e E361     		str	r3, [r4, #28]	@ float
+  75              		.loc 1 26 1 view .LVU18
+  76 0020 FAE7     		b	.L1
+  77              		.cfi_endproc
+  78              	.LFE65:
+  80              		.global	__aeabi_i2f
+  81              		.global	__aeabi_fdiv
+  82              		.global	__aeabi_fadd
+  83              		.global	__aeabi_f2d
+  84              		.global	__aeabi_dmul
+  85              		.global	__aeabi_ddiv
+  86              		.global	__aeabi_d2f
+  87              		.section	.text.encoder_updatePosition,"ax",%progbits
+  88              		.align	1
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccoLz8VI.s 			page 3
+
+
+  89              		.global	encoder_updatePosition
+  90              		.syntax unified
+  91              		.thumb
+  92              		.thumb_func
+  94              	encoder_updatePosition:
+  95              	.LVL5:
+  96              	.LFB66:
+  27:Core/Src/encoder.c **** 
+  28:Core/Src/encoder.c **** // Calculates current relative position in rad. Should be called with a specified period (dt) or le
+  29:Core/Src/encoder.c **** void encoder_updatePosition(encoder_t *encoder) {
+  97              		.loc 1 29 49 is_stmt 1 view -0
+  98              		.cfi_startproc
+  99              		@ args = 0, pretend = 0, frame = 0
+ 100              		@ frame_needed = 0, uses_anonymous_args = 0
+ 101              		.loc 1 29 49 is_stmt 0 view .LVU20
+ 102 0000 D0B5     		push	{r4, r6, r7, lr}
+ 103              		.cfi_def_cfa_offset 16
+ 104              		.cfi_offset 4, -16
+ 105              		.cfi_offset 6, -12
+ 106              		.cfi_offset 7, -8
+ 107              		.cfi_offset 14, -4
+ 108 0002 0446     		mov	r4, r0
+  30:Core/Src/encoder.c **** 	encoder->currentTicks = (int16_t) encoder->htim->Instance->CNT;
+ 109              		.loc 1 30 2 is_stmt 1 view .LVU21
+ 110              		.loc 1 30 43 is_stmt 0 view .LVU22
+ 111 0004 0168     		ldr	r1, [r0]
+ 112              		.loc 1 30 49 view .LVU23
+ 113 0006 0B68     		ldr	r3, [r1]
+ 114              		.loc 1 30 59 view .LVU24
+ 115 0008 5B6A     		ldr	r3, [r3, #36]
+ 116              		.loc 1 30 26 view .LVU25
+ 117 000a 1BB2     		sxth	r3, r3
+ 118              		.loc 1 30 24 view .LVU26
+ 119 000c 0382     		strh	r3, [r0, #16]	@ movhi
+  31:Core/Src/encoder.c **** 
+  32:Core/Src/encoder.c **** 	encoder->fullRevolutions += encoder->currentTicks / encoder->countsPerRevolution;
+ 120              		.loc 1 32 2 is_stmt 1 view .LVU27
+ 121              		.loc 1 32 9 is_stmt 0 view .LVU28
+ 122 000e 4269     		ldr	r2, [r0, #20]
+ 123              		.loc 1 32 61 view .LVU29
+ 124 0010 8688     		ldrh	r6, [r0, #4]
+ 125              		.loc 1 32 52 view .LVU30
+ 126 0012 93FBF6F0 		sdiv	r0, r3, r6
+ 127              	.LVL6:
+ 128              		.loc 1 32 27 view .LVU31
+ 129 0016 0244     		add	r2, r2, r0
+ 130 0018 6261     		str	r2, [r4, #20]
+  33:Core/Src/encoder.c **** 	encoder->currentTicks = encoder->currentTicks % encoder->countsPerRevolution;
+ 131              		.loc 1 33 2 is_stmt 1 view .LVU32
+ 132              		.loc 1 33 48 is_stmt 0 view .LVU33
+ 133 001a 06FB1033 		mls	r3, r6, r0, r3
+ 134              		.loc 1 33 24 view .LVU34
+ 135 001e 2382     		strh	r3, [r4, #16]	@ movhi
+  34:Core/Src/encoder.c **** 	encoder->htim->Instance->CNT = (uint16_t) encoder->currentTicks;
+ 136              		.loc 1 34 2 is_stmt 1 view .LVU35
+ 137              		.loc 1 34 15 is_stmt 0 view .LVU36
+ 138 0020 0A68     		ldr	r2, [r1]
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccoLz8VI.s 			page 4
+
+
+ 139              		.loc 1 34 33 view .LVU37
+ 140 0022 9BB2     		uxth	r3, r3
+ 141              		.loc 1 34 31 view .LVU38
+ 142 0024 5362     		str	r3, [r2, #36]
+  35:Core/Src/encoder.c **** 
+  36:Core/Src/encoder.c **** 	encoder->angle = (((float) encoder->fullRevolutions
+ 143              		.loc 1 36 2 is_stmt 1 view .LVU39
+ 144              		.loc 1 36 21 is_stmt 0 view .LVU40
+ 145 0026 6069     		ldr	r0, [r4, #20]
+ 146 0028 FFF7FEFF 		bl	__aeabi_i2f
+ 147              	.LVL7:
+ 148 002c 0646     		mov	r6, r0
+  37:Core/Src/encoder.c **** 			+ ((float) encoder->currentTicks / encoder->countsPerRevolution)) * 2 * M_PI)
+ 149              		.loc 1 37 7 view .LVU41
+ 150 002e B4F91000 		ldrsh	r0, [r4, #16]
+ 151 0032 FFF7FEFF 		bl	__aeabi_i2f
+ 152              	.LVL8:
+ 153 0036 0746     		mov	r7, r0
+ 154              		.loc 1 37 37 view .LVU42
+ 155 0038 A088     		ldrh	r0, [r4, #4]
+ 156 003a FFF7FEFF 		bl	__aeabi_i2f
+ 157              	.LVL9:
+ 158 003e 0146     		mov	r1, r0
+ 159 0040 3846     		mov	r0, r7
+ 160 0042 FFF7FEFF 		bl	__aeabi_fdiv
+ 161              	.LVL10:
+ 162 0046 0146     		mov	r1, r0
+ 163              		.loc 1 37 4 view .LVU43
+ 164 0048 3046     		mov	r0, r6
+ 165 004a FFF7FEFF 		bl	__aeabi_fadd
+ 166              	.LVL11:
+ 167 004e 0146     		mov	r1, r0
+ 168              		.loc 1 37 70 view .LVU44
+ 169 0050 FFF7FEFF 		bl	__aeabi_fadd
+ 170              	.LVL12:
+ 171 0054 FFF7FEFF 		bl	__aeabi_f2d
+ 172              	.LVL13:
+ 173              		.loc 1 37 74 view .LVU45
+ 174 0058 09A3     		adr	r3, .L10
+ 175 005a D3E90023 		ldrd	r2, [r3]
+ 176 005e FFF7FEFF 		bl	__aeabi_dmul
+ 177              	.LVL14:
+ 178 0062 0646     		mov	r6, r0
+ 179 0064 0F46     		mov	r7, r1
+  38:Core/Src/encoder.c **** 			/ encoder->gearRatio;
+ 180              		.loc 1 38 13 view .LVU46
+ 181 0066 E069     		ldr	r0, [r4, #28]	@ float
+ 182 0068 FFF7FEFF 		bl	__aeabi_f2d
+ 183              	.LVL15:
+ 184 006c 0246     		mov	r2, r0
+ 185 006e 0B46     		mov	r3, r1
+ 186              		.loc 1 38 4 view .LVU47
+ 187 0070 3046     		mov	r0, r6
+ 188 0072 3946     		mov	r1, r7
+ 189 0074 FFF7FEFF 		bl	__aeabi_ddiv
+ 190              	.LVL16:
+ 191 0078 FFF7FEFF 		bl	__aeabi_d2f
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccoLz8VI.s 			page 5
+
+
+ 192              	.LVL17:
+  36:Core/Src/encoder.c **** 			+ ((float) encoder->currentTicks / encoder->countsPerRevolution)) * 2 * M_PI)
+ 193              		.loc 1 36 17 view .LVU48
+ 194 007c A060     		str	r0, [r4, #8]	@ float
+  39:Core/Src/encoder.c **** }
+ 195              		.loc 1 39 1 view .LVU49
+ 196 007e D0BD     		pop	{r4, r6, r7, pc}
+ 197              	.LVL18:
+ 198              	.L11:
+ 199              		.loc 1 39 1 view .LVU50
+ 200              		.align	3
+ 201              	.L10:
+ 202 0080 182D4454 		.word	1413754136
+ 203 0084 FB210940 		.word	1074340347
+ 204              		.cfi_endproc
+ 205              	.LFE66:
+ 207              		.global	__aeabi_fsub
+ 208              		.section	.text.encoder_updateVelocity,"ax",%progbits
+ 209              		.align	1
+ 210              		.global	encoder_updateVelocity
+ 211              		.syntax unified
+ 212              		.thumb
+ 213              		.thumb_func
+ 215              	encoder_updateVelocity:
+ 216              	.LVL19:
+ 217              	.LFB67:
+  40:Core/Src/encoder.c **** 
+  41:Core/Src/encoder.c **** // Calculates current angular velocity in rad/s. Must be called with a specified period (dt)
+  42:Core/Src/encoder.c **** void encoder_updateVelocity(encoder_t *encoder) {
+ 218              		.loc 1 42 49 is_stmt 1 view -0
+ 219              		.cfi_startproc
+ 220              		@ args = 0, pretend = 0, frame = 0
+ 221              		@ frame_needed = 0, uses_anonymous_args = 0
+ 222              		.loc 1 42 49 is_stmt 0 view .LVU52
+ 223 0000 38B5     		push	{r3, r4, r5, lr}
+ 224              		.cfi_def_cfa_offset 16
+ 225              		.cfi_offset 3, -16
+ 226              		.cfi_offset 4, -12
+ 227              		.cfi_offset 5, -8
+ 228              		.cfi_offset 14, -4
+ 229 0002 0446     		mov	r4, r0
+  43:Core/Src/encoder.c **** 	encoder->angularVelocity = (encoder->angle - encoder->previousAngle) / encoder->dt;
+ 230              		.loc 1 43 2 is_stmt 1 view .LVU53
+ 231              		.loc 1 43 37 is_stmt 0 view .LVU54
+ 232 0004 8568     		ldr	r5, [r0, #8]	@ float
+ 233              		.loc 1 43 45 view .LVU55
+ 234 0006 016A     		ldr	r1, [r0, #32]	@ float
+ 235 0008 2846     		mov	r0, r5
+ 236              	.LVL20:
+ 237              		.loc 1 43 45 view .LVU56
+ 238 000a FFF7FEFF 		bl	__aeabi_fsub
+ 239              	.LVL21:
+ 240              		.loc 1 43 71 view .LVU57
+ 241 000e A169     		ldr	r1, [r4, #24]	@ float
+ 242 0010 FFF7FEFF 		bl	__aeabi_fdiv
+ 243              	.LVL22:
+ 244              		.loc 1 43 27 view .LVU58
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccoLz8VI.s 			page 6
+
+
+ 245 0014 E060     		str	r0, [r4, #12]	@ float
+  44:Core/Src/encoder.c **** 	encoder->previousAngle = encoder->angle;
+ 246              		.loc 1 44 2 is_stmt 1 view .LVU59
+ 247              		.loc 1 44 25 is_stmt 0 view .LVU60
+ 248 0016 2562     		str	r5, [r4, #32]	@ float
+  45:Core/Src/encoder.c **** }
+ 249              		.loc 1 45 1 view .LVU61
+ 250 0018 38BD     		pop	{r3, r4, r5, pc}
+ 251              		.loc 1 45 1 view .LVU62
+ 252              		.cfi_endproc
+ 253              	.LFE67:
+ 255              		.section	.text.encoder_reset,"ax",%progbits
+ 256              		.align	1
+ 257              		.global	encoder_reset
+ 258              		.syntax unified
+ 259              		.thumb
+ 260              		.thumb_func
+ 262              	encoder_reset:
+ 263              	.LVL23:
+ 264              	.LFB68:
+  46:Core/Src/encoder.c **** 
+  47:Core/Src/encoder.c **** // Resets encoder state. Could be used to set a new reference point for position
+  48:Core/Src/encoder.c **** void encoder_reset(encoder_t *encoder) {
+ 265              		.loc 1 48 40 is_stmt 1 view -0
+ 266              		.cfi_startproc
+ 267              		@ args = 0, pretend = 0, frame = 0
+ 268              		@ frame_needed = 0, uses_anonymous_args = 0
+ 269              		@ link register save eliminated.
+  49:Core/Src/encoder.c **** 	encoder->htim->Instance->CNT = 0;
+ 270              		.loc 1 49 2 view .LVU64
+ 271              		.loc 1 49 9 is_stmt 0 view .LVU65
+ 272 0000 0368     		ldr	r3, [r0]
+ 273              		.loc 1 49 15 view .LVU66
+ 274 0002 1A68     		ldr	r2, [r3]
+ 275              		.loc 1 49 31 view .LVU67
+ 276 0004 0023     		movs	r3, #0
+ 277 0006 5362     		str	r3, [r2, #36]
+  50:Core/Src/encoder.c **** 	encoder->previousAngle = 0;
+ 278              		.loc 1 50 2 is_stmt 1 view .LVU68
+ 279              		.loc 1 50 25 is_stmt 0 view .LVU69
+ 280 0008 0022     		movs	r2, #0
+ 281 000a 0262     		str	r2, [r0, #32]	@ float
+  51:Core/Src/encoder.c **** 	encoder->angle = 0;
+ 282              		.loc 1 51 2 is_stmt 1 view .LVU70
+ 283              		.loc 1 51 17 is_stmt 0 view .LVU71
+ 284 000c 8260     		str	r2, [r0, #8]	@ float
+  52:Core/Src/encoder.c **** 	encoder->fullRevolutions = 0;
+ 285              		.loc 1 52 2 is_stmt 1 view .LVU72
+ 286              		.loc 1 52 27 is_stmt 0 view .LVU73
+ 287 000e 4361     		str	r3, [r0, #20]
+  53:Core/Src/encoder.c **** 	encoder->currentTicks = 0;
+ 288              		.loc 1 53 2 is_stmt 1 view .LVU74
+ 289              		.loc 1 53 24 is_stmt 0 view .LVU75
+ 290 0010 0382     		strh	r3, [r0, #16]	@ movhi
+  54:Core/Src/encoder.c **** }
+ 291              		.loc 1 54 1 view .LVU76
+ 292 0012 7047     		bx	lr
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccoLz8VI.s 			page 7
+
+
+ 293              		.cfi_endproc
+ 294              	.LFE68:
+ 296              		.section	.text.encoder_getAngle,"ax",%progbits
+ 297              		.align	1
+ 298              		.global	encoder_getAngle
+ 299              		.syntax unified
+ 300              		.thumb
+ 301              		.thumb_func
+ 303              	encoder_getAngle:
+ 304              	.LVL24:
+ 305              	.LFB69:
+  55:Core/Src/encoder.c **** 
+  56:Core/Src/encoder.c **** float encoder_getAngle(encoder_t *encoder){
+ 306              		.loc 1 56 43 is_stmt 1 view -0
+ 307              		.cfi_startproc
+ 308              		@ args = 0, pretend = 0, frame = 0
+ 309              		@ frame_needed = 0, uses_anonymous_args = 0
+ 310              		@ link register save eliminated.
+  57:Core/Src/encoder.c **** 	return encoder->angle;
+ 311              		.loc 1 57 2 view .LVU78
+  58:Core/Src/encoder.c **** }
+ 312              		.loc 1 58 1 is_stmt 0 view .LVU79
+ 313 0000 8068     		ldr	r0, [r0, #8]	@ float
+ 314              	.LVL25:
+ 315              		.loc 1 58 1 view .LVU80
+ 316 0002 7047     		bx	lr
+ 317              		.cfi_endproc
+ 318              	.LFE69:
+ 320              		.section	.text.encoder_getVelocity,"ax",%progbits
+ 321              		.align	1
+ 322              		.global	encoder_getVelocity
+ 323              		.syntax unified
+ 324              		.thumb
+ 325              		.thumb_func
+ 327              	encoder_getVelocity:
+ 328              	.LVL26:
+ 329              	.LFB70:
+  59:Core/Src/encoder.c **** float encoder_getVelocity(encoder_t *encoder){
+ 330              		.loc 1 59 46 is_stmt 1 view -0
+ 331              		.cfi_startproc
+ 332              		@ args = 0, pretend = 0, frame = 0
+ 333              		@ frame_needed = 0, uses_anonymous_args = 0
+ 334              		@ link register save eliminated.
+  60:Core/Src/encoder.c **** 	return encoder->angularVelocity;
+ 335              		.loc 1 60 2 view .LVU82
+  61:Core/Src/encoder.c **** }
+ 336              		.loc 1 61 1 is_stmt 0 view .LVU83
+ 337 0000 C068     		ldr	r0, [r0, #12]	@ float
+ 338              	.LVL27:
+ 339              		.loc 1 61 1 view .LVU84
+ 340 0002 7047     		bx	lr
+ 341              		.cfi_endproc
+ 342              	.LFE70:
+ 344              		.text
+ 345              	.Letext0:
+ 346              		.file 2 "C:/Users/matve/Desktop/STM_Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include
+ 347              		.file 3 "C:/Users/matve/Desktop/STM_Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccoLz8VI.s 			page 8
+
+
+ 348              		.file 4 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h"
+ 349              		.file 5 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
+ 350              		.file 6 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h"
+ 351              		.file 7 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h"
+ 352              		.file 8 "Core/Inc/encoder.h"
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccoLz8VI.s 			page 9
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 encoder.c
+C:\Users\matve\AppData\Local\Temp\ccoLz8VI.s:20     .text.encoder_init:00000000 $t
+C:\Users\matve\AppData\Local\Temp\ccoLz8VI.s:26     .text.encoder_init:00000000 encoder_init
+C:\Users\matve\AppData\Local\Temp\ccoLz8VI.s:88     .text.encoder_updatePosition:00000000 $t
+C:\Users\matve\AppData\Local\Temp\ccoLz8VI.s:94     .text.encoder_updatePosition:00000000 encoder_updatePosition
+C:\Users\matve\AppData\Local\Temp\ccoLz8VI.s:202    .text.encoder_updatePosition:00000080 $d
+C:\Users\matve\AppData\Local\Temp\ccoLz8VI.s:209    .text.encoder_updateVelocity:00000000 $t
+C:\Users\matve\AppData\Local\Temp\ccoLz8VI.s:215    .text.encoder_updateVelocity:00000000 encoder_updateVelocity
+C:\Users\matve\AppData\Local\Temp\ccoLz8VI.s:256    .text.encoder_reset:00000000 $t
+C:\Users\matve\AppData\Local\Temp\ccoLz8VI.s:262    .text.encoder_reset:00000000 encoder_reset
+C:\Users\matve\AppData\Local\Temp\ccoLz8VI.s:297    .text.encoder_getAngle:00000000 $t
+C:\Users\matve\AppData\Local\Temp\ccoLz8VI.s:303    .text.encoder_getAngle:00000000 encoder_getAngle
+C:\Users\matve\AppData\Local\Temp\ccoLz8VI.s:321    .text.encoder_getVelocity:00000000 $t
+C:\Users\matve\AppData\Local\Temp\ccoLz8VI.s:327    .text.encoder_getVelocity:00000000 encoder_getVelocity
+
+UNDEFINED SYMBOLS
+__aeabi_fcmpeq
+__aeabi_i2f
+__aeabi_fdiv
+__aeabi_fadd
+__aeabi_f2d
+__aeabi_dmul
+__aeabi_ddiv
+__aeabi_d2f
+__aeabi_fsub
