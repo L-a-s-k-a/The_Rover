@@ -1,0 +1,441 @@
+ARM GAS  C:\Users\matve\AppData\Local\Temp\cc8w4q9R.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"pwm.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Core/Src/pwm.c"
+  18              		.section	.text.pwm_initDriver,"ax",%progbits
+  19              		.align	1
+  20              		.global	pwm_initDriver
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	pwm_initDriver:
+  26              	.LVL0:
+  27              	.LFB65:
+   1:Core/Src/pwm.c **** /*
+   2:Core/Src/pwm.c ****  * pwm.c
+   3:Core/Src/pwm.c ****  *
+   4:Core/Src/pwm.c ****  *  Created on: 28/06//2023
+   5:Core/Src/pwm.c ****  *      Author: JV4K
+   6:Core/Src/pwm.c ****  */
+   7:Core/Src/pwm.c **** #include <pwm.h>
+   8:Core/Src/pwm.c **** #define constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))
+   9:Core/Src/pwm.c **** #define ABS(N) ((N<0)?(-N):(N))
+  10:Core/Src/pwm.c **** 
+  11:Core/Src/pwm.c **** void pwm_initDriver(pwmControl_t *driver, TIM_HandleTypeDef *htim, uint8_t pwmChannel,
+  12:Core/Src/pwm.c **** 		GPIO_TypeDef *dir1_Port, uint32_t dir1_Pin, GPIO_TypeDef *dir2_Port, uint32_t dir2_Pin) {
+  28              		.loc 1 12 91 view -0
+  29              		.cfi_startproc
+  30              		@ args = 12, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  13:Core/Src/pwm.c **** 	driver->dir1_Port = dir1_Port;
+  33              		.loc 1 13 2 view .LVU1
+  34              		.loc 1 13 20 is_stmt 0 view .LVU2
+  35 0000 C360     		str	r3, [r0, #12]
+  14:Core/Src/pwm.c **** 	driver->dir1_Pin = dir1_Pin;
+  36              		.loc 1 14 2 is_stmt 1 view .LVU3
+  37              		.loc 1 14 19 is_stmt 0 view .LVU4
+  38 0002 009B     		ldr	r3, [sp]
+  39              	.LVL1:
+  40              		.loc 1 14 19 view .LVU5
+  41 0004 8360     		str	r3, [r0, #8]
+  15:Core/Src/pwm.c **** 
+  16:Core/Src/pwm.c **** 	driver->dir2_Port = dir2_Port;
+  42              		.loc 1 16 2 is_stmt 1 view .LVU6
+ARM GAS  C:\Users\matve\AppData\Local\Temp\cc8w4q9R.s 			page 2
+
+
+  43              		.loc 1 16 20 is_stmt 0 view .LVU7
+  44 0006 019B     		ldr	r3, [sp, #4]
+  45 0008 4361     		str	r3, [r0, #20]
+  17:Core/Src/pwm.c **** 	driver->dir2_Pin = dir2_Pin;
+  46              		.loc 1 17 2 is_stmt 1 view .LVU8
+  47              		.loc 1 17 19 is_stmt 0 view .LVU9
+  48 000a 029B     		ldr	r3, [sp, #8]
+  49 000c 0361     		str	r3, [r0, #16]
+  18:Core/Src/pwm.c **** 
+  19:Core/Src/pwm.c **** 	driver->htim = htim;
+  50              		.loc 1 19 2 is_stmt 1 view .LVU10
+  51              		.loc 1 19 15 is_stmt 0 view .LVU11
+  52 000e 0160     		str	r1, [r0]
+  20:Core/Src/pwm.c **** 	driver->timerChannel = pwmChannel;
+  53              		.loc 1 20 2 is_stmt 1 view .LVU12
+  54              		.loc 1 20 23 is_stmt 0 view .LVU13
+  55 0010 0271     		strb	r2, [r0, #4]
+  21:Core/Src/pwm.c **** }
+  56              		.loc 1 21 1 view .LVU14
+  57 0012 7047     		bx	lr
+  58              		.cfi_endproc
+  59              	.LFE65:
+  61              		.section	.text.pwm_dutyLimits,"ax",%progbits
+  62              		.align	1
+  63              		.global	pwm_dutyLimits
+  64              		.syntax unified
+  65              		.thumb
+  66              		.thumb_func
+  68              	pwm_dutyLimits:
+  69              	.LVL2:
+  70              	.LFB66:
+  22:Core/Src/pwm.c **** 
+  23:Core/Src/pwm.c **** void pwm_dutyLimits(pwmControl_t *driver, uint16_t minDuty, uint16_t maxDuty) {
+  71              		.loc 1 23 79 is_stmt 1 view -0
+  72              		.cfi_startproc
+  73              		@ args = 0, pretend = 0, frame = 0
+  74              		@ frame_needed = 0, uses_anonymous_args = 0
+  75              		@ link register save eliminated.
+  24:Core/Src/pwm.c **** 	driver->minDuty = minDuty;
+  76              		.loc 1 24 2 view .LVU16
+  77              		.loc 1 24 18 is_stmt 0 view .LVU17
+  78 0000 4183     		strh	r1, [r0, #26]	@ movhi
+  25:Core/Src/pwm.c **** 	driver->maxDuty = maxDuty;
+  79              		.loc 1 25 2 is_stmt 1 view .LVU18
+  80              		.loc 1 25 18 is_stmt 0 view .LVU19
+  81 0002 0283     		strh	r2, [r0, #24]	@ movhi
+  26:Core/Src/pwm.c **** }
+  82              		.loc 1 26 1 view .LVU20
+  83 0004 7047     		bx	lr
+  84              		.cfi_endproc
+  85              	.LFE66:
+  87              		.section	.text.pwm_setSpeed,"ax",%progbits
+  88              		.align	1
+  89              		.global	pwm_setSpeed
+  90              		.syntax unified
+  91              		.thumb
+  92              		.thumb_func
+ARM GAS  C:\Users\matve\AppData\Local\Temp\cc8w4q9R.s 			page 3
+
+
+  94              	pwm_setSpeed:
+  95              	.LVL3:
+  96              	.LFB67:
+  27:Core/Src/pwm.c **** 
+  28:Core/Src/pwm.c **** void pwm_setSpeed(pwmControl_t *driver, int32_t duty) {
+  97              		.loc 1 28 55 is_stmt 1 view -0
+  98              		.cfi_startproc
+  99              		@ args = 0, pretend = 0, frame = 0
+ 100              		@ frame_needed = 0, uses_anonymous_args = 0
+ 101              		.loc 1 28 55 is_stmt 0 view .LVU22
+ 102 0000 38B5     		push	{r3, r4, r5, lr}
+ 103              		.cfi_def_cfa_offset 16
+ 104              		.cfi_offset 3, -16
+ 105              		.cfi_offset 4, -12
+ 106              		.cfi_offset 5, -8
+ 107              		.cfi_offset 14, -4
+ 108 0002 0446     		mov	r4, r0
+  29:Core/Src/pwm.c **** 	if (!duty) {
+ 109              		.loc 1 29 2 is_stmt 1 view .LVU23
+ 110              		.loc 1 29 5 is_stmt 0 view .LVU24
+ 111 0004 01B3     		cbz	r1, .L16
+ 112 0006 0A46     		mov	r2, r1
+  30:Core/Src/pwm.c **** 		driver->_duty = 0;
+  31:Core/Src/pwm.c **** 		HAL_GPIO_WritePin(driver->dir1_Port, driver->dir1_Pin, 0);
+  32:Core/Src/pwm.c **** 		HAL_GPIO_WritePin(driver->dir2_Port, driver->dir2_Pin, 0);
+  33:Core/Src/pwm.c **** 	} else {
+  34:Core/Src/pwm.c **** 		driver->_duty = constrain(ABS(duty), driver->minDuty, driver->maxDuty);
+ 113              		.loc 1 34 3 is_stmt 1 view .LVU25
+ 114              		.loc 1 34 19 is_stmt 0 view .LVU26
+ 115 0008 81EAE171 		eor	r1, r1, r1, asr #31
+ 116              	.LVL4:
+ 117              		.loc 1 34 19 view .LVU27
+ 118 000c A1EBE271 		sub	r1, r1, r2, asr #31
+ 119 0010 438B     		ldrh	r3, [r0, #26]
+ 120 0012 9942     		cmp	r1, r3
+ 121 0014 03DB     		blt	.L6
+ 122              		.loc 1 34 19 discriminator 2 view .LVU28
+ 123 0016 038B     		ldrh	r3, [r0, #24]
+ 124 0018 8B42     		cmp	r3, r1
+ 125 001a A8BF     		it	ge
+ 126 001c 0B46     		movge	r3, r1
+ 127              	.L6:
+ 128              		.loc 1 34 17 discriminator 4 view .LVU29
+ 129 001e E361     		str	r3, [r4, #28]
+  35:Core/Src/pwm.c **** 		if (duty > 0) {
+ 130              		.loc 1 35 3 is_stmt 1 view .LVU30
+ 131              		.loc 1 35 6 is_stmt 0 view .LVU31
+ 132 0020 002A     		cmp	r2, #0
+ 133 0022 1EDD     		ble	.L7
+  36:Core/Src/pwm.c **** 			HAL_GPIO_WritePin(driver->dir1_Port, driver->dir1_Pin, 1);
+ 134              		.loc 1 36 4 is_stmt 1 view .LVU32
+ 135 0024 0122     		movs	r2, #1
+ 136              	.LVL5:
+ 137              		.loc 1 36 4 is_stmt 0 view .LVU33
+ 138 0026 2189     		ldrh	r1, [r4, #8]
+ 139 0028 E068     		ldr	r0, [r4, #12]
+ 140              	.LVL6:
+ARM GAS  C:\Users\matve\AppData\Local\Temp\cc8w4q9R.s 			page 4
+
+
+ 141              		.loc 1 36 4 view .LVU34
+ 142 002a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 143              	.LVL7:
+  37:Core/Src/pwm.c **** 			HAL_GPIO_WritePin(driver->dir2_Port, driver->dir2_Pin, 0);
+ 144              		.loc 1 37 4 is_stmt 1 view .LVU35
+ 145 002e 0022     		movs	r2, #0
+ 146 0030 218A     		ldrh	r1, [r4, #16]
+ 147 0032 6069     		ldr	r0, [r4, #20]
+ 148 0034 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 149              	.LVL8:
+ 150              	.L5:
+  38:Core/Src/pwm.c **** 		} else {
+  39:Core/Src/pwm.c **** 			HAL_GPIO_WritePin(driver->dir1_Port, driver->dir1_Pin, 0);
+  40:Core/Src/pwm.c **** 			HAL_GPIO_WritePin(driver->dir2_Port, driver->dir2_Pin, 1);
+  41:Core/Src/pwm.c **** 		}
+  42:Core/Src/pwm.c **** 	}
+  43:Core/Src/pwm.c **** 
+  44:Core/Src/pwm.c **** 	switch (driver->timerChannel) {
+ 151              		.loc 1 44 2 view .LVU36
+ 152              		.loc 1 44 16 is_stmt 0 view .LVU37
+ 153 0038 2379     		ldrb	r3, [r4, #4]	@ zero_extendqisi2
+ 154              		.loc 1 44 2 view .LVU38
+ 155 003a 013B     		subs	r3, r3, #1
+ 156 003c 032B     		cmp	r3, #3
+ 157 003e 1FD8     		bhi	.L3
+ 158 0040 DFE803F0 		tbb	[pc, r3]
+ 159              	.L10:
+ 160 0044 1A       		.byte	(.L13-.L10)/2
+ 161 0045 1F       		.byte	(.L12-.L10)/2
+ 162 0046 24       		.byte	(.L11-.L10)/2
+ 163 0047 29       		.byte	(.L9-.L10)/2
+ 164              	.LVL9:
+ 165              		.p2align 1
+ 166              	.L16:
+  30:Core/Src/pwm.c **** 		HAL_GPIO_WritePin(driver->dir1_Port, driver->dir1_Pin, 0);
+ 167              		.loc 1 30 3 is_stmt 1 view .LVU39
+  30:Core/Src/pwm.c **** 		HAL_GPIO_WritePin(driver->dir1_Port, driver->dir1_Pin, 0);
+ 168              		.loc 1 30 17 is_stmt 0 view .LVU40
+ 169 0048 0025     		movs	r5, #0
+ 170 004a C561     		str	r5, [r0, #28]
+  31:Core/Src/pwm.c **** 		HAL_GPIO_WritePin(driver->dir2_Port, driver->dir2_Pin, 0);
+ 171              		.loc 1 31 3 is_stmt 1 view .LVU41
+ 172 004c 2A46     		mov	r2, r5
+ 173 004e 0189     		ldrh	r1, [r0, #8]
+ 174              	.LVL10:
+  31:Core/Src/pwm.c **** 		HAL_GPIO_WritePin(driver->dir2_Port, driver->dir2_Pin, 0);
+ 175              		.loc 1 31 3 is_stmt 0 view .LVU42
+ 176 0050 C068     		ldr	r0, [r0, #12]
+ 177              	.LVL11:
+  31:Core/Src/pwm.c **** 		HAL_GPIO_WritePin(driver->dir2_Port, driver->dir2_Pin, 0);
+ 178              		.loc 1 31 3 view .LVU43
+ 179 0052 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 180              	.LVL12:
+  32:Core/Src/pwm.c **** 	} else {
+ 181              		.loc 1 32 3 is_stmt 1 view .LVU44
+ 182 0056 2A46     		mov	r2, r5
+ 183 0058 218A     		ldrh	r1, [r4, #16]
+ARM GAS  C:\Users\matve\AppData\Local\Temp\cc8w4q9R.s 			page 5
+
+
+ 184 005a 6069     		ldr	r0, [r4, #20]
+ 185 005c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 186              	.LVL13:
+ 187 0060 EAE7     		b	.L5
+ 188              	.LVL14:
+ 189              	.L7:
+  39:Core/Src/pwm.c **** 			HAL_GPIO_WritePin(driver->dir2_Port, driver->dir2_Pin, 1);
+ 190              		.loc 1 39 4 view .LVU45
+ 191 0062 0022     		movs	r2, #0
+ 192              	.LVL15:
+  39:Core/Src/pwm.c **** 			HAL_GPIO_WritePin(driver->dir2_Port, driver->dir2_Pin, 1);
+ 193              		.loc 1 39 4 is_stmt 0 view .LVU46
+ 194 0064 2189     		ldrh	r1, [r4, #8]
+ 195 0066 E068     		ldr	r0, [r4, #12]
+ 196              	.LVL16:
+  39:Core/Src/pwm.c **** 			HAL_GPIO_WritePin(driver->dir2_Port, driver->dir2_Pin, 1);
+ 197              		.loc 1 39 4 view .LVU47
+ 198 0068 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 199              	.LVL17:
+  40:Core/Src/pwm.c **** 		}
+ 200              		.loc 1 40 4 is_stmt 1 view .LVU48
+ 201 006c 0122     		movs	r2, #1
+ 202 006e 218A     		ldrh	r1, [r4, #16]
+ 203 0070 6069     		ldr	r0, [r4, #20]
+ 204 0072 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 205              	.LVL18:
+ 206 0076 DFE7     		b	.L5
+ 207              	.L13:
+  45:Core/Src/pwm.c **** 	case 1:
+  46:Core/Src/pwm.c **** 		driver->htim->Instance->CCR1 = driver->_duty;
+ 208              		.loc 1 46 3 view .LVU49
+ 209              		.loc 1 46 9 is_stmt 0 view .LVU50
+ 210 0078 2368     		ldr	r3, [r4]
+ 211              		.loc 1 46 15 view .LVU51
+ 212 007a 1B68     		ldr	r3, [r3]
+ 213              		.loc 1 46 40 view .LVU52
+ 214 007c E269     		ldr	r2, [r4, #28]
+ 215              		.loc 1 46 32 view .LVU53
+ 216 007e 5A63     		str	r2, [r3, #52]
+  47:Core/Src/pwm.c **** 		break;
+ 217              		.loc 1 47 3 is_stmt 1 view .LVU54
+ 218              	.L3:
+  48:Core/Src/pwm.c **** 	case 2:
+  49:Core/Src/pwm.c **** 		driver->htim->Instance->CCR2 = driver->_duty;
+  50:Core/Src/pwm.c **** 		break;
+  51:Core/Src/pwm.c **** 	case 3:
+  52:Core/Src/pwm.c **** 		driver->htim->Instance->CCR3 = driver->_duty;
+  53:Core/Src/pwm.c **** 		break;
+  54:Core/Src/pwm.c **** 	case 4:
+  55:Core/Src/pwm.c **** 		driver->htim->Instance->CCR4 = driver->_duty;
+  56:Core/Src/pwm.c **** 		break;
+  57:Core/Src/pwm.c **** 	default:
+  58:Core/Src/pwm.c **** 		break;
+  59:Core/Src/pwm.c **** 	}
+  60:Core/Src/pwm.c **** }
+ 219              		.loc 1 60 1 is_stmt 0 view .LVU55
+ 220 0080 38BD     		pop	{r3, r4, r5, pc}
+ARM GAS  C:\Users\matve\AppData\Local\Temp\cc8w4q9R.s 			page 6
+
+
+ 221              	.LVL19:
+ 222              	.L12:
+  49:Core/Src/pwm.c **** 		break;
+ 223              		.loc 1 49 3 is_stmt 1 view .LVU56
+  49:Core/Src/pwm.c **** 		break;
+ 224              		.loc 1 49 9 is_stmt 0 view .LVU57
+ 225 0082 2368     		ldr	r3, [r4]
+  49:Core/Src/pwm.c **** 		break;
+ 226              		.loc 1 49 15 view .LVU58
+ 227 0084 1B68     		ldr	r3, [r3]
+  49:Core/Src/pwm.c **** 		break;
+ 228              		.loc 1 49 40 view .LVU59
+ 229 0086 E269     		ldr	r2, [r4, #28]
+  49:Core/Src/pwm.c **** 		break;
+ 230              		.loc 1 49 32 view .LVU60
+ 231 0088 9A63     		str	r2, [r3, #56]
+  50:Core/Src/pwm.c **** 	case 3:
+ 232              		.loc 1 50 3 is_stmt 1 view .LVU61
+ 233 008a F9E7     		b	.L3
+ 234              	.L11:
+  52:Core/Src/pwm.c **** 		break;
+ 235              		.loc 1 52 3 view .LVU62
+  52:Core/Src/pwm.c **** 		break;
+ 236              		.loc 1 52 9 is_stmt 0 view .LVU63
+ 237 008c 2368     		ldr	r3, [r4]
+  52:Core/Src/pwm.c **** 		break;
+ 238              		.loc 1 52 15 view .LVU64
+ 239 008e 1B68     		ldr	r3, [r3]
+  52:Core/Src/pwm.c **** 		break;
+ 240              		.loc 1 52 40 view .LVU65
+ 241 0090 E269     		ldr	r2, [r4, #28]
+  52:Core/Src/pwm.c **** 		break;
+ 242              		.loc 1 52 32 view .LVU66
+ 243 0092 DA63     		str	r2, [r3, #60]
+  53:Core/Src/pwm.c **** 	case 4:
+ 244              		.loc 1 53 3 is_stmt 1 view .LVU67
+ 245 0094 F4E7     		b	.L3
+ 246              	.L9:
+  55:Core/Src/pwm.c **** 		break;
+ 247              		.loc 1 55 3 view .LVU68
+  55:Core/Src/pwm.c **** 		break;
+ 248              		.loc 1 55 9 is_stmt 0 view .LVU69
+ 249 0096 2368     		ldr	r3, [r4]
+  55:Core/Src/pwm.c **** 		break;
+ 250              		.loc 1 55 15 view .LVU70
+ 251 0098 1B68     		ldr	r3, [r3]
+  55:Core/Src/pwm.c **** 		break;
+ 252              		.loc 1 55 40 view .LVU71
+ 253 009a E269     		ldr	r2, [r4, #28]
+  55:Core/Src/pwm.c **** 		break;
+ 254              		.loc 1 55 32 view .LVU72
+ 255 009c 1A64     		str	r2, [r3, #64]
+  56:Core/Src/pwm.c **** 	default:
+ 256              		.loc 1 56 3 is_stmt 1 view .LVU73
+ 257              		.loc 1 60 1 is_stmt 0 view .LVU74
+ 258 009e EFE7     		b	.L3
+ 259              		.cfi_endproc
+ARM GAS  C:\Users\matve\AppData\Local\Temp\cc8w4q9R.s 			page 7
+
+
+ 260              	.LFE67:
+ 262              		.section	.text.pwm_break,"ax",%progbits
+ 263              		.align	1
+ 264              		.global	pwm_break
+ 265              		.syntax unified
+ 266              		.thumb
+ 267              		.thumb_func
+ 269              	pwm_break:
+ 270              	.LVL20:
+ 271              	.LFB68:
+  61:Core/Src/pwm.c **** 
+  62:Core/Src/pwm.c **** void pwm_break(pwmControl_t *driver) {
+ 272              		.loc 1 62 38 is_stmt 1 view -0
+ 273              		.cfi_startproc
+ 274              		@ args = 0, pretend = 0, frame = 0
+ 275              		@ frame_needed = 0, uses_anonymous_args = 0
+ 276              		.loc 1 62 38 is_stmt 0 view .LVU76
+ 277 0000 10B5     		push	{r4, lr}
+ 278              		.cfi_def_cfa_offset 8
+ 279              		.cfi_offset 4, -8
+ 280              		.cfi_offset 14, -4
+ 281 0002 0446     		mov	r4, r0
+  63:Core/Src/pwm.c **** 	pwm_setSpeed(driver, 0);
+ 282              		.loc 1 63 2 is_stmt 1 view .LVU77
+ 283 0004 0021     		movs	r1, #0
+ 284 0006 FFF7FEFF 		bl	pwm_setSpeed
+ 285              	.LVL21:
+  64:Core/Src/pwm.c **** 	HAL_GPIO_WritePin(driver->dir1_Port, driver->dir1_Pin, 1);
+ 286              		.loc 1 64 2 view .LVU78
+ 287 000a 0122     		movs	r2, #1
+ 288 000c 2189     		ldrh	r1, [r4, #8]
+ 289 000e E068     		ldr	r0, [r4, #12]
+ 290 0010 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 291              	.LVL22:
+  65:Core/Src/pwm.c **** 	HAL_GPIO_WritePin(driver->dir1_Port, driver->dir1_Pin, 1);
+ 292              		.loc 1 65 2 view .LVU79
+ 293 0014 0122     		movs	r2, #1
+ 294 0016 2189     		ldrh	r1, [r4, #8]
+ 295 0018 E068     		ldr	r0, [r4, #12]
+ 296 001a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 297              	.LVL23:
+  66:Core/Src/pwm.c **** }
+ 298              		.loc 1 66 1 is_stmt 0 view .LVU80
+ 299 001e 10BD     		pop	{r4, pc}
+ 300              		.loc 1 66 1 view .LVU81
+ 301              		.cfi_endproc
+ 302              	.LFE68:
+ 304              		.text
+ 305              	.Letext0:
+ 306              		.file 2 "C:/Users/matve/Desktop/STM_Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include
+ 307              		.file 3 "C:/Users/matve/Desktop/STM_Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include
+ 308              		.file 4 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h"
+ 309              		.file 5 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
+ 310              		.file 6 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio.h"
+ 311              		.file 7 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h"
+ 312              		.file 8 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h"
+ 313              		.file 9 "Core/Inc/pwm.h"
+ARM GAS  C:\Users\matve\AppData\Local\Temp\cc8w4q9R.s 			page 8
+
+
+ARM GAS  C:\Users\matve\AppData\Local\Temp\cc8w4q9R.s 			page 9
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 pwm.c
+C:\Users\matve\AppData\Local\Temp\cc8w4q9R.s:19     .text.pwm_initDriver:00000000 $t
+C:\Users\matve\AppData\Local\Temp\cc8w4q9R.s:25     .text.pwm_initDriver:00000000 pwm_initDriver
+C:\Users\matve\AppData\Local\Temp\cc8w4q9R.s:62     .text.pwm_dutyLimits:00000000 $t
+C:\Users\matve\AppData\Local\Temp\cc8w4q9R.s:68     .text.pwm_dutyLimits:00000000 pwm_dutyLimits
+C:\Users\matve\AppData\Local\Temp\cc8w4q9R.s:88     .text.pwm_setSpeed:00000000 $t
+C:\Users\matve\AppData\Local\Temp\cc8w4q9R.s:94     .text.pwm_setSpeed:00000000 pwm_setSpeed
+C:\Users\matve\AppData\Local\Temp\cc8w4q9R.s:160    .text.pwm_setSpeed:00000044 $d
+C:\Users\matve\AppData\Local\Temp\cc8w4q9R.s:165    .text.pwm_setSpeed:00000048 $t
+C:\Users\matve\AppData\Local\Temp\cc8w4q9R.s:263    .text.pwm_break:00000000 $t
+C:\Users\matve\AppData\Local\Temp\cc8w4q9R.s:269    .text.pwm_break:00000000 pwm_break
+
+UNDEFINED SYMBOLS
+HAL_GPIO_WritePin

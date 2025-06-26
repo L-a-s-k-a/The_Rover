@@ -1,0 +1,365 @@
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccUAw7Cg.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"stm32f1xx_hal_msp.c"
+  14              		.text
+  15              		.section	.text.HAL_MspInit,"ax",%progbits
+  16              		.align	1
+  17              		.global	HAL_MspInit
+  18              		.syntax unified
+  19              		.thumb
+  20              		.thumb_func
+  22              	HAL_MspInit:
+  23              		@ args = 0, pretend = 0, frame = 8
+  24              		@ frame_needed = 0, uses_anonymous_args = 0
+  25              		@ link register save eliminated.
+  26 0000 82B0     		sub	sp, sp, #8
+  27 0002 0E4B     		ldr	r3, .L3
+  28 0004 9A69     		ldr	r2, [r3, #24]
+  29 0006 42F00102 		orr	r2, r2, #1
+  30 000a 9A61     		str	r2, [r3, #24]
+  31 000c 9A69     		ldr	r2, [r3, #24]
+  32 000e 02F00102 		and	r2, r2, #1
+  33 0012 0092     		str	r2, [sp]
+  34 0014 009A     		ldr	r2, [sp]
+  35 0016 DA69     		ldr	r2, [r3, #28]
+  36 0018 42F08052 		orr	r2, r2, #268435456
+  37 001c DA61     		str	r2, [r3, #28]
+  38 001e DB69     		ldr	r3, [r3, #28]
+  39 0020 03F08053 		and	r3, r3, #268435456
+  40 0024 0193     		str	r3, [sp, #4]
+  41 0026 019B     		ldr	r3, [sp, #4]
+  42 0028 054A     		ldr	r2, .L3+4
+  43 002a 5368     		ldr	r3, [r2, #4]
+  44 002c 23F0E063 		bic	r3, r3, #117440512
+  45 0030 43F00073 		orr	r3, r3, #33554432
+  46 0034 5360     		str	r3, [r2, #4]
+  47 0036 02B0     		add	sp, sp, #8
+  48              		@ sp needed
+  49 0038 7047     		bx	lr
+  50              	.L4:
+  51 003a 00BF     		.align	2
+  52              	.L3:
+  53 003c 00100240 		.word	1073876992
+  54 0040 00000140 		.word	1073807360
+  56              		.section	.text.HAL_TIM_Encoder_MspInit,"ax",%progbits
+  57              		.align	1
+  58              		.global	HAL_TIM_Encoder_MspInit
+  59              		.syntax unified
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccUAw7Cg.s 			page 2
+
+
+  60              		.thumb
+  61              		.thumb_func
+  63              	HAL_TIM_Encoder_MspInit:
+  64              		@ args = 0, pretend = 0, frame = 24
+  65              		@ frame_needed = 0, uses_anonymous_args = 0
+  66 0000 00B5     		push	{lr}
+  67 0002 87B0     		sub	sp, sp, #28
+  68 0004 0023     		movs	r3, #0
+  69 0006 0293     		str	r3, [sp, #8]
+  70 0008 0393     		str	r3, [sp, #12]
+  71 000a 0493     		str	r3, [sp, #16]
+  72 000c 0593     		str	r3, [sp, #20]
+  73 000e 0268     		ldr	r2, [r0]
+  74 0010 104B     		ldr	r3, .L9
+  75 0012 9A42     		cmp	r2, r3
+  76 0014 02D0     		beq	.L8
+  77              	.L5:
+  78 0016 07B0     		add	sp, sp, #28
+  79              		@ sp needed
+  80 0018 5DF804FB 		ldr	pc, [sp], #4
+  81              	.L8:
+  82 001c 03F56443 		add	r3, r3, #58368
+  83 0020 9A69     		ldr	r2, [r3, #24]
+  84 0022 42F40062 		orr	r2, r2, #2048
+  85 0026 9A61     		str	r2, [r3, #24]
+  86 0028 9A69     		ldr	r2, [r3, #24]
+  87 002a 02F40062 		and	r2, r2, #2048
+  88 002e 0092     		str	r2, [sp]
+  89 0030 009A     		ldr	r2, [sp]
+  90 0032 9A69     		ldr	r2, [r3, #24]
+  91 0034 42F00402 		orr	r2, r2, #4
+  92 0038 9A61     		str	r2, [r3, #24]
+  93 003a 9B69     		ldr	r3, [r3, #24]
+  94 003c 03F00403 		and	r3, r3, #4
+  95 0040 0193     		str	r3, [sp, #4]
+  96 0042 019B     		ldr	r3, [sp, #4]
+  97 0044 4FF44073 		mov	r3, #768
+  98 0048 0293     		str	r3, [sp, #8]
+  99 004a 02A9     		add	r1, sp, #8
+ 100 004c 0248     		ldr	r0, .L9+4
+ 101 004e FFF7FEFF 		bl	HAL_GPIO_Init
+ 102 0052 E0E7     		b	.L5
+ 103              	.L10:
+ 104              		.align	2
+ 105              	.L9:
+ 106 0054 002C0140 		.word	1073818624
+ 107 0058 00080140 		.word	1073809408
+ 109              		.section	.text.HAL_TIM_Base_MspInit,"ax",%progbits
+ 110              		.align	1
+ 111              		.global	HAL_TIM_Base_MspInit
+ 112              		.syntax unified
+ 113              		.thumb
+ 114              		.thumb_func
+ 116              	HAL_TIM_Base_MspInit:
+ 117              		@ args = 0, pretend = 0, frame = 16
+ 118              		@ frame_needed = 0, uses_anonymous_args = 0
+ 119 0000 00B5     		push	{lr}
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccUAw7Cg.s 			page 3
+
+
+ 120 0002 85B0     		sub	sp, sp, #20
+ 121 0004 0368     		ldr	r3, [r0]
+ 122 0006 B3F1804F 		cmp	r3, #1073741824
+ 123 000a 08D0     		beq	.L16
+ 124 000c 194A     		ldr	r2, .L19
+ 125 000e 9342     		cmp	r3, r2
+ 126 0010 11D0     		beq	.L17
+ 127 0012 194A     		ldr	r2, .L19+4
+ 128 0014 9342     		cmp	r3, r2
+ 129 0016 21D0     		beq	.L18
+ 130              	.L11:
+ 131 0018 05B0     		add	sp, sp, #20
+ 132              		@ sp needed
+ 133 001a 5DF804FB 		ldr	pc, [sp], #4
+ 134              	.L16:
+ 135 001e 03F50433 		add	r3, r3, #135168
+ 136 0022 DA69     		ldr	r2, [r3, #28]
+ 137 0024 42F00102 		orr	r2, r2, #1
+ 138 0028 DA61     		str	r2, [r3, #28]
+ 139 002a DB69     		ldr	r3, [r3, #28]
+ 140 002c 03F00103 		and	r3, r3, #1
+ 141 0030 0193     		str	r3, [sp, #4]
+ 142 0032 019B     		ldr	r3, [sp, #4]
+ 143 0034 F0E7     		b	.L11
+ 144              	.L17:
+ 145 0036 114B     		ldr	r3, .L19+8
+ 146 0038 DA69     		ldr	r2, [r3, #28]
+ 147 003a 42F00202 		orr	r2, r2, #2
+ 148 003e DA61     		str	r2, [r3, #28]
+ 149 0040 DB69     		ldr	r3, [r3, #28]
+ 150 0042 03F00203 		and	r3, r3, #2
+ 151 0046 0293     		str	r3, [sp, #8]
+ 152 0048 029B     		ldr	r3, [sp, #8]
+ 153 004a 0022     		movs	r2, #0
+ 154 004c 0221     		movs	r1, #2
+ 155 004e 1D20     		movs	r0, #29
+ 156 0050 FFF7FEFF 		bl	HAL_NVIC_SetPriority
+ 157 0054 1D20     		movs	r0, #29
+ 158 0056 FFF7FEFF 		bl	HAL_NVIC_EnableIRQ
+ 159 005a DDE7     		b	.L11
+ 160              	.L18:
+ 161 005c 074B     		ldr	r3, .L19+8
+ 162 005e DA69     		ldr	r2, [r3, #28]
+ 163 0060 42F00402 		orr	r2, r2, #4
+ 164 0064 DA61     		str	r2, [r3, #28]
+ 165 0066 DB69     		ldr	r3, [r3, #28]
+ 166 0068 03F00403 		and	r3, r3, #4
+ 167 006c 0393     		str	r3, [sp, #12]
+ 168 006e 039B     		ldr	r3, [sp, #12]
+ 169 0070 D2E7     		b	.L11
+ 170              	.L20:
+ 171 0072 00BF     		.align	2
+ 172              	.L19:
+ 173 0074 00040040 		.word	1073742848
+ 174 0078 00080040 		.word	1073743872
+ 175 007c 00100240 		.word	1073876992
+ 177              		.section	.text.HAL_TIM_MspPostInit,"ax",%progbits
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccUAw7Cg.s 			page 4
+
+
+ 178              		.align	1
+ 179              		.global	HAL_TIM_MspPostInit
+ 180              		.syntax unified
+ 181              		.thumb
+ 182              		.thumb_func
+ 184              	HAL_TIM_MspPostInit:
+ 185              		@ args = 0, pretend = 0, frame = 24
+ 186              		@ frame_needed = 0, uses_anonymous_args = 0
+ 187 0000 00B5     		push	{lr}
+ 188 0002 87B0     		sub	sp, sp, #28
+ 189 0004 0023     		movs	r3, #0
+ 190 0006 0293     		str	r3, [sp, #8]
+ 191 0008 0393     		str	r3, [sp, #12]
+ 192 000a 0493     		str	r3, [sp, #16]
+ 193 000c 0593     		str	r3, [sp, #20]
+ 194 000e 0368     		ldr	r3, [r0]
+ 195 0010 B3F1804F 		cmp	r3, #1073741824
+ 196 0014 05D0     		beq	.L25
+ 197 0016 174A     		ldr	r2, .L27
+ 198 0018 9342     		cmp	r3, r2
+ 199 001a 16D0     		beq	.L26
+ 200              	.L21:
+ 201 001c 07B0     		add	sp, sp, #28
+ 202              		@ sp needed
+ 203 001e 5DF804FB 		ldr	pc, [sp], #4
+ 204              	.L25:
+ 205 0022 03F50433 		add	r3, r3, #135168
+ 206 0026 9A69     		ldr	r2, [r3, #24]
+ 207 0028 42F00402 		orr	r2, r2, #4
+ 208 002c 9A61     		str	r2, [r3, #24]
+ 209 002e 9B69     		ldr	r3, [r3, #24]
+ 210 0030 03F00403 		and	r3, r3, #4
+ 211 0034 0093     		str	r3, [sp]
+ 212 0036 009B     		ldr	r3, [sp]
+ 213 0038 0223     		movs	r3, #2
+ 214 003a 0293     		str	r3, [sp, #8]
+ 215 003c 0393     		str	r3, [sp, #12]
+ 216 003e 0593     		str	r3, [sp, #20]
+ 217 0040 02A9     		add	r1, sp, #8
+ 218 0042 0D48     		ldr	r0, .L27+4
+ 219 0044 FFF7FEFF 		bl	HAL_GPIO_Init
+ 220 0048 E8E7     		b	.L21
+ 221              	.L26:
+ 222 004a 0C4B     		ldr	r3, .L27+8
+ 223 004c 9A69     		ldr	r2, [r3, #24]
+ 224 004e 42F00802 		orr	r2, r2, #8
+ 225 0052 9A61     		str	r2, [r3, #24]
+ 226 0054 9B69     		ldr	r3, [r3, #24]
+ 227 0056 03F00803 		and	r3, r3, #8
+ 228 005a 0193     		str	r3, [sp, #4]
+ 229 005c 019B     		ldr	r3, [sp, #4]
+ 230 005e 4023     		movs	r3, #64
+ 231 0060 0293     		str	r3, [sp, #8]
+ 232 0062 0223     		movs	r3, #2
+ 233 0064 0393     		str	r3, [sp, #12]
+ 234 0066 0593     		str	r3, [sp, #20]
+ 235 0068 02A9     		add	r1, sp, #8
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccUAw7Cg.s 			page 5
+
+
+ 236 006a 0548     		ldr	r0, .L27+12
+ 237 006c FFF7FEFF 		bl	HAL_GPIO_Init
+ 238 0070 D4E7     		b	.L21
+ 239              	.L28:
+ 240 0072 00BF     		.align	2
+ 241              	.L27:
+ 242 0074 00080040 		.word	1073743872
+ 243 0078 00080140 		.word	1073809408
+ 244 007c 00100240 		.word	1073876992
+ 245 0080 000C0140 		.word	1073810432
+ 247              		.section	.text.HAL_TIM_Encoder_MspDeInit,"ax",%progbits
+ 248              		.align	1
+ 249              		.global	HAL_TIM_Encoder_MspDeInit
+ 250              		.syntax unified
+ 251              		.thumb
+ 252              		.thumb_func
+ 254              	HAL_TIM_Encoder_MspDeInit:
+ 255              		@ args = 0, pretend = 0, frame = 0
+ 256              		@ frame_needed = 0, uses_anonymous_args = 0
+ 257 0000 08B5     		push	{r3, lr}
+ 258 0002 0268     		ldr	r2, [r0]
+ 259 0004 074B     		ldr	r3, .L33
+ 260 0006 9A42     		cmp	r2, r3
+ 261 0008 00D0     		beq	.L32
+ 262              	.L29:
+ 263 000a 08BD     		pop	{r3, pc}
+ 264              	.L32:
+ 265 000c 064A     		ldr	r2, .L33+4
+ 266 000e 9369     		ldr	r3, [r2, #24]
+ 267 0010 23F40063 		bic	r3, r3, #2048
+ 268 0014 9361     		str	r3, [r2, #24]
+ 269 0016 4FF44071 		mov	r1, #768
+ 270 001a 0448     		ldr	r0, .L33+8
+ 271 001c FFF7FEFF 		bl	HAL_GPIO_DeInit
+ 272 0020 F3E7     		b	.L29
+ 273              	.L34:
+ 274 0022 00BF     		.align	2
+ 275              	.L33:
+ 276 0024 002C0140 		.word	1073818624
+ 277 0028 00100240 		.word	1073876992
+ 278 002c 00080140 		.word	1073809408
+ 280              		.section	.text.HAL_TIM_Base_MspDeInit,"ax",%progbits
+ 281              		.align	1
+ 282              		.global	HAL_TIM_Base_MspDeInit
+ 283              		.syntax unified
+ 284              		.thumb
+ 285              		.thumb_func
+ 287              	HAL_TIM_Base_MspDeInit:
+ 288              		@ args = 0, pretend = 0, frame = 0
+ 289              		@ frame_needed = 0, uses_anonymous_args = 0
+ 290 0000 08B5     		push	{r3, lr}
+ 291 0002 0368     		ldr	r3, [r0]
+ 292 0004 B3F1804F 		cmp	r3, #1073741824
+ 293 0008 06D0     		beq	.L40
+ 294 000a 0F4A     		ldr	r2, .L43
+ 295 000c 9342     		cmp	r3, r2
+ 296 000e 09D0     		beq	.L41
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccUAw7Cg.s 			page 6
+
+
+ 297 0010 0E4A     		ldr	r2, .L43+4
+ 298 0012 9342     		cmp	r3, r2
+ 299 0014 10D0     		beq	.L42
+ 300              	.L35:
+ 301 0016 08BD     		pop	{r3, pc}
+ 302              	.L40:
+ 303 0018 0D4A     		ldr	r2, .L43+8
+ 304 001a D369     		ldr	r3, [r2, #28]
+ 305 001c 23F00103 		bic	r3, r3, #1
+ 306 0020 D361     		str	r3, [r2, #28]
+ 307 0022 F8E7     		b	.L35
+ 308              	.L41:
+ 309 0024 02F50332 		add	r2, r2, #134144
+ 310 0028 D369     		ldr	r3, [r2, #28]
+ 311 002a 23F00203 		bic	r3, r3, #2
+ 312 002e D361     		str	r3, [r2, #28]
+ 313 0030 1D20     		movs	r0, #29
+ 314 0032 FFF7FEFF 		bl	HAL_NVIC_DisableIRQ
+ 315 0036 EEE7     		b	.L35
+ 316              	.L42:
+ 317 0038 02F50232 		add	r2, r2, #133120
+ 318 003c D369     		ldr	r3, [r2, #28]
+ 319 003e 23F00403 		bic	r3, r3, #4
+ 320 0042 D361     		str	r3, [r2, #28]
+ 321 0044 E7E7     		b	.L35
+ 322              	.L44:
+ 323 0046 00BF     		.align	2
+ 324              	.L43:
+ 325 0048 00040040 		.word	1073742848
+ 326 004c 00080040 		.word	1073743872
+ 327 0050 00100240 		.word	1073876992
+ 329              		.ident	"GCC: (xPack GNU Arm Embedded GCC x86_64) 13.2.1 20231009"
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccUAw7Cg.s 			page 7
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 stm32f1xx_hal_msp.c
+C:\Users\matve\AppData\Local\Temp\ccUAw7Cg.s:16     .text.HAL_MspInit:00000000 $t
+C:\Users\matve\AppData\Local\Temp\ccUAw7Cg.s:22     .text.HAL_MspInit:00000000 HAL_MspInit
+C:\Users\matve\AppData\Local\Temp\ccUAw7Cg.s:53     .text.HAL_MspInit:0000003c $d
+C:\Users\matve\AppData\Local\Temp\ccUAw7Cg.s:57     .text.HAL_TIM_Encoder_MspInit:00000000 $t
+C:\Users\matve\AppData\Local\Temp\ccUAw7Cg.s:63     .text.HAL_TIM_Encoder_MspInit:00000000 HAL_TIM_Encoder_MspInit
+C:\Users\matve\AppData\Local\Temp\ccUAw7Cg.s:106    .text.HAL_TIM_Encoder_MspInit:00000054 $d
+C:\Users\matve\AppData\Local\Temp\ccUAw7Cg.s:110    .text.HAL_TIM_Base_MspInit:00000000 $t
+C:\Users\matve\AppData\Local\Temp\ccUAw7Cg.s:116    .text.HAL_TIM_Base_MspInit:00000000 HAL_TIM_Base_MspInit
+C:\Users\matve\AppData\Local\Temp\ccUAw7Cg.s:173    .text.HAL_TIM_Base_MspInit:00000074 $d
+C:\Users\matve\AppData\Local\Temp\ccUAw7Cg.s:178    .text.HAL_TIM_MspPostInit:00000000 $t
+C:\Users\matve\AppData\Local\Temp\ccUAw7Cg.s:184    .text.HAL_TIM_MspPostInit:00000000 HAL_TIM_MspPostInit
+C:\Users\matve\AppData\Local\Temp\ccUAw7Cg.s:242    .text.HAL_TIM_MspPostInit:00000074 $d
+C:\Users\matve\AppData\Local\Temp\ccUAw7Cg.s:248    .text.HAL_TIM_Encoder_MspDeInit:00000000 $t
+C:\Users\matve\AppData\Local\Temp\ccUAw7Cg.s:254    .text.HAL_TIM_Encoder_MspDeInit:00000000 HAL_TIM_Encoder_MspDeInit
+C:\Users\matve\AppData\Local\Temp\ccUAw7Cg.s:276    .text.HAL_TIM_Encoder_MspDeInit:00000024 $d
+C:\Users\matve\AppData\Local\Temp\ccUAw7Cg.s:281    .text.HAL_TIM_Base_MspDeInit:00000000 $t
+C:\Users\matve\AppData\Local\Temp\ccUAw7Cg.s:287    .text.HAL_TIM_Base_MspDeInit:00000000 HAL_TIM_Base_MspDeInit
+C:\Users\matve\AppData\Local\Temp\ccUAw7Cg.s:325    .text.HAL_TIM_Base_MspDeInit:00000048 $d
+
+UNDEFINED SYMBOLS
+HAL_GPIO_Init
+HAL_NVIC_SetPriority
+HAL_NVIC_EnableIRQ
+HAL_GPIO_DeInit
+HAL_NVIC_DisableIRQ

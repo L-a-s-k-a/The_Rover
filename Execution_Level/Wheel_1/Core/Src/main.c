@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2025 STMicroelectronics.
+  * Copyright (c) 2024 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -22,7 +22,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "servocontroller.h"
+#include <stdio.h>
+#include "string.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -47,7 +49,15 @@ TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
 
 /* USER CODE BEGIN PV */
+float ANGvalue = 0;
+float VELvalue = 0;
+uint16_t PWM_servo = 90;
+servocontrol_t servo1;
 
+// USB
+uint8_t USBDataReady = 0;
+uint8_t* USBDataBuffer;
+uint8_t USBDataLength = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -58,7 +68,22 @@ static void MX_TIM1_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_TIM4_Init(void);
 /* USER CODE BEGIN PFP */
+void USBRxHandler(uint8_t* buf, uint16_t len){
+  
+  
 
+
+  
+  
+  // if(strncmp((char*)buf,"HIGH", len) == 0){
+  //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
+  // }
+  // else if (strncmp((char*)buf, "LOW", len) == 0) {
+  //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);   // Выключить
+  //        // Отправить подтверждение
+  // }
+  return;
+}
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -74,7 +99,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
+  
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -83,7 +108,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-
+  
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -102,6 +127,24 @@ int main(void)
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
 
+  servo_baseInit(&servo1, Double, 895.8775050487, 59, 0);
+  servo_encoderInit(&servo1, &htim1, 1999);
+  servo_driverInit(&servo1, &htim2, 2, DIR1_GPIO_Port, DIR1_Pin, DIR2_GPIO_Port, DIR2_Pin, 0, 999);
+  servo_positionInit(&servo1, 3, 0, 0, 0.001, 0);
+  servo_velocityInit(&servo1, 150, 1500, 0, 0.004, 0);
+
+  __HAL_TIM_CLEAR_IT(&htim1, TIM_IT_UPDATE);
+  HAL_TIM_Encoder_Start(&htim1, TIM_CHANNEL_ALL);
+  
+  // HAL_TIM_Encoder_Start_IT(&htim2, TIM_CHANNEL_2);
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2); // �?нициализация PWM
+  HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1); // �?нициализация PWM
+  HAL_TIM_Base_Start_IT(&htim3);
+  HAL_TIM_Base_Start_IT(&htim4);
+  // servo_controlVelocity(&servo1, 50);
+  // servo_controlVelocity(&servo1, 200);
+  // servo_controlPosition(&servo1, 180);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -111,6 +154,11 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    
+    servo_controlVelocity(&servo1, VELvalue); // 0 - 15
+    htim4.Instance->CCR1 = PWM_servo + 27;    // 0 - 180
+
+    // servo_controlPosition(&servo1, ANGvalue);
   }
   /* USER CODE END 3 */
 }
