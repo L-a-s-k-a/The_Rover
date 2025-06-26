@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2024 STMicroelectronics.
+  * Copyright (c) 2025 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -22,7 +22,6 @@
 #include "stm32f1xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include <servocontroller.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -59,8 +58,7 @@
 extern PCD_HandleTypeDef hpcd_USB_FS;
 extern TIM_HandleTypeDef htim3;
 /* USER CODE BEGIN EV */
-extern servocontrol_t servo1;
-extern uint8_t tim3_loop_count = 0; 
+
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -225,12 +223,7 @@ void TIM3_IRQHandler(void)
   /* USER CODE END TIM3_IRQn 0 */
   HAL_TIM_IRQHandler(&htim3);
   /* USER CODE BEGIN TIM3_IRQn 1 */
-  servo_positionLoop(&servo1);
-  if(tim3_loop_count == 3) {
-    tim3_loop_count = 0;
-    servo_velocityLoop(&servo1);
-  }
-  else { tim3_loop_count++; }
+
   /* USER CODE END TIM3_IRQn 1 */
 }
 
