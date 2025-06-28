@@ -1,0 +1,1266 @@
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"servocontroller.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Core/Src/servocontroller.c"
+  18              		.global	__aeabi_fdiv
+  19              		.section	.text.servo_baseInit,"ax",%progbits
+  20              		.align	1
+  21              		.global	servo_baseInit
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	servo_baseInit:
+  27              	.LVL0:
+  28              	.LFB65:
+   1:Core/Src/servocontroller.c **** /*
+   2:Core/Src/servocontroller.c ****  * servocontroller.c
+   3:Core/Src/servocontroller.c ****  *
+   4:Core/Src/servocontroller.c ****  *  Created on: Jun 29, 2023
+   5:Core/Src/servocontroller.c ****  *      Author: JV4K
+   6:Core/Src/servocontroller.c ****  */
+   7:Core/Src/servocontroller.c **** 
+   8:Core/Src/servocontroller.c **** #include <servocontroller.h>
+   9:Core/Src/servocontroller.c **** #define constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))
+  10:Core/Src/servocontroller.c **** 
+  11:Core/Src/servocontroller.c **** /*
+  12:Core/Src/servocontroller.c ****  Initializes servo with controller architecture and motor specifications.
+  13:Core/Src/servocontroller.c **** 
+  14:Core/Src/servocontroller.c ****  Arguments:
+  15:Core/Src/servocontroller.c ****  1. Instance of servo struct type
+  16:Core/Src/servocontroller.c **** 
+  17:Core/Src/servocontroller.c ****  2. Controller architecture, possible configurations:
+  18:Core/Src/servocontroller.c ****  Single - position controller only
+  19:Core/Src/servocontroller.c ****  Double - position and velocity controllers
+  20:Core/Src/servocontroller.c ****  Triple - position, velocity and current controllers
+  21:Core/Src/servocontroller.c **** 
+  22:Core/Src/servocontroller.c ****  3. Speed of motor before gearbox in rad/s
+  23:Core/Src/servocontroller.c **** 
+  24:Core/Src/servocontroller.c ****  4. Gear ratio of reducer (e.g. if reducer is 1:21.3, pass 21.3)
+  25:Core/Src/servocontroller.c ****  */
+  26:Core/Src/servocontroller.c **** void servo_baseInit(servocontrol_t *servo, enum loops servoLoops, float motorSpeed, float gearRatio
+  27:Core/Src/servocontroller.c **** 		uint8_t reverse) {
+  29              		.loc 1 27 20 view -0
+  30              		.cfi_startproc
+  31              		@ args = 4, pretend = 0, frame = 0
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s 			page 2
+
+
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		.loc 1 27 20 is_stmt 0 view .LVU1
+  34 0000 38B5     		push	{r3, r4, r5, lr}
+  35              		.cfi_def_cfa_offset 16
+  36              		.cfi_offset 3, -16
+  37              		.cfi_offset 4, -12
+  38              		.cfi_offset 5, -8
+  39              		.cfi_offset 14, -4
+  40 0002 0446     		mov	r4, r0
+  41 0004 0D46     		mov	r5, r1
+  42 0006 1046     		mov	r0, r2
+  43              	.LVL1:
+  44              		.loc 1 27 20 view .LVU2
+  45 0008 1946     		mov	r1, r3
+  46              	.LVL2:
+  47              		.loc 1 27 20 view .LVU3
+  48 000a 9DF81030 		ldrb	r3, [sp, #16]	@ zero_extendqisi2
+  49              	.LVL3:
+  28:Core/Src/servocontroller.c **** 	servo->controllerLoops = servoLoops;
+  50              		.loc 1 28 2 is_stmt 1 view .LVU4
+  51              		.loc 1 28 25 is_stmt 0 view .LVU5
+  52 000e 84F80951 		strb	r5, [r4, #265]
+  29:Core/Src/servocontroller.c **** 	servo->encoder.gearRatio = gearRatio;
+  53              		.loc 1 29 2 is_stmt 1 view .LVU6
+  54              		.loc 1 29 27 is_stmt 0 view .LVU7
+  55 0012 E161     		str	r1, [r4, #28]	@ float
+  30:Core/Src/servocontroller.c **** 	if (reverse) {
+  56              		.loc 1 30 2 is_stmt 1 view .LVU8
+  57              		.loc 1 30 5 is_stmt 0 view .LVU9
+  58 0014 63B1     		cbz	r3, .L2
+  31:Core/Src/servocontroller.c **** 		servo->reverseFlag = -1;
+  59              		.loc 1 31 3 is_stmt 1 view .LVU10
+  60              		.loc 1 31 22 is_stmt 0 view .LVU11
+  61 0016 FF23     		movs	r3, #255
+  62 0018 84F8F830 		strb	r3, [r4, #248]
+  63              	.L3:
+  32:Core/Src/servocontroller.c **** 	}
+  33:Core/Src/servocontroller.c **** 	else{
+  34:Core/Src/servocontroller.c **** 		servo->reverseFlag = 1;
+  35:Core/Src/servocontroller.c **** 	}
+  36:Core/Src/servocontroller.c **** 	servo->maxShaftSpeed = motorSpeed / gearRatio;
+  64              		.loc 1 36 2 is_stmt 1 view .LVU12
+  65              		.loc 1 36 36 is_stmt 0 view .LVU13
+  66 001c FFF7FEFF 		bl	__aeabi_fdiv
+  67              	.LVL4:
+  68              		.loc 1 36 23 view .LVU14
+  69 0020 C4F80C01 		str	r0, [r4, #268]	@ float
+  37:Core/Src/servocontroller.c **** 
+  38:Core/Src/servocontroller.c **** 	if (servoLoops != Single) {
+  70              		.loc 1 38 2 is_stmt 1 view .LVU15
+  71              		.loc 1 38 5 is_stmt 0 view .LVU16
+  72 0024 1DB1     		cbz	r5, .L1
+  39:Core/Src/servocontroller.c **** 		servo->pid_position.lowerLimit = -servo->maxShaftSpeed;
+  73              		.loc 1 39 3 is_stmt 1 view .LVU17
+  74              		.loc 1 39 36 is_stmt 0 view .LVU18
+  75 0026 00F10043 		add	r3, r0, #-2147483648
+  76              		.loc 1 39 34 view .LVU19
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s 			page 3
+
+
+  77 002a 2365     		str	r3, [r4, #80]	@ float
+  40:Core/Src/servocontroller.c **** 		servo->pid_position.upperLimit = servo->maxShaftSpeed;
+  78              		.loc 1 40 3 is_stmt 1 view .LVU20
+  79              		.loc 1 40 34 is_stmt 0 view .LVU21
+  80 002c E064     		str	r0, [r4, #76]	@ float
+  81              	.L1:
+  41:Core/Src/servocontroller.c **** 	}
+  42:Core/Src/servocontroller.c **** }
+  82              		.loc 1 42 1 view .LVU22
+  83 002e 38BD     		pop	{r3, r4, r5, pc}
+  84              	.LVL5:
+  85              	.L2:
+  34:Core/Src/servocontroller.c **** 	}
+  86              		.loc 1 34 3 is_stmt 1 view .LVU23
+  34:Core/Src/servocontroller.c **** 	}
+  87              		.loc 1 34 22 is_stmt 0 view .LVU24
+  88 0030 0123     		movs	r3, #1
+  89 0032 84F8F830 		strb	r3, [r4, #248]
+  90 0036 F1E7     		b	.L3
+  91              		.cfi_endproc
+  92              	.LFE65:
+  94              		.section	.text.servo_encoderInit,"ax",%progbits
+  95              		.align	1
+  96              		.global	servo_encoderInit
+  97              		.syntax unified
+  98              		.thumb
+  99              		.thumb_func
+ 101              	servo_encoderInit:
+ 102              	.LVL6:
+ 103              	.LFB66:
+  43:Core/Src/servocontroller.c **** 
+  44:Core/Src/servocontroller.c **** /*
+  45:Core/Src/servocontroller.c ****  Initializes servo with encoder settings.
+  46:Core/Src/servocontroller.c **** 
+  47:Core/Src/servocontroller.c ****  htim - pointer to handler of timer in encoder mode.
+  48:Core/Src/servocontroller.c ****  CPR - counts per revolution. If you are using both channels and rising/falling edges of encoder, C
+  49:Core/Src/servocontroller.c ****  */
+  50:Core/Src/servocontroller.c **** void servo_encoderInit(servocontrol_t *servo, TIM_HandleTypeDef *htim, uint16_t CPR) {
+ 104              		.loc 1 50 86 is_stmt 1 view -0
+ 105              		.cfi_startproc
+ 106              		@ args = 0, pretend = 0, frame = 0
+ 107              		@ frame_needed = 0, uses_anonymous_args = 0
+ 108              		@ link register save eliminated.
+  51:Core/Src/servocontroller.c **** 	servo->encoder.htim = htim;
+ 109              		.loc 1 51 2 view .LVU26
+ 110              		.loc 1 51 22 is_stmt 0 view .LVU27
+ 111 0000 0160     		str	r1, [r0]
+  52:Core/Src/servocontroller.c **** 	servo->encoder.countsPerRevolution = CPR;
+ 112              		.loc 1 52 2 is_stmt 1 view .LVU28
+ 113              		.loc 1 52 37 is_stmt 0 view .LVU29
+ 114 0002 8280     		strh	r2, [r0, #4]	@ movhi
+  53:Core/Src/servocontroller.c **** }
+ 115              		.loc 1 53 1 view .LVU30
+ 116 0004 7047     		bx	lr
+ 117              		.cfi_endproc
+ 118              	.LFE66:
+ 120              		.global	__aeabi_i2f
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s 			page 4
+
+
+ 121              		.global	__aeabi_ui2f
+ 122              		.section	.text.servo_driverInit,"ax",%progbits
+ 123              		.align	1
+ 124              		.global	servo_driverInit
+ 125              		.syntax unified
+ 126              		.thumb
+ 127              		.thumb_func
+ 129              	servo_driverInit:
+ 130              	.LVL7:
+ 131              	.LFB67:
+  54:Core/Src/servocontroller.c **** 
+  55:Core/Src/servocontroller.c **** /*
+  56:Core/Src/servocontroller.c ****  Initializes driver control module.
+  57:Core/Src/servocontroller.c ****  Arguments:
+  58:Core/Src/servocontroller.c ****  1. Instance of servo struct
+  59:Core/Src/servocontroller.c ****  2. Handler of timer in pwm generation mode
+  60:Core/Src/servocontroller.c ****  3. No of channel (1/2/3/4)
+  61:Core/Src/servocontroller.c ****  4,5. Port and pin of output A
+  62:Core/Src/servocontroller.c ****  6,7. Port and pin of output B
+  63:Core/Src/servocontroller.c ****  8,9. Min and max duty-cycle of PWM
+  64:Core/Src/servocontroller.c **** 
+  65:Core/Src/servocontroller.c ****  GPIOs are needed to control direction with a dc-motor driver
+  66:Core/Src/servocontroller.c ****  */
+  67:Core/Src/servocontroller.c **** void servo_driverInit(servocontrol_t *servo, TIM_HandleTypeDef *htim, uint8_t timerChannel,
+  68:Core/Src/servocontroller.c **** 		GPIO_TypeDef *dir1_Port, uint32_t dir1_Pin, GPIO_TypeDef *dir2_Port, uint32_t dir2_Pin,
+  69:Core/Src/servocontroller.c **** 		uint16_t minDuty, uint16_t maxDuty) {
+ 132              		.loc 1 69 39 is_stmt 1 view -0
+ 133              		.cfi_startproc
+ 134              		@ args = 20, pretend = 0, frame = 0
+ 135              		@ frame_needed = 0, uses_anonymous_args = 0
+ 136              		.loc 1 69 39 is_stmt 0 view .LVU32
+ 137 0000 38B5     		push	{r3, r4, r5, lr}
+ 138              		.cfi_def_cfa_offset 16
+ 139              		.cfi_offset 3, -16
+ 140              		.cfi_offset 4, -12
+ 141              		.cfi_offset 5, -8
+ 142              		.cfi_offset 14, -4
+ 143 0002 0446     		mov	r4, r0
+ 144 0004 BDF82050 		ldrh	r5, [sp, #32]
+  70:Core/Src/servocontroller.c **** 	servo->driver.htim = htim;
+ 145              		.loc 1 70 2 is_stmt 1 view .LVU33
+ 146              		.loc 1 70 21 is_stmt 0 view .LVU34
+ 147 0008 C0F8D810 		str	r1, [r0, #216]
+  71:Core/Src/servocontroller.c **** 	servo->driver.timerChannel = timerChannel;
+ 148              		.loc 1 71 2 is_stmt 1 view .LVU35
+ 149              		.loc 1 71 29 is_stmt 0 view .LVU36
+ 150 000c 80F8DC20 		strb	r2, [r0, #220]
+  72:Core/Src/servocontroller.c **** 	servo->driver.dir1_Port = dir1_Port;
+ 151              		.loc 1 72 2 is_stmt 1 view .LVU37
+ 152              		.loc 1 72 26 is_stmt 0 view .LVU38
+ 153 0010 C0F8E430 		str	r3, [r0, #228]
+  73:Core/Src/servocontroller.c **** 	servo->driver.dir1_Pin = dir1_Pin;
+ 154              		.loc 1 73 2 is_stmt 1 view .LVU39
+ 155              		.loc 1 73 25 is_stmt 0 view .LVU40
+ 156 0014 049B     		ldr	r3, [sp, #16]
+ 157              	.LVL8:
+ 158              		.loc 1 73 25 view .LVU41
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s 			page 5
+
+
+ 159 0016 C0F8E030 		str	r3, [r0, #224]
+  74:Core/Src/servocontroller.c **** 	servo->driver.dir2_Port = dir2_Port;
+ 160              		.loc 1 74 2 is_stmt 1 view .LVU42
+ 161              		.loc 1 74 26 is_stmt 0 view .LVU43
+ 162 001a 059B     		ldr	r3, [sp, #20]
+ 163 001c C0F8EC30 		str	r3, [r0, #236]
+  75:Core/Src/servocontroller.c **** 	servo->driver.dir2_Pin = dir2_Pin;
+ 164              		.loc 1 75 2 is_stmt 1 view .LVU44
+ 165              		.loc 1 75 25 is_stmt 0 view .LVU45
+ 166 0020 069B     		ldr	r3, [sp, #24]
+ 167 0022 C0F8E830 		str	r3, [r0, #232]
+  76:Core/Src/servocontroller.c **** 
+  77:Core/Src/servocontroller.c **** 	servo->driver.minDuty = minDuty;
+ 168              		.loc 1 77 2 is_stmt 1 view .LVU46
+ 169              		.loc 1 77 24 is_stmt 0 view .LVU47
+ 170 0026 BDF81C30 		ldrh	r3, [sp, #28]
+ 171 002a A0F8F230 		strh	r3, [r0, #242]	@ movhi
+  78:Core/Src/servocontroller.c **** 	servo->driver.maxDuty = maxDuty;
+ 172              		.loc 1 78 2 is_stmt 1 view .LVU48
+ 173              		.loc 1 78 24 is_stmt 0 view .LVU49
+ 174 002e A0F8F050 		strh	r5, [r0, #240]	@ movhi
+  79:Core/Src/servocontroller.c **** 
+  80:Core/Src/servocontroller.c **** 	switch (servo->controllerLoops) {
+ 175              		.loc 1 80 2 is_stmt 1 view .LVU50
+ 176              		.loc 1 80 15 is_stmt 0 view .LVU51
+ 177 0032 90F80931 		ldrb	r3, [r0, #265]	@ zero_extendqisi2
+ 178              		.loc 1 80 2 view .LVU52
+ 179 0036 012B     		cmp	r3, #1
+ 180 0038 0BD0     		beq	.L8
+ 181 003a 022B     		cmp	r3, #2
+ 182 003c 14D0     		beq	.L9
+ 183 003e 3BB9     		cbnz	r3, .L7
+  81:Core/Src/servocontroller.c **** 	case Single:
+  82:Core/Src/servocontroller.c **** 		servo->pid_position.lowerLimit = -maxDuty;
+ 184              		.loc 1 82 3 is_stmt 1 view .LVU53
+ 185              		.loc 1 82 34 is_stmt 0 view .LVU54
+ 186 0040 6842     		rsbs	r0, r5, #0
+ 187              	.LVL9:
+ 188              		.loc 1 82 34 view .LVU55
+ 189 0042 FFF7FEFF 		bl	__aeabi_i2f
+ 190              	.LVL10:
+ 191              		.loc 1 82 34 view .LVU56
+ 192 0046 2065     		str	r0, [r4, #80]	@ float
+  83:Core/Src/servocontroller.c **** 		servo->pid_position.upperLimit = maxDuty;
+ 193              		.loc 1 83 3 is_stmt 1 view .LVU57
+ 194              		.loc 1 83 34 is_stmt 0 view .LVU58
+ 195 0048 2846     		mov	r0, r5
+ 196 004a FFF7FEFF 		bl	__aeabi_ui2f
+ 197              	.LVL11:
+ 198 004e E064     		str	r0, [r4, #76]	@ float
+  84:Core/Src/servocontroller.c **** 		break;
+ 199              		.loc 1 84 3 is_stmt 1 view .LVU59
+ 200              	.L7:
+  85:Core/Src/servocontroller.c **** 	case Double:
+  86:Core/Src/servocontroller.c **** 		servo->pid_velocity.lowerLimit = -maxDuty;
+  87:Core/Src/servocontroller.c **** 		servo->pid_velocity.upperLimit = maxDuty;
+  88:Core/Src/servocontroller.c **** 		break;
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s 			page 6
+
+
+  89:Core/Src/servocontroller.c **** 	case Triple:
+  90:Core/Src/servocontroller.c **** 		servo->pid_current.lowerLimit = -maxDuty;
+  91:Core/Src/servocontroller.c **** 		servo->pid_current.upperLimit = maxDuty;
+  92:Core/Src/servocontroller.c **** 		break;
+  93:Core/Src/servocontroller.c **** 	default:
+  94:Core/Src/servocontroller.c **** 		break;
+  95:Core/Src/servocontroller.c **** 	}
+  96:Core/Src/servocontroller.c **** }
+ 201              		.loc 1 96 1 is_stmt 0 view .LVU60
+ 202 0050 38BD     		pop	{r3, r4, r5, pc}
+ 203              	.LVL12:
+ 204              	.L8:
+  86:Core/Src/servocontroller.c **** 		servo->pid_velocity.upperLimit = maxDuty;
+ 205              		.loc 1 86 3 is_stmt 1 view .LVU61
+  86:Core/Src/servocontroller.c **** 		servo->pid_velocity.upperLimit = maxDuty;
+ 206              		.loc 1 86 34 is_stmt 0 view .LVU62
+ 207 0052 6842     		rsbs	r0, r5, #0
+ 208              	.LVL13:
+  86:Core/Src/servocontroller.c **** 		servo->pid_velocity.upperLimit = maxDuty;
+ 209              		.loc 1 86 34 view .LVU63
+ 210 0054 FFF7FEFF 		bl	__aeabi_i2f
+ 211              	.LVL14:
+  86:Core/Src/servocontroller.c **** 		servo->pid_velocity.upperLimit = maxDuty;
+ 212              		.loc 1 86 34 view .LVU64
+ 213 0058 C4F88C00 		str	r0, [r4, #140]	@ float
+  87:Core/Src/servocontroller.c **** 		break;
+ 214              		.loc 1 87 3 is_stmt 1 view .LVU65
+  87:Core/Src/servocontroller.c **** 		break;
+ 215              		.loc 1 87 34 is_stmt 0 view .LVU66
+ 216 005c 2846     		mov	r0, r5
+ 217 005e FFF7FEFF 		bl	__aeabi_ui2f
+ 218              	.LVL15:
+ 219 0062 C4F88800 		str	r0, [r4, #136]	@ float
+  88:Core/Src/servocontroller.c **** 	case Triple:
+ 220              		.loc 1 88 3 is_stmt 1 view .LVU67
+ 221 0066 F3E7     		b	.L7
+ 222              	.LVL16:
+ 223              	.L9:
+  90:Core/Src/servocontroller.c **** 		servo->pid_current.upperLimit = maxDuty;
+ 224              		.loc 1 90 3 view .LVU68
+  90:Core/Src/servocontroller.c **** 		servo->pid_current.upperLimit = maxDuty;
+ 225              		.loc 1 90 33 is_stmt 0 view .LVU69
+ 226 0068 6842     		rsbs	r0, r5, #0
+ 227              	.LVL17:
+  90:Core/Src/servocontroller.c **** 		servo->pid_current.upperLimit = maxDuty;
+ 228              		.loc 1 90 33 view .LVU70
+ 229 006a FFF7FEFF 		bl	__aeabi_i2f
+ 230              	.LVL18:
+  90:Core/Src/servocontroller.c **** 		servo->pid_current.upperLimit = maxDuty;
+ 231              		.loc 1 90 33 view .LVU71
+ 232 006e C4F8C800 		str	r0, [r4, #200]	@ float
+  91:Core/Src/servocontroller.c **** 		break;
+ 233              		.loc 1 91 3 is_stmt 1 view .LVU72
+  91:Core/Src/servocontroller.c **** 		break;
+ 234              		.loc 1 91 33 is_stmt 0 view .LVU73
+ 235 0072 2846     		mov	r0, r5
+ 236 0074 FFF7FEFF 		bl	__aeabi_ui2f
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s 			page 7
+
+
+ 237              	.LVL19:
+ 238 0078 C4F8C400 		str	r0, [r4, #196]	@ float
+  92:Core/Src/servocontroller.c **** 	default:
+ 239              		.loc 1 92 3 is_stmt 1 view .LVU74
+ 240              		.loc 1 96 1 is_stmt 0 view .LVU75
+ 241 007c E8E7     		b	.L7
+ 242              		.cfi_endproc
+ 243              	.LFE67:
+ 245              		.section	.text.servo_positionInit,"ax",%progbits
+ 246              		.align	1
+ 247              		.global	servo_positionInit
+ 248              		.syntax unified
+ 249              		.thumb
+ 250              		.thumb_func
+ 252              	servo_positionInit:
+ 253              	.LVL20:
+ 254              	.LFB68:
+  97:Core/Src/servocontroller.c **** 
+  98:Core/Src/servocontroller.c **** // Initialization of controller loops with PID gains and period
+  99:Core/Src/servocontroller.c **** void servo_positionInit(servocontrol_t *servo, float kp, float ki, float kd, float dt, float kt) {
+ 255              		.loc 1 99 98 is_stmt 1 view -0
+ 256              		.cfi_startproc
+ 257              		@ args = 8, pretend = 0, frame = 0
+ 258              		@ frame_needed = 0, uses_anonymous_args = 0
+ 259              		@ link register save eliminated.
+ 100:Core/Src/servocontroller.c **** 	servo->pid_position.kp = kp;
+ 260              		.loc 1 100 2 view .LVU77
+ 261              		.loc 1 100 25 is_stmt 0 view .LVU78
+ 262 0000 8162     		str	r1, [r0, #40]	@ float
+ 101:Core/Src/servocontroller.c **** 	servo->pid_position.ki = ki;
+ 263              		.loc 1 101 2 is_stmt 1 view .LVU79
+ 264              		.loc 1 101 25 is_stmt 0 view .LVU80
+ 265 0002 C262     		str	r2, [r0, #44]	@ float
+ 102:Core/Src/servocontroller.c **** 	servo->pid_position.kd = kd;
+ 266              		.loc 1 102 2 is_stmt 1 view .LVU81
+ 267              		.loc 1 102 25 is_stmt 0 view .LVU82
+ 268 0004 0363     		str	r3, [r0, #48]	@ float
+ 103:Core/Src/servocontroller.c **** 	servo->pid_position.dt = dt;
+ 269              		.loc 1 103 2 is_stmt 1 view .LVU83
+ 270              		.loc 1 103 25 is_stmt 0 view .LVU84
+ 271 0006 009B     		ldr	r3, [sp]	@ float
+ 272              	.LVL21:
+ 273              		.loc 1 103 25 view .LVU85
+ 274 0008 8364     		str	r3, [r0, #72]	@ float
+ 104:Core/Src/servocontroller.c **** 	servo->pid_position.kt = kt;
+ 275              		.loc 1 104 2 is_stmt 1 view .LVU86
+ 276              		.loc 1 104 25 is_stmt 0 view .LVU87
+ 277 000a 019B     		ldr	r3, [sp, #4]	@ float
+ 278 000c 4363     		str	r3, [r0, #52]	@ float
+ 105:Core/Src/servocontroller.c **** }
+ 279              		.loc 1 105 1 view .LVU88
+ 280 000e 7047     		bx	lr
+ 281              		.cfi_endproc
+ 282              	.LFE68:
+ 284              		.section	.text.servo_velocityInit,"ax",%progbits
+ 285              		.align	1
+ 286              		.global	servo_velocityInit
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s 			page 8
+
+
+ 287              		.syntax unified
+ 288              		.thumb
+ 289              		.thumb_func
+ 291              	servo_velocityInit:
+ 292              	.LVL22:
+ 293              	.LFB69:
+ 106:Core/Src/servocontroller.c **** void servo_velocityInit(servocontrol_t *servo, float kp, float ki, float kd, float dt, float kt) {
+ 294              		.loc 1 106 98 is_stmt 1 view -0
+ 295              		.cfi_startproc
+ 296              		@ args = 8, pretend = 0, frame = 0
+ 297              		@ frame_needed = 0, uses_anonymous_args = 0
+ 298              		@ link register save eliminated.
+ 299              		.loc 1 106 98 is_stmt 0 view .LVU90
+ 300 0000 DDF800C0 		ldr	ip, [sp]	@ float
+ 107:Core/Src/servocontroller.c **** 	servo->pid_velocity.kp = kp;
+ 301              		.loc 1 107 2 is_stmt 1 view .LVU91
+ 302              		.loc 1 107 25 is_stmt 0 view .LVU92
+ 303 0004 4166     		str	r1, [r0, #100]	@ float
+ 108:Core/Src/servocontroller.c **** 	servo->pid_velocity.ki = ki;
+ 304              		.loc 1 108 2 is_stmt 1 view .LVU93
+ 305              		.loc 1 108 25 is_stmt 0 view .LVU94
+ 306 0006 8266     		str	r2, [r0, #104]	@ float
+ 109:Core/Src/servocontroller.c **** 	servo->pid_velocity.kd = kd;
+ 307              		.loc 1 109 2 is_stmt 1 view .LVU95
+ 308              		.loc 1 109 25 is_stmt 0 view .LVU96
+ 309 0008 C366     		str	r3, [r0, #108]	@ float
+ 110:Core/Src/servocontroller.c **** 	servo->pid_velocity.dt = dt;
+ 310              		.loc 1 110 2 is_stmt 1 view .LVU97
+ 311              		.loc 1 110 25 is_stmt 0 view .LVU98
+ 312 000a C0F884C0 		str	ip, [r0, #132]	@ float
+ 111:Core/Src/servocontroller.c **** 	servo->pid_velocity.kt = kt;
+ 313              		.loc 1 111 2 is_stmt 1 view .LVU99
+ 314              		.loc 1 111 25 is_stmt 0 view .LVU100
+ 315 000e 019B     		ldr	r3, [sp, #4]	@ float
+ 316              	.LVL23:
+ 317              		.loc 1 111 25 view .LVU101
+ 318 0010 0367     		str	r3, [r0, #112]	@ float
+ 112:Core/Src/servocontroller.c **** 	servo->encoder.dt = dt;
+ 319              		.loc 1 112 2 is_stmt 1 view .LVU102
+ 320              		.loc 1 112 20 is_stmt 0 view .LVU103
+ 321 0012 C0F818C0 		str	ip, [r0, #24]	@ float
+ 113:Core/Src/servocontroller.c **** }
+ 322              		.loc 1 113 1 view .LVU104
+ 323 0016 7047     		bx	lr
+ 324              		.cfi_endproc
+ 325              	.LFE69:
+ 327              		.section	.text.servo_currentInit,"ax",%progbits
+ 328              		.align	1
+ 329              		.global	servo_currentInit
+ 330              		.syntax unified
+ 331              		.thumb
+ 332              		.thumb_func
+ 334              	servo_currentInit:
+ 335              	.LVL24:
+ 336              	.LFB70:
+ 114:Core/Src/servocontroller.c **** void servo_currentInit(servocontrol_t *servo, float ratedCurrent, float kp, float ki, float kd, flo
+ 115:Core/Src/servocontroller.c **** 		float kt) {
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s 			page 9
+
+
+ 337              		.loc 1 115 13 is_stmt 1 view -0
+ 338              		.cfi_startproc
+ 339              		@ args = 12, pretend = 0, frame = 0
+ 340              		@ frame_needed = 0, uses_anonymous_args = 0
+ 341              		@ link register save eliminated.
+ 116:Core/Src/servocontroller.c **** 	servo->pid_current.kp = kp;
+ 342              		.loc 1 116 2 view .LVU106
+ 343              		.loc 1 116 24 is_stmt 0 view .LVU107
+ 344 0000 C0F8A020 		str	r2, [r0, #160]	@ float
+ 117:Core/Src/servocontroller.c **** 	servo->pid_current.ki = ki;
+ 345              		.loc 1 117 2 is_stmt 1 view .LVU108
+ 346              		.loc 1 117 24 is_stmt 0 view .LVU109
+ 347 0004 C0F8A430 		str	r3, [r0, #164]	@ float
+ 118:Core/Src/servocontroller.c **** 	servo->pid_current.kd = kd;
+ 348              		.loc 1 118 2 is_stmt 1 view .LVU110
+ 349              		.loc 1 118 24 is_stmt 0 view .LVU111
+ 350 0008 009B     		ldr	r3, [sp]	@ float
+ 351              	.LVL25:
+ 352              		.loc 1 118 24 view .LVU112
+ 353 000a C0F8A830 		str	r3, [r0, #168]	@ float
+ 119:Core/Src/servocontroller.c **** 	servo->pid_current.dt = dt;
+ 354              		.loc 1 119 2 is_stmt 1 view .LVU113
+ 355              		.loc 1 119 24 is_stmt 0 view .LVU114
+ 356 000e 019B     		ldr	r3, [sp, #4]	@ float
+ 357 0010 C0F8C030 		str	r3, [r0, #192]	@ float
+ 120:Core/Src/servocontroller.c **** 	servo->pid_current.kt = kt;
+ 358              		.loc 1 120 2 is_stmt 1 view .LVU115
+ 359              		.loc 1 120 24 is_stmt 0 view .LVU116
+ 360 0014 029B     		ldr	r3, [sp, #8]	@ float
+ 361 0016 C0F8AC30 		str	r3, [r0, #172]	@ float
+ 121:Core/Src/servocontroller.c **** 	if (servo->controllerLoops == Triple) {
+ 362              		.loc 1 121 2 is_stmt 1 view .LVU117
+ 363              		.loc 1 121 11 is_stmt 0 view .LVU118
+ 364 001a 90F80931 		ldrb	r3, [r0, #265]	@ zero_extendqisi2
+ 365              		.loc 1 121 5 view .LVU119
+ 366 001e 022B     		cmp	r3, #2
+ 367 0020 00D0     		beq	.L16
+ 368              	.L14:
+ 122:Core/Src/servocontroller.c **** 		servo->pid_velocity.lowerLimit = -ratedCurrent;
+ 123:Core/Src/servocontroller.c **** 		servo->pid_velocity.upperLimit = ratedCurrent;
+ 124:Core/Src/servocontroller.c **** 	}
+ 125:Core/Src/servocontroller.c **** }
+ 369              		.loc 1 125 1 view .LVU120
+ 370 0022 7047     		bx	lr
+ 371              	.L16:
+ 122:Core/Src/servocontroller.c **** 		servo->pid_velocity.lowerLimit = -ratedCurrent;
+ 372              		.loc 1 122 3 is_stmt 1 view .LVU121
+ 122:Core/Src/servocontroller.c **** 		servo->pid_velocity.lowerLimit = -ratedCurrent;
+ 373              		.loc 1 122 36 is_stmt 0 view .LVU122
+ 374 0024 01F10043 		add	r3, r1, #-2147483648
+ 122:Core/Src/servocontroller.c **** 		servo->pid_velocity.lowerLimit = -ratedCurrent;
+ 375              		.loc 1 122 34 view .LVU123
+ 376 0028 C0F88C30 		str	r3, [r0, #140]	@ float
+ 123:Core/Src/servocontroller.c **** 	}
+ 377              		.loc 1 123 3 is_stmt 1 view .LVU124
+ 123:Core/Src/servocontroller.c **** 	}
+ 378              		.loc 1 123 34 is_stmt 0 view .LVU125
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s 			page 10
+
+
+ 379 002c C0F88810 		str	r1, [r0, #136]	@ float
+ 380              		.loc 1 125 1 view .LVU126
+ 381 0030 F7E7     		b	.L14
+ 382              		.cfi_endproc
+ 383              	.LFE70:
+ 385              		.section	.text.servo_setPositionTolerance,"ax",%progbits
+ 386              		.align	1
+ 387              		.global	servo_setPositionTolerance
+ 388              		.syntax unified
+ 389              		.thumb
+ 390              		.thumb_func
+ 392              	servo_setPositionTolerance:
+ 393              	.LVL26:
+ 394              	.LFB71:
+ 126:Core/Src/servocontroller.c **** 
+ 127:Core/Src/servocontroller.c **** // Specifies tolerated error of shaft angle
+ 128:Core/Src/servocontroller.c **** void servo_setPositionTolerance(servocontrol_t *servo, float tolerance) {
+ 395              		.loc 1 128 73 is_stmt 1 view -0
+ 396              		.cfi_startproc
+ 397              		@ args = 0, pretend = 0, frame = 0
+ 398              		@ frame_needed = 0, uses_anonymous_args = 0
+ 399              		@ link register save eliminated.
+ 129:Core/Src/servocontroller.c **** 	servo->pid_position.toleranceBand = tolerance;
+ 400              		.loc 1 129 2 view .LVU128
+ 401              		.loc 1 129 36 is_stmt 0 view .LVU129
+ 402 0000 8163     		str	r1, [r0, #56]	@ float
+ 130:Core/Src/servocontroller.c **** }
+ 403              		.loc 1 130 1 view .LVU130
+ 404 0002 7047     		bx	lr
+ 405              		.cfi_endproc
+ 406              	.LFE71:
+ 408              		.global	__aeabi_fcmpeq
+ 409              		.section	.text.servo_getState,"ax",%progbits
+ 410              		.align	1
+ 411              		.global	servo_getState
+ 412              		.syntax unified
+ 413              		.thumb
+ 414              		.thumb_func
+ 416              	servo_getState:
+ 417              	.LVL27:
+ 418              	.LFB72:
+ 131:Core/Src/servocontroller.c **** 
+ 132:Core/Src/servocontroller.c **** // Returns True if error is present, False if not
+ 133:Core/Src/servocontroller.c **** int servo_getState(servocontrol_t *servo) {
+ 419              		.loc 1 133 43 is_stmt 1 view -0
+ 420              		.cfi_startproc
+ 421              		@ args = 0, pretend = 0, frame = 0
+ 422              		@ frame_needed = 0, uses_anonymous_args = 0
+ 423              		.loc 1 133 43 is_stmt 0 view .LVU132
+ 424 0000 08B5     		push	{r3, lr}
+ 425              		.cfi_def_cfa_offset 8
+ 426              		.cfi_offset 3, -8
+ 427              		.cfi_offset 14, -4
+ 134:Core/Src/servocontroller.c **** 	if (servo->pid_position.error == 0) {
+ 428              		.loc 1 134 2 is_stmt 1 view .LVU133
+ 429              		.loc 1 134 5 is_stmt 0 view .LVU134
+ 430 0002 0021     		movs	r1, #0
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s 			page 11
+
+
+ 431 0004 406A     		ldr	r0, [r0, #36]	@ float
+ 432              	.LVL28:
+ 433              		.loc 1 134 5 view .LVU135
+ 434 0006 FFF7FEFF 		bl	__aeabi_fcmpeq
+ 435              	.LVL29:
+ 436 000a 08B9     		cbnz	r0, .L20
+ 135:Core/Src/servocontroller.c **** 		return 0;
+ 136:Core/Src/servocontroller.c **** 	}
+ 137:Core/Src/servocontroller.c **** 	return 1;
+ 437              		.loc 1 137 9 view .LVU136
+ 438 000c 0120     		movs	r0, #1
+ 439              	.L18:
+ 138:Core/Src/servocontroller.c **** }
+ 440              		.loc 1 138 1 view .LVU137
+ 441 000e 08BD     		pop	{r3, pc}
+ 442              	.L20:
+ 135:Core/Src/servocontroller.c **** 		return 0;
+ 443              		.loc 1 135 10 view .LVU138
+ 444 0010 0020     		movs	r0, #0
+ 445 0012 FCE7     		b	.L18
+ 446              		.cfi_endproc
+ 447              	.LFE72:
+ 449              		.global	__aeabi_fcmpgt
+ 450              		.global	__aeabi_fcmplt
+ 451              		.section	.text.servo_getDirection,"ax",%progbits
+ 452              		.align	1
+ 453              		.global	servo_getDirection
+ 454              		.syntax unified
+ 455              		.thumb
+ 456              		.thumb_func
+ 458              	servo_getDirection:
+ 459              	.LVL30:
+ 460              	.LFB73:
+ 139:Core/Src/servocontroller.c **** 
+ 140:Core/Src/servocontroller.c **** /*
+ 141:Core/Src/servocontroller.c ****  Returns direction of shaft rotation:
+ 142:Core/Src/servocontroller.c ****  -1 : moving backward
+ 143:Core/Src/servocontroller.c ****  0  : idle
+ 144:Core/Src/servocontroller.c ****  1  : moving forward
+ 145:Core/Src/servocontroller.c ****  */
+ 146:Core/Src/servocontroller.c **** int servo_getDirection(servocontrol_t *servo) {
+ 461              		.loc 1 146 47 is_stmt 1 view -0
+ 462              		.cfi_startproc
+ 463              		@ args = 0, pretend = 0, frame = 0
+ 464              		@ frame_needed = 0, uses_anonymous_args = 0
+ 465              		.loc 1 146 47 is_stmt 0 view .LVU140
+ 466 0000 38B5     		push	{r3, r4, r5, lr}
+ 467              		.cfi_def_cfa_offset 16
+ 468              		.cfi_offset 3, -16
+ 469              		.cfi_offset 4, -12
+ 470              		.cfi_offset 5, -8
+ 471              		.cfi_offset 14, -4
+ 472 0002 0446     		mov	r4, r0
+ 147:Core/Src/servocontroller.c **** 	if (servo->encoder.angularVelocity > 0) {
+ 473              		.loc 1 147 2 is_stmt 1 view .LVU141
+ 474              		.loc 1 147 20 is_stmt 0 view .LVU142
+ 475 0004 C568     		ldr	r5, [r0, #12]	@ float
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s 			page 12
+
+
+ 476              		.loc 1 147 5 view .LVU143
+ 477 0006 0021     		movs	r1, #0
+ 478 0008 2846     		mov	r0, r5
+ 479              	.LVL31:
+ 480              		.loc 1 147 5 view .LVU144
+ 481 000a FFF7FEFF 		bl	__aeabi_fcmpgt
+ 482              	.LVL32:
+ 483 000e 30B9     		cbnz	r0, .L33
+ 148:Core/Src/servocontroller.c **** 		return 1*servo->reverseFlag;
+ 149:Core/Src/servocontroller.c **** 	}
+ 150:Core/Src/servocontroller.c **** 	if (servo->encoder.angularVelocity < 0) {
+ 484              		.loc 1 150 2 is_stmt 1 view .LVU145
+ 485              		.loc 1 150 5 is_stmt 0 view .LVU146
+ 486 0010 0021     		movs	r1, #0
+ 487 0012 2846     		mov	r0, r5
+ 488 0014 FFF7FEFF 		bl	__aeabi_fcmplt
+ 489              	.LVL33:
+ 490 0018 20B9     		cbnz	r0, .L34
+ 151:Core/Src/servocontroller.c **** 		return -1*servo->reverseFlag;
+ 152:Core/Src/servocontroller.c **** 	}
+ 153:Core/Src/servocontroller.c **** 	return 0;
+ 491              		.loc 1 153 9 view .LVU147
+ 492 001a 0020     		movs	r0, #0
+ 493 001c 01E0     		b	.L22
+ 494              	.L33:
+ 148:Core/Src/servocontroller.c **** 		return 1*servo->reverseFlag;
+ 495              		.loc 1 148 3 is_stmt 1 view .LVU148
+ 148:Core/Src/servocontroller.c **** 		return 1*servo->reverseFlag;
+ 496              		.loc 1 148 17 is_stmt 0 view .LVU149
+ 497 001e 94F9F800 		ldrsb	r0, [r4, #248]
+ 498              	.L22:
+ 154:Core/Src/servocontroller.c **** }
+ 499              		.loc 1 154 1 view .LVU150
+ 500 0022 38BD     		pop	{r3, r4, r5, pc}
+ 501              	.LVL34:
+ 502              	.L34:
+ 151:Core/Src/servocontroller.c **** 		return -1*servo->reverseFlag;
+ 503              		.loc 1 151 3 is_stmt 1 view .LVU151
+ 151:Core/Src/servocontroller.c **** 		return -1*servo->reverseFlag;
+ 504              		.loc 1 151 18 is_stmt 0 view .LVU152
+ 505 0024 94F9F800 		ldrsb	r0, [r4, #248]
+ 151:Core/Src/servocontroller.c **** 		return -1*servo->reverseFlag;
+ 506              		.loc 1 151 12 view .LVU153
+ 507 0028 4042     		rsbs	r0, r0, #0
+ 508 002a FAE7     		b	.L22
+ 509              		.cfi_endproc
+ 510              	.LFE73:
+ 512              		.global	__aeabi_f2iz
+ 513              		.section	.text.servo_positionLoop,"ax",%progbits
+ 514              		.align	1
+ 515              		.global	servo_positionLoop
+ 516              		.syntax unified
+ 517              		.thumb
+ 518              		.thumb_func
+ 520              	servo_positionLoop:
+ 521              	.LVL35:
+ 522              	.LFB74:
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s 			page 13
+
+
+ 155:Core/Src/servocontroller.c **** 
+ 156:Core/Src/servocontroller.c **** /*
+ 157:Core/Src/servocontroller.c ****  Position controller loop. Contains PID controller and algorithm which decides whether output shoul
+ 158:Core/Src/servocontroller.c ****  to velocity loop (if system is Double/Triple-loop) or used as pwm duty cycle (Single-loop).
+ 159:Core/Src/servocontroller.c **** 
+ 160:Core/Src/servocontroller.c ****  Must be called with specified period for position controller.
+ 161:Core/Src/servocontroller.c ****  */
+ 162:Core/Src/servocontroller.c **** void servo_positionLoop(servocontrol_t *servo) {
+ 523              		.loc 1 162 48 is_stmt 1 view -0
+ 524              		.cfi_startproc
+ 525              		@ args = 0, pretend = 0, frame = 0
+ 526              		@ frame_needed = 0, uses_anonymous_args = 0
+ 527              		.loc 1 162 48 is_stmt 0 view .LVU155
+ 528 0000 70B5     		push	{r4, r5, r6, lr}
+ 529              		.cfi_def_cfa_offset 16
+ 530              		.cfi_offset 4, -16
+ 531              		.cfi_offset 5, -12
+ 532              		.cfi_offset 6, -8
+ 533              		.cfi_offset 14, -4
+ 534 0002 0446     		mov	r4, r0
+ 163:Core/Src/servocontroller.c **** 	encoder_updatePosition(&servo->encoder);
+ 535              		.loc 1 163 2 is_stmt 1 view .LVU156
+ 536 0004 FFF7FEFF 		bl	encoder_updatePosition
+ 537              	.LVL36:
+ 164:Core/Src/servocontroller.c **** 
+ 165:Core/Src/servocontroller.c **** 	switch (servo->currentMode) {
+ 538              		.loc 1 165 2 view .LVU157
+ 539              		.loc 1 165 15 is_stmt 0 view .LVU158
+ 540 0008 94F80A31 		ldrb	r3, [r4, #266]	@ zero_extendqisi2
+ 541              		.loc 1 165 2 view .LVU159
+ 542 000c 012B     		cmp	r3, #1
+ 543 000e 07D0     		beq	.L40
+ 166:Core/Src/servocontroller.c **** 	case Position: {
+ 167:Core/Src/servocontroller.c **** 		pid_calculate(&servo->pid_position, servo->positionSetpoint, encoder_getAngle(&servo->encoder));
+ 168:Core/Src/servocontroller.c **** 		if (servo->controllerLoops == Single) {
+ 169:Core/Src/servocontroller.c **** 			pwm_setSpeed(&servo->driver, pid_getOutput(&servo->pid_position));
+ 170:Core/Src/servocontroller.c **** 		} else {
+ 171:Core/Src/servocontroller.c **** 			servo->velocitySetpoint = pid_getOutput(&servo->pid_position);
+ 172:Core/Src/servocontroller.c **** 		}
+ 173:Core/Src/servocontroller.c **** 		break;
+ 174:Core/Src/servocontroller.c **** 	}
+ 175:Core/Src/servocontroller.c **** 	default: {
+ 176:Core/Src/servocontroller.c **** 		pid_reset(&servo->pid_position);
+ 544              		.loc 1 176 3 is_stmt 1 view .LVU160
+ 545 0010 04F12400 		add	r0, r4, #36
+ 546 0014 FFF7FEFF 		bl	pid_reset
+ 547              	.LVL37:
+ 177:Core/Src/servocontroller.c **** 		servo->positionSetpoint = 0;
+ 548              		.loc 1 177 3 view .LVU161
+ 549              		.loc 1 177 27 is_stmt 0 view .LVU162
+ 550 0018 0023     		movs	r3, #0
+ 551 001a C4F8FC30 		str	r3, [r4, #252]	@ float
+ 178:Core/Src/servocontroller.c **** 		break;
+ 552              		.loc 1 178 3 is_stmt 1 view .LVU163
+ 553              	.L35:
+ 179:Core/Src/servocontroller.c **** 	}
+ 180:Core/Src/servocontroller.c **** 	}
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s 			page 14
+
+
+ 181:Core/Src/servocontroller.c **** }
+ 554              		.loc 1 181 1 is_stmt 0 view .LVU164
+ 555 001e 70BD     		pop	{r4, r5, r6, pc}
+ 556              	.LVL38:
+ 557              	.L40:
+ 167:Core/Src/servocontroller.c **** 		if (servo->controllerLoops == Single) {
+ 558              		.loc 1 167 3 is_stmt 1 view .LVU165
+ 559 0020 04F12405 		add	r5, r4, #36
+ 560 0024 D4F8FC60 		ldr	r6, [r4, #252]	@ float
+ 561 0028 2046     		mov	r0, r4
+ 562 002a FFF7FEFF 		bl	encoder_getAngle
+ 563              	.LVL39:
+ 564 002e 0246     		mov	r2, r0
+ 167:Core/Src/servocontroller.c **** 		if (servo->controllerLoops == Single) {
+ 565              		.loc 1 167 3 is_stmt 0 discriminator 1 view .LVU166
+ 566 0030 3146     		mov	r1, r6
+ 567 0032 2846     		mov	r0, r5
+ 568 0034 FFF7FEFF 		bl	pid_calculate
+ 569              	.LVL40:
+ 168:Core/Src/servocontroller.c **** 			pwm_setSpeed(&servo->driver, pid_getOutput(&servo->pid_position));
+ 570              		.loc 1 168 3 is_stmt 1 view .LVU167
+ 168:Core/Src/servocontroller.c **** 			pwm_setSpeed(&servo->driver, pid_getOutput(&servo->pid_position));
+ 571              		.loc 1 168 12 is_stmt 0 view .LVU168
+ 572 0038 94F80931 		ldrb	r3, [r4, #265]	@ zero_extendqisi2
+ 168:Core/Src/servocontroller.c **** 			pwm_setSpeed(&servo->driver, pid_getOutput(&servo->pid_position));
+ 573              		.loc 1 168 6 view .LVU169
+ 574 003c 53B9     		cbnz	r3, .L37
+ 169:Core/Src/servocontroller.c **** 		} else {
+ 575              		.loc 1 169 4 is_stmt 1 view .LVU170
+ 169:Core/Src/servocontroller.c **** 		} else {
+ 576              		.loc 1 169 33 is_stmt 0 view .LVU171
+ 577 003e 2846     		mov	r0, r5
+ 578 0040 FFF7FEFF 		bl	pid_getOutput
+ 579              	.LVL41:
+ 169:Core/Src/servocontroller.c **** 		} else {
+ 580              		.loc 1 169 4 discriminator 1 view .LVU172
+ 581 0044 FFF7FEFF 		bl	__aeabi_f2iz
+ 582              	.LVL42:
+ 583 0048 0146     		mov	r1, r0
+ 584 004a 04F1D800 		add	r0, r4, #216
+ 585 004e FFF7FEFF 		bl	pwm_setSpeed
+ 586              	.LVL43:
+ 587 0052 E4E7     		b	.L35
+ 588              	.L37:
+ 171:Core/Src/servocontroller.c **** 		}
+ 589              		.loc 1 171 4 is_stmt 1 view .LVU173
+ 171:Core/Src/servocontroller.c **** 		}
+ 590              		.loc 1 171 30 is_stmt 0 view .LVU174
+ 591 0054 2846     		mov	r0, r5
+ 592 0056 FFF7FEFF 		bl	pid_getOutput
+ 593              	.LVL44:
+ 171:Core/Src/servocontroller.c **** 		}
+ 594              		.loc 1 171 28 discriminator 1 view .LVU175
+ 595 005a C4F80001 		str	r0, [r4, #256]	@ float
+ 596 005e DEE7     		b	.L35
+ 597              		.cfi_endproc
+ 598              	.LFE74:
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s 			page 15
+
+
+ 600              		.section	.text.servo_velocityLoop,"ax",%progbits
+ 601              		.align	1
+ 602              		.global	servo_velocityLoop
+ 603              		.syntax unified
+ 604              		.thumb
+ 605              		.thumb_func
+ 607              	servo_velocityLoop:
+ 608              	.LVL45:
+ 609              	.LFB75:
+ 182:Core/Src/servocontroller.c **** 
+ 183:Core/Src/servocontroller.c **** /*
+ 184:Core/Src/servocontroller.c ****  Current controller loop. Contains PID controller and algorithm which decides whether output should
+ 185:Core/Src/servocontroller.c ****  to current loop (if system is Triple-loop) or used as pwm duty cycle (Double-loop).
+ 186:Core/Src/servocontroller.c **** 
+ 187:Core/Src/servocontroller.c ****  Must be called with specified period for velocity controller.
+ 188:Core/Src/servocontroller.c ****  If controller is single-loop, should not be used.
+ 189:Core/Src/servocontroller.c ****  */
+ 190:Core/Src/servocontroller.c **** void servo_velocityLoop(servocontrol_t *servo) {
+ 610              		.loc 1 190 48 is_stmt 1 view -0
+ 611              		.cfi_startproc
+ 612              		@ args = 0, pretend = 0, frame = 0
+ 613              		@ frame_needed = 0, uses_anonymous_args = 0
+ 614              		.loc 1 190 48 is_stmt 0 view .LVU177
+ 615 0000 70B5     		push	{r4, r5, r6, lr}
+ 616              		.cfi_def_cfa_offset 16
+ 617              		.cfi_offset 4, -16
+ 618              		.cfi_offset 5, -12
+ 619              		.cfi_offset 6, -8
+ 620              		.cfi_offset 14, -4
+ 621 0002 0446     		mov	r4, r0
+ 191:Core/Src/servocontroller.c **** 	encoder_updateVelocity(&servo->encoder);
+ 622              		.loc 1 191 2 is_stmt 1 view .LVU178
+ 623 0004 FFF7FEFF 		bl	encoder_updateVelocity
+ 624              	.LVL46:
+ 192:Core/Src/servocontroller.c **** 	pid_calculate(&servo->pid_velocity, servo->velocitySetpoint, encoder_getVelocity(&servo->encoder))
+ 625              		.loc 1 192 2 view .LVU179
+ 626 0008 04F16005 		add	r5, r4, #96
+ 627 000c D4F80061 		ldr	r6, [r4, #256]	@ float
+ 628 0010 2046     		mov	r0, r4
+ 629 0012 FFF7FEFF 		bl	encoder_getVelocity
+ 630              	.LVL47:
+ 631 0016 0246     		mov	r2, r0
+ 632              		.loc 1 192 2 is_stmt 0 discriminator 1 view .LVU180
+ 633 0018 3146     		mov	r1, r6
+ 634 001a 2846     		mov	r0, r5
+ 635 001c FFF7FEFF 		bl	pid_calculate
+ 636              	.LVL48:
+ 193:Core/Src/servocontroller.c **** 	switch (servo->controllerLoops) {
+ 637              		.loc 1 193 2 is_stmt 1 view .LVU181
+ 638              		.loc 1 193 15 is_stmt 0 view .LVU182
+ 639 0020 94F80931 		ldrb	r3, [r4, #265]	@ zero_extendqisi2
+ 640              		.loc 1 193 2 view .LVU183
+ 641 0024 012B     		cmp	r3, #1
+ 642 0026 09D0     		beq	.L42
+ 643 0028 022B     		cmp	r3, #2
+ 644 002a 12D0     		beq	.L43
+ 645 002c 2BB9     		cbnz	r3, .L41
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s 			page 16
+
+
+ 194:Core/Src/servocontroller.c **** 	case Single:
+ 195:Core/Src/servocontroller.c **** 		pid_reset(&servo->pid_velocity);
+ 646              		.loc 1 195 3 is_stmt 1 view .LVU184
+ 647 002e 2846     		mov	r0, r5
+ 648 0030 FFF7FEFF 		bl	pid_reset
+ 649              	.LVL49:
+ 196:Core/Src/servocontroller.c **** 		servo->velocitySetpoint = 0;
+ 650              		.loc 1 196 3 view .LVU185
+ 651              		.loc 1 196 27 is_stmt 0 view .LVU186
+ 652 0034 0023     		movs	r3, #0
+ 653 0036 C4F80031 		str	r3, [r4, #256]	@ float
+ 197:Core/Src/servocontroller.c **** 		break;
+ 654              		.loc 1 197 3 is_stmt 1 view .LVU187
+ 655              	.L41:
+ 198:Core/Src/servocontroller.c **** 	case Double:
+ 199:Core/Src/servocontroller.c **** 		pwm_setSpeed(&servo->driver, pid_getOutput(&servo->pid_velocity));
+ 200:Core/Src/servocontroller.c **** 		break;
+ 201:Core/Src/servocontroller.c **** 	case Triple:
+ 202:Core/Src/servocontroller.c **** 		servo->currentSetpoint = pid_getOutput(&servo->pid_velocity);
+ 203:Core/Src/servocontroller.c **** 		break;
+ 204:Core/Src/servocontroller.c **** 	}
+ 205:Core/Src/servocontroller.c **** }
+ 656              		.loc 1 205 1 is_stmt 0 view .LVU188
+ 657 003a 70BD     		pop	{r4, r5, r6, pc}
+ 658              	.LVL50:
+ 659              	.L42:
+ 199:Core/Src/servocontroller.c **** 		break;
+ 660              		.loc 1 199 3 is_stmt 1 view .LVU189
+ 199:Core/Src/servocontroller.c **** 		break;
+ 661              		.loc 1 199 32 is_stmt 0 view .LVU190
+ 662 003c 2846     		mov	r0, r5
+ 663 003e FFF7FEFF 		bl	pid_getOutput
+ 664              	.LVL51:
+ 199:Core/Src/servocontroller.c **** 		break;
+ 665              		.loc 1 199 3 discriminator 1 view .LVU191
+ 666 0042 FFF7FEFF 		bl	__aeabi_f2iz
+ 667              	.LVL52:
+ 668 0046 0146     		mov	r1, r0
+ 669 0048 04F1D800 		add	r0, r4, #216
+ 670 004c FFF7FEFF 		bl	pwm_setSpeed
+ 671              	.LVL53:
+ 200:Core/Src/servocontroller.c **** 	case Triple:
+ 672              		.loc 1 200 3 is_stmt 1 view .LVU192
+ 673 0050 F3E7     		b	.L41
+ 674              	.L43:
+ 202:Core/Src/servocontroller.c **** 		break;
+ 675              		.loc 1 202 3 view .LVU193
+ 202:Core/Src/servocontroller.c **** 		break;
+ 676              		.loc 1 202 28 is_stmt 0 view .LVU194
+ 677 0052 2846     		mov	r0, r5
+ 678 0054 FFF7FEFF 		bl	pid_getOutput
+ 679              	.LVL54:
+ 202:Core/Src/servocontroller.c **** 		break;
+ 680              		.loc 1 202 26 discriminator 1 view .LVU195
+ 681 0058 C4F80401 		str	r0, [r4, #260]	@ float
+ 203:Core/Src/servocontroller.c **** 	}
+ 682              		.loc 1 203 3 is_stmt 1 view .LVU196
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s 			page 17
+
+
+ 683              		.loc 1 205 1 is_stmt 0 view .LVU197
+ 684 005c EDE7     		b	.L41
+ 685              		.cfi_endproc
+ 686              	.LFE75:
+ 688              		.section	.text.servo_currentLoop,"ax",%progbits
+ 689              		.align	1
+ 690              		.global	servo_currentLoop
+ 691              		.syntax unified
+ 692              		.thumb
+ 693              		.thumb_func
+ 695              	servo_currentLoop:
+ 696              	.LVL55:
+ 697              	.LFB76:
+ 206:Core/Src/servocontroller.c **** 
+ 207:Core/Src/servocontroller.c **** /*
+ 208:Core/Src/servocontroller.c ****  Current controller loop. Contains PID controller and PWM output.
+ 209:Core/Src/servocontroller.c ****  Must be called with specified period for current controller.
+ 210:Core/Src/servocontroller.c **** 
+ 211:Core/Src/servocontroller.c ****  External current feedback must be passed.
+ 212:Core/Src/servocontroller.c ****  If controller is single/double-loop, should not be used.
+ 213:Core/Src/servocontroller.c ****  */
+ 214:Core/Src/servocontroller.c **** void servo_currentLoop(servocontrol_t *servo, float currentFeedback) {
+ 698              		.loc 1 214 70 is_stmt 1 view -0
+ 699              		.cfi_startproc
+ 700              		@ args = 0, pretend = 0, frame = 0
+ 701              		@ frame_needed = 0, uses_anonymous_args = 0
+ 702              		.loc 1 214 70 is_stmt 0 view .LVU199
+ 703 0000 38B5     		push	{r3, r4, r5, lr}
+ 704              		.cfi_def_cfa_offset 16
+ 705              		.cfi_offset 3, -16
+ 706              		.cfi_offset 4, -12
+ 707              		.cfi_offset 5, -8
+ 708              		.cfi_offset 14, -4
+ 709 0002 0446     		mov	r4, r0
+ 215:Core/Src/servocontroller.c **** 	if (servo->controllerLoops == Triple) {
+ 710              		.loc 1 215 2 is_stmt 1 view .LVU200
+ 711              		.loc 1 215 11 is_stmt 0 view .LVU201
+ 712 0004 90F80931 		ldrb	r3, [r0, #265]	@ zero_extendqisi2
+ 713              		.loc 1 215 5 view .LVU202
+ 714 0008 022B     		cmp	r3, #2
+ 715 000a 06D0     		beq	.L50
+ 216:Core/Src/servocontroller.c **** 		pid_calculate(&servo->pid_current, servo->currentSetpoint, currentFeedback);
+ 217:Core/Src/servocontroller.c **** 		pwm_setSpeed(&servo->driver, pid_getOutput(&servo->pid_current));
+ 218:Core/Src/servocontroller.c **** 	} else {
+ 219:Core/Src/servocontroller.c **** 		pid_reset(&servo->pid_current);
+ 716              		.loc 1 219 3 is_stmt 1 view .LVU203
+ 717 000c 9C30     		adds	r0, r0, #156
+ 718              	.LVL56:
+ 719              		.loc 1 219 3 is_stmt 0 view .LVU204
+ 720 000e FFF7FEFF 		bl	pid_reset
+ 721              	.LVL57:
+ 220:Core/Src/servocontroller.c **** 		servo->currentSetpoint = 0;
+ 722              		.loc 1 220 3 is_stmt 1 view .LVU205
+ 723              		.loc 1 220 26 is_stmt 0 view .LVU206
+ 724 0012 0023     		movs	r3, #0
+ 725 0014 C4F80431 		str	r3, [r4, #260]	@ float
+ 726              	.L46:
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s 			page 18
+
+
+ 221:Core/Src/servocontroller.c **** 	}
+ 222:Core/Src/servocontroller.c **** }
+ 727              		.loc 1 222 1 view .LVU207
+ 728 0018 38BD     		pop	{r3, r4, r5, pc}
+ 729              	.LVL58:
+ 730              	.L50:
+ 216:Core/Src/servocontroller.c **** 		pwm_setSpeed(&servo->driver, pid_getOutput(&servo->pid_current));
+ 731              		.loc 1 216 3 is_stmt 1 view .LVU208
+ 732 001a 00F19C05 		add	r5, r0, #156
+ 733 001e 0A46     		mov	r2, r1
+ 734 0020 D0F80411 		ldr	r1, [r0, #260]	@ float
+ 735              	.LVL59:
+ 216:Core/Src/servocontroller.c **** 		pwm_setSpeed(&servo->driver, pid_getOutput(&servo->pid_current));
+ 736              		.loc 1 216 3 is_stmt 0 view .LVU209
+ 737 0024 2846     		mov	r0, r5
+ 738              	.LVL60:
+ 216:Core/Src/servocontroller.c **** 		pwm_setSpeed(&servo->driver, pid_getOutput(&servo->pid_current));
+ 739              		.loc 1 216 3 view .LVU210
+ 740 0026 FFF7FEFF 		bl	pid_calculate
+ 741              	.LVL61:
+ 217:Core/Src/servocontroller.c **** 	} else {
+ 742              		.loc 1 217 3 is_stmt 1 view .LVU211
+ 217:Core/Src/servocontroller.c **** 	} else {
+ 743              		.loc 1 217 32 is_stmt 0 view .LVU212
+ 744 002a 2846     		mov	r0, r5
+ 745 002c FFF7FEFF 		bl	pid_getOutput
+ 746              	.LVL62:
+ 217:Core/Src/servocontroller.c **** 	} else {
+ 747              		.loc 1 217 3 discriminator 1 view .LVU213
+ 748 0030 FFF7FEFF 		bl	__aeabi_f2iz
+ 749              	.LVL63:
+ 750 0034 0146     		mov	r1, r0
+ 751 0036 04F1D800 		add	r0, r4, #216
+ 752 003a FFF7FEFF 		bl	pwm_setSpeed
+ 753              	.LVL64:
+ 754 003e EBE7     		b	.L46
+ 755              		.cfi_endproc
+ 756              	.LFE76:
+ 758              		.global	__aeabi_fmul
+ 759              		.section	.text.servo_controlPosition,"ax",%progbits
+ 760              		.align	1
+ 761              		.global	servo_controlPosition
+ 762              		.syntax unified
+ 763              		.thumb
+ 764              		.thumb_func
+ 766              	servo_controlPosition:
+ 767              	.LVL65:
+ 768              	.LFB77:
+ 223:Core/Src/servocontroller.c **** 
+ 224:Core/Src/servocontroller.c **** void servo_controlPosition(servocontrol_t *servo, float setpoint) {
+ 769              		.loc 1 224 67 is_stmt 1 view -0
+ 770              		.cfi_startproc
+ 771              		@ args = 0, pretend = 0, frame = 0
+ 772              		@ frame_needed = 0, uses_anonymous_args = 0
+ 773              		.loc 1 224 67 is_stmt 0 view .LVU215
+ 774 0000 38B5     		push	{r3, r4, r5, lr}
+ 775              		.cfi_def_cfa_offset 16
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s 			page 19
+
+
+ 776              		.cfi_offset 3, -16
+ 777              		.cfi_offset 4, -12
+ 778              		.cfi_offset 5, -8
+ 779              		.cfi_offset 14, -4
+ 780 0002 0446     		mov	r4, r0
+ 781 0004 0D46     		mov	r5, r1
+ 225:Core/Src/servocontroller.c **** 	servo->currentMode = Position;
+ 782              		.loc 1 225 2 is_stmt 1 view .LVU216
+ 783              		.loc 1 225 21 is_stmt 0 view .LVU217
+ 784 0006 0123     		movs	r3, #1
+ 785 0008 80F80A31 		strb	r3, [r0, #266]
+ 226:Core/Src/servocontroller.c **** 	servo->positionSetpoint = setpoint*servo->reverseFlag;
+ 786              		.loc 1 226 2 is_stmt 1 view .LVU218
+ 787              		.loc 1 226 36 is_stmt 0 view .LVU219
+ 788 000c 90F9F800 		ldrsb	r0, [r0, #248]
+ 789              	.LVL66:
+ 790              		.loc 1 226 36 view .LVU220
+ 791 0010 FFF7FEFF 		bl	__aeabi_i2f
+ 792              	.LVL67:
+ 793              		.loc 1 226 36 view .LVU221
+ 794 0014 2946     		mov	r1, r5
+ 795 0016 FFF7FEFF 		bl	__aeabi_fmul
+ 796              	.LVL68:
+ 797              		.loc 1 226 26 view .LVU222
+ 798 001a C4F8FC00 		str	r0, [r4, #252]	@ float
+ 227:Core/Src/servocontroller.c **** }
+ 799              		.loc 1 227 1 view .LVU223
+ 800 001e 38BD     		pop	{r3, r4, r5, pc}
+ 801              		.loc 1 227 1 view .LVU224
+ 802              		.cfi_endproc
+ 803              	.LFE77:
+ 805              		.section	.text.servo_controlVelocity,"ax",%progbits
+ 806              		.align	1
+ 807              		.global	servo_controlVelocity
+ 808              		.syntax unified
+ 809              		.thumb
+ 810              		.thumb_func
+ 812              	servo_controlVelocity:
+ 813              	.LVL69:
+ 814              	.LFB78:
+ 228:Core/Src/servocontroller.c **** 
+ 229:Core/Src/servocontroller.c **** void servo_controlVelocity(servocontrol_t *servo, float setpoint) {
+ 815              		.loc 1 229 67 is_stmt 1 view -0
+ 816              		.cfi_startproc
+ 817              		@ args = 0, pretend = 0, frame = 0
+ 818              		@ frame_needed = 0, uses_anonymous_args = 0
+ 819              		.loc 1 229 67 is_stmt 0 view .LVU226
+ 820 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 821              		.cfi_def_cfa_offset 24
+ 822              		.cfi_offset 3, -24
+ 823              		.cfi_offset 4, -20
+ 824              		.cfi_offset 5, -16
+ 825              		.cfi_offset 6, -12
+ 826              		.cfi_offset 7, -8
+ 827              		.cfi_offset 14, -4
+ 230:Core/Src/servocontroller.c **** 	if (servo->controllerLoops != Single) {
+ 828              		.loc 1 230 2 is_stmt 1 view .LVU227
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s 			page 20
+
+
+ 829              		.loc 1 230 11 is_stmt 0 view .LVU228
+ 830 0002 90F80931 		ldrb	r3, [r0, #265]	@ zero_extendqisi2
+ 831              		.loc 1 230 5 view .LVU229
+ 832 0006 E3B1     		cbz	r3, .L53
+ 833 0008 0446     		mov	r4, r0
+ 834 000a 0D46     		mov	r5, r1
+ 231:Core/Src/servocontroller.c **** 		servo->currentMode = Velocity;
+ 835              		.loc 1 231 3 is_stmt 1 view .LVU230
+ 836              		.loc 1 231 22 is_stmt 0 view .LVU231
+ 837 000c 0223     		movs	r3, #2
+ 838 000e 80F80A31 		strb	r3, [r0, #266]
+ 232:Core/Src/servocontroller.c **** 		servo->velocitySetpoint = constrain(setpoint*servo->reverseFlag, -servo->maxShaftSpeed, servo->ma
+ 839              		.loc 1 232 3 is_stmt 1 view .LVU232
+ 840              		.loc 1 232 29 is_stmt 0 view .LVU233
+ 841 0012 90F9F800 		ldrsb	r0, [r0, #248]
+ 842              	.LVL70:
+ 843              		.loc 1 232 29 view .LVU234
+ 844 0016 FFF7FEFF 		bl	__aeabi_i2f
+ 845              	.LVL71:
+ 846              		.loc 1 232 29 view .LVU235
+ 847 001a 2946     		mov	r1, r5
+ 848 001c FFF7FEFF 		bl	__aeabi_fmul
+ 849              	.LVL72:
+ 850 0020 0546     		mov	r5, r0
+ 851              	.LVL73:
+ 852              		.loc 1 232 29 view .LVU236
+ 853 0022 D4F80C71 		ldr	r7, [r4, #268]	@ float
+ 854 0026 07F10046 		add	r6, r7, #-2147483648
+ 855 002a 3146     		mov	r1, r6
+ 856 002c FFF7FEFF 		bl	__aeabi_fcmplt
+ 857              	.LVL74:
+ 858 0030 28B9     		cbnz	r0, .L55
+ 859              		.loc 1 232 29 discriminator 2 view .LVU237
+ 860 0032 3946     		mov	r1, r7
+ 861 0034 2846     		mov	r0, r5
+ 862 0036 FFF7FEFF 		bl	__aeabi_fcmpgt
+ 863              	.LVL75:
+ 864 003a 18B1     		cbz	r0, .L59
+ 865              		.loc 1 232 29 discriminator 4 view .LVU238
+ 866 003c 3E46     		mov	r6, r7
+ 867              	.L55:
+ 868              		.loc 1 232 27 discriminator 8 view .LVU239
+ 869 003e C4F80061 		str	r6, [r4, #256]	@ float
+ 870              	.LVL76:
+ 871              	.L53:
+ 233:Core/Src/servocontroller.c **** 	}
+ 234:Core/Src/servocontroller.c **** }
+ 872              		.loc 1 234 1 view .LVU240
+ 873 0042 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 874              	.LVL77:
+ 875              	.L59:
+ 232:Core/Src/servocontroller.c **** 		servo->velocitySetpoint = constrain(setpoint*servo->reverseFlag, -servo->maxShaftSpeed, servo->ma
+ 876              		.loc 1 232 29 discriminator 5 view .LVU241
+ 877 0044 2E46     		mov	r6, r5
+ 878 0046 FAE7     		b	.L55
+ 879              		.cfi_endproc
+ 880              	.LFE78:
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s 			page 21
+
+
+ 882              		.text
+ 883              	.Letext0:
+ 884              		.file 2 "C:/Users/matve/Desktop/STM_Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include
+ 885              		.file 3 "C:/Users/matve/Desktop/STM_Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include
+ 886              		.file 4 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h"
+ 887              		.file 5 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
+ 888              		.file 6 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h"
+ 889              		.file 7 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h"
+ 890              		.file 8 "Core/Inc/encoder.h"
+ 891              		.file 9 "Core/Inc/pid.h"
+ 892              		.file 10 "Core/Inc/pwm.h"
+ 893              		.file 11 "Core/Inc/servocontroller.h"
+ARM GAS  C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s 			page 22
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 servocontroller.c
+C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s:20     .text.servo_baseInit:00000000 $t
+C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s:26     .text.servo_baseInit:00000000 servo_baseInit
+C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s:95     .text.servo_encoderInit:00000000 $t
+C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s:101    .text.servo_encoderInit:00000000 servo_encoderInit
+C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s:123    .text.servo_driverInit:00000000 $t
+C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s:129    .text.servo_driverInit:00000000 servo_driverInit
+C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s:246    .text.servo_positionInit:00000000 $t
+C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s:252    .text.servo_positionInit:00000000 servo_positionInit
+C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s:285    .text.servo_velocityInit:00000000 $t
+C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s:291    .text.servo_velocityInit:00000000 servo_velocityInit
+C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s:328    .text.servo_currentInit:00000000 $t
+C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s:334    .text.servo_currentInit:00000000 servo_currentInit
+C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s:386    .text.servo_setPositionTolerance:00000000 $t
+C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s:392    .text.servo_setPositionTolerance:00000000 servo_setPositionTolerance
+C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s:410    .text.servo_getState:00000000 $t
+C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s:416    .text.servo_getState:00000000 servo_getState
+C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s:452    .text.servo_getDirection:00000000 $t
+C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s:458    .text.servo_getDirection:00000000 servo_getDirection
+C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s:514    .text.servo_positionLoop:00000000 $t
+C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s:520    .text.servo_positionLoop:00000000 servo_positionLoop
+C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s:601    .text.servo_velocityLoop:00000000 $t
+C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s:607    .text.servo_velocityLoop:00000000 servo_velocityLoop
+C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s:689    .text.servo_currentLoop:00000000 $t
+C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s:695    .text.servo_currentLoop:00000000 servo_currentLoop
+C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s:760    .text.servo_controlPosition:00000000 $t
+C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s:766    .text.servo_controlPosition:00000000 servo_controlPosition
+C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s:806    .text.servo_controlVelocity:00000000 $t
+C:\Users\matve\AppData\Local\Temp\ccwtfZaV.s:812    .text.servo_controlVelocity:00000000 servo_controlVelocity
+
+UNDEFINED SYMBOLS
+__aeabi_fdiv
+__aeabi_i2f
+__aeabi_ui2f
+__aeabi_fcmpeq
+__aeabi_fcmpgt
+__aeabi_fcmplt
+__aeabi_f2iz
+encoder_updatePosition
+pid_reset
+encoder_getAngle
+pid_calculate
+pid_getOutput
+pwm_setSpeed
+encoder_updateVelocity
+encoder_getVelocity
+__aeabi_fmul
