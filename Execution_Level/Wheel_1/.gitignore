@@ -1,0 +1,7 @@
+/build
+/Debug
+/MCUconfig.cfg
+/MCUViuver_config.cfg
+/STM32-for-VSCode.config.yaml
+/f103_servo_test.ioc
+/Wheel_1.ioc
