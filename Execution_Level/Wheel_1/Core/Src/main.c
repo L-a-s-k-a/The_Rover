@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "settings.h"
 #include "usb_device.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -127,23 +128,21 @@ int main(void)
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
 
-  servo_baseInit(&servo1, Double, 895.8775050487, 59, 0);
-  servo_encoderInit(&servo1, &htim1, 1999);
-  servo_driverInit(&servo1, &htim2, 2, DIR1_GPIO_Port, DIR1_Pin, DIR2_GPIO_Port, DIR2_Pin, 0, 999);
-  servo_positionInit(&servo1, 3, 0, 0, 0.001, 0);
-  servo_velocityInit(&servo1, 150, 1500, 0, 0.004, 0);
+  servo_baseInit(&servo1, Double, MOTOR_SPEED, GEAR_RATIO, REVERCE);
+  servo_encoderInit(&servo1, &htim1, CPR);
+  servo_driverInit(&servo1, &htim2, 2, DIR1_GPIO_Port, DIR1_Pin, DIR2_GPIO_Port, DIR2_Pin, MIN_DUTY, MAX_DUTE);
+  servo_positionInit(&servo1, ANG_KP, ANG_KI, ANG_KD, ANG_DT, ANG_KT);
+  servo_velocityInit(&servo1, VEL_KP, VEL_KI, VEL_KD, VEL_DT, VEL_KT);
 
   __HAL_TIM_CLEAR_IT(&htim1, TIM_IT_UPDATE);
   HAL_TIM_Encoder_Start(&htim1, TIM_CHANNEL_ALL);
   
-  // HAL_TIM_Encoder_Start_IT(&htim2, TIM_CHANNEL_2);
-  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2); // �?нициализация PWM
-  HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1); // �?нициализация PWM
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2); // инициализация PWM
+  if(SERVO_FLAG) {
+    HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1); // инициализация PWM
+  }
   HAL_TIM_Base_Start_IT(&htim3);
   HAL_TIM_Base_Start_IT(&htim4);
-  // servo_controlVelocity(&servo1, 50);
-  // servo_controlVelocity(&servo1, 200);
-  // servo_controlPosition(&servo1, 180);
 
   /* USER CODE END 2 */
 
@@ -156,7 +155,7 @@ int main(void)
     /* USER CODE BEGIN 3 */
     
     servo_controlVelocity(&servo1, VELvalue); // 0 - 15
-    htim4.Instance->CCR1 = PWM_servo + 27;    // 0 - 180
+    htim4.Instance->CCR1 = PWM_servo + SERVO_ADJUSTMENT;    // 0 - 180
 
     // servo_controlPosition(&servo1, ANGvalue);
   }
