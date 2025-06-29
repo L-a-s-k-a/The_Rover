@@ -1,7 +1,19 @@
+/.settings
+/.vscode
 /build
 /Debug
+/.cproject.bak
+/.mxproject
+/.project.bak
+/.stm32env
+/f103_servo_test Debug.launch
+/Makefile
 /MCUconfig.cfg
 /MCUViuver_config.cfg
+/openocd.cfg
+/startup_stm32f103xb.s
 /STM32-for-VSCode.config.yaml
-/f103_servo_test.ioc
+/STM32F103C8TX_FLASH.ld
+/STM32Make.make
 /Wheel_1.ioc
+/f103_servo_test.ioc
