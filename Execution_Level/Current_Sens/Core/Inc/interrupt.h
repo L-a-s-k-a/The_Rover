@@ -1,12 +1,18 @@
+#pragma once
 #ifndef INTERRUPT_H
 #define INTERRUPT_H
 
 #include "init.h"
 
-extern volatile uint8_t btnCount1, btnCount2, flag;
-extern volatile uint32_t global_systick_tim_count;
-extern volatile uint16_t button_delay_tim_count, second_tim_count;
+extern uint16_t GlobalTickCount, MotorTickCount;
+extern uint16_t ENC_CNT, encItr;
+extern uint8_t encDir, BtnNum;
+extern float FLAG_Revolution, calculatePulseARR;
 
-void delay(uint32_t del);
+void EXTI15_10_IRQHandler(void);
+void SysTick_Handler(void);
+void TIM3_IRQHandler(void);
+void TIM2_IRQHandler(void);
+void delay(int del);
 
 #endif

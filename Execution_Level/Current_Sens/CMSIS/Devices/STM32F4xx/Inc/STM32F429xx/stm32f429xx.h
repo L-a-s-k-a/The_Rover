@@ -688,7 +688,7 @@ typedef struct
   * @brief Reset and Clock Control
   */
 
-typedef struct 
+typedef struct
 {
   __IO uint32_t CR;            /*!< RCC clock control register,                                  Address offset: 0x00 */
   __IO uint32_t PLLCFGR;       /*!< RCC PLL configuration register,                              Address offset: 0x04 */

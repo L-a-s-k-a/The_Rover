@@ -1,8 +1,5 @@
-#include "../Inc/init.h"
+#include "../Inc/init.h"_
 
-static uint8_t testik;
-
-/* группа 8Е32, все*/
 void RCC_Init(void)
 {
     MODIFY_REG(RCC->CR, RCC_CR_HSITRIM, 0x80U);
@@ -100,297 +97,54 @@ void GPIO_Init(void)
     CLEAR_BIT(GPIOA->AFR[1], GPIO_AFRH_AFSEL8);
 }
 
+void TIM_PWM_Init(void){
+    SET_BIT(RCC->APB1ENR, RCC_APB1ENR_TIM3EN); //Включение тактирования таймера 3
+    TIM3->PSC = 1-1;
+    TIM3->ARR = 18000-1;
+    CLEAR_BIT(TIM3->CCMR1, TIM_CCMR1_CC1S_Msk);
+    SET_BIT(TIM3->CCMR1, TIM_CCMR1_OC1M_0 | TIM_CCMR1_OC1M_1); // OC1REF Toggles when TIM3_CNT=TIM3_CCR1.
 
-/*Подгруппа без стаорсты 8ТМ51*/
-/*
-void GPIO_Init_With_Myself_Macros(void){
-    BIT_SET(RCC_AHB1ENR, RCC_GPIOB_EN | RCC_GPIOC_EN);  // Включение тактирования для периферии GPIOB и GPIOC, регистр AHB1ENR
+    SET_BIT(TIM3->CCER, TIM_CCER_CC1E); 
 
-    BIT_SET(GPIOB_MODER, GPIO_OUTPUT_MODE_PIN_7);       // Настройка режима работы порта на выход, регистр MODER
-    BIT_CLEAR(GPIOB_OTYPER, GPIO_PP_PIN_7);             // Настройка режима выхода пина PB7 на push-pull, регистр OTYPER
-    BIT_SET(GPIOB_OSPEEDR, GPIO_SPEED_MEDIUM_PIN_7);    // Настройка скорости работы порта на среднюю, регистр OSPEEDR
-
-    BIT_SET(GPIOB_BSRR, GPIO_PIN_RESET_7);              // Предварительное отключение светодидоа, регистр BSRR
+    SET_BIT(TIM3->CR1, TIM_CR1_CEN); //Включение счётчика
+    SET_BIT(TIM3->DIER, TIM_DIER_UIE); //Включение Прерывания по переполнению
+    NVIC_EnableIRQ(TIM3_IRQn);
 }
 
-void GPIO_Init_CMSIS(void){
-    SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOEEN | RCC_AHB1ENR_GPIOGEN);
+void TIM_ENCODER_Init(void){
+    SET_BIT(RCC->APB1ENR, RCC_APB1ENR_TIM2EN); //Включение тактирования таймера 2
+    SET_BIT(TIM2->CCMR1, TIM_CCMR1_CC1S_0); //Настройка выхода CC1 (Capture/Compare 1) на вход, IC1(Input capture 1) используется как TI1
+    SET_BIT(TIM2->CCMR1, TIM_CCMR1_CC2S_0); //Настройка выхода CC2 (Capture/Compare 1) на вход, IC2(Input capture 1) используется как TI2
+    /*
+     *Настройка режима подчинения (Slave Mode Selection). 
+     *Выбран режим энкодерного интерфейса.
+     *Счётчик считает ввех/вниз по фронту сигнала на линии 1 - TI1FP1 (CH1-PA5)
+     *в зависимости от уровня сигнала на линии 2 - TI2FP2. (CH2-PB3)
+     */
+    SET_BIT(TIM2->SMCR, TIM_SMCR_SMS_0); 
+    SET_BIT(TIM2->CCMR1, TIM_CCMR1_IC1F_0 | TIM_CCMR1_IC1F_1 | TIM_CCMR1_IC1F_2 | TIM_CCMR1_IC1F_3); //Установка количества пропускаемых сэмплов N = 8
+    SET_BIT(TIM2->CCMR1, TIM_CCMR1_IC2F_0 | TIM_CCMR1_IC2F_1 | TIM_CCMR1_IC2F_2 | TIM_CCMR1_IC2F_3); //Установка количества пропускаемых сэмплов N = 8
+    
+    TIM2->ARR = 6000 - 1;
+    CLEAR_BIT(TIM2->CCER, TIM_CCER_CC1P);
+    SET_BIT(TIM2->CCER, TIM_CCER_CC1E); 
+    SET_BIT(TIM2->DIER, TIM_DIER_UIE); //Включение Прерывания по переполнению
+    // Enc_Trig_Init();
+    
+    SET_BIT(TIM2->CR1, TIM_CR1_CEN); //Включение счётчика
+    NVIC_EnableIRQ(TIM2_IRQn);
+}
 
-    SET_BIT(GPIOE->MODER, GPIO_MODER_MODER0_0);         //Настройка режима работы пина РE0 на выход
-    SET_BIT(GPIOE->OSPEEDR, GPIO_OSPEEDR_OSPEED0_0);    //Настройка скорости работы пина PE0 на среднюю скорость
-    SET_BIT(GPIOE->BSRR, GPIO_BSRR_BR0);                //Выключение светодиода на пине РЕ0
-}*/
+void Enc_Trig_Init(void){
+    /* 0000: No filter, sampling is done at fDTS */
+    CLEAR_BIT(TIM2->SMCR, TIM_SMCR_ETF);
 
-/*8e32 староста*/
-// void RCC_Init(void)
-// {
-//     MODIFY_REG(RCC->CR, RCC_CR_HSITRIM, 0x80U);
-//     CLEAR_REG(RCC->CFGR);
-//     while (READ_BIT(RCC->CFGR, RCC_CFGR_SWS) != RESET)
-//         ;
-//     CLEAR_BIT(RCC->CR, RCC_CR_PLLON);
-//     while (READ_BIT(RCC->CR, RCC_CR_PLLRDY) != RESET)
-//         ;
-//     CLEAR_BIT(RCC->CR, RCC_CR_HSEON | RCC_CR_CSSON);
-//     while (READ_BIT(RCC->CR, RCC_CR_HSERDY) != RESET)
-//         ;
-//     CLEAR_BIT(RCC->CR, RCC_CR_HSEBYP);
+    /* 100: TI1 Edge Detector (TI1F_ED) */
+    CLEAR_BIT(TIM2->SMCR, TIM_SMCR_TS_0 | TIM_SMCR_TS_1);
+    SET_BIT(TIM2->SMCR, TIM_SMCR_TS_2);
 
-//     SET_BIT(RCC->CR, RCC_CR_HSEON);
-//     while (READ_BIT(RCC->CR, RCC_CR_HSERDY) == RESET)
-//         ;
-//     SET_BIT(RCC->CR, RCC_CR_CSSON);
+    /* 1: Trigger interrupt enabled */
+    SET_BIT(TIM2->DIER, TIM_DIER_TIE); //Включение Прерывания по переполнению
 
-//     CLEAR_REG(RCC->PLLCFGR);
-//     SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLSRC_HSE);
-//     SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLM_2);
-//     SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLN_3 |
-//                               RCC_PLLCFGR_PLLN_5 |
-//                               RCC_PLLCFGR_PLLN_6 |
-//                               RCC_PLLCFGR_PLLN_8);
-//     SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLP_0);
-//     SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLQ_0 |
-//                               RCC_PLLCFGR_PLLQ_1 |
-//                               RCC_PLLCFGR_PLLQ_2 |
-//                               RCC_PLLCFGR_PLLQ_3);
-
-//     SET_BIT(RCC->CFGR, RCC_CFGR_SW_1);
-//     SET_BIT(RCC->CFGR, RCC_CFGR_HPRE_DIV2);
-//     SET_BIT(RCC->CFGR, RCC_CFGR_PPRE1_DIV4);
-//     SET_BIT(RCC->CFGR, RCC_CFGR_PPRE2_DIV2);
-//     SET_BIT(RCC->CFGR, RCC_CFGR_MCO1);
-//     SET_BIT(RCC->CFGR, RCC_CFGR_MCO1PRE_2 | RCC_CFGR_MCO1PRE_1);
-//     CLEAR_BIT(RCC->CFGR, RCC_CFGR_MCO2);
-//     SET_BIT(RCC->CFGR, RCC_CFGR_MCO2PRE_2 | RCC_CFGR_MCO2PRE_1 | RCC_CFGR_MCO2PRE_0);
-
-//     SET_BIT(FLASH->ACR, FLASH_ACR_LATENCY_5WS);
-
-//     SET_BIT(RCC->CR, RCC_CR_PLLON);
-//     while (READ_BIT(RCC->CR, RCC_CR_PLLRDY) == RESET)
-//         ;
-//     CLEAR_BIT(RCC->CR, RCC_CR_HSION);
-// }
-
-// void IRQ_Inint(void)
-// {
-//     SET_BIT(RCC->APB2ENR, RCC_APB2ENR_SYSCFGEN);
-
-//     SET_BIT(SYSCFG->EXTICR[3], SYSCFG_EXTICR4_EXTI12_PC);
-//     SET_BIT(EXTI->IMR, EXTI_IMR_IM12);
-//     SET_BIT(EXTI->RTSR, EXTI_RTSR_TR12);
-//     CLEAR_BIT(EXTI->FTSR, EXTI_FTSR_TR12);
-
-//     NVIC_SetPriority(EXTI15_10_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 0, 0));
-//     NVIC_EnableIRQ(EXTI15_10_IRQn);
-// }
-
-/*8EM52 китайская*/
-// void GPIO_Init_Memory(void)
-// {
-//     *(uint32_t *)(0x40023800UL + 0x30UL) |= 0x02UL + 0x04UL; // Включение тактирвоания для периферии GPIOB, регистр AHB1ENR
-
-//     *(uint32_t *)(0x40020400UL + 0x00UL) |= 0x4000UL; // Настройка режима работы порта на выход, регистр MODER
-//     *(uint32_t *)(0x40020400UL + 0x04UL) &= ~0x80UL;  // Настройка режима выхода пина PB7 на push-pull, регистр OTYPER
-//     *(uint32_t *)(0x40020400UL + 0x08UL) |= 0x4000UL; // Настройка скорости работы порта на среднюю, регистр OSPEEDR
-
-//     *(uint32_t *)(0x40020400UL + 0x18UL) |= 0x800000UL; // Предварительное отключение светодидоа, регистр BSRR
-// }
-/*8EM52 китайская*/
-// void GPIO_Init_CMSIS(void)
-// {
-//     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN |
-//                           RCC_AHB1ENR_GPIOCEN |
-//                           RCC_AHB1ENR_GPIOGEN |
-//                           RCC_AHB1ENR_GPIODEN);   /*Включение тактирования на порт GPIOB
-//                                                    *на порт GPIOC, на порт GPIOG, на порт GPIOD
-//                                                    */
-
-//     SET_BIT(GPIOB->MODER, GPIO_MODER_MODER14_0);                        //Настройка режима работы пина PB14 на выход
-//     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);                               //Установка 0 (Нуля) на выходе PB14
-
-//     SET_BIT(GPIOB->MODER, GPIO_MODER_MODER0_0);                         //Настройка режима работы пина PB0 на выход
-//     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);                                //Установка 0 (Нуля) на выходе PB0
-
-//     SET_BIT(GPIOD->MODER, GPIO_MODER_MODER7_0);                         //Настройка режима работы пина PD7 на выход
-//     SET_BIT(GPIOD->BSRR, GPIO_BSRR_BR7);                                //Установка 0 (Нуля) на выходе PD7
-// }
-
-/*ГРуппа 8Е31*/
-// void RCC_Init(void)
-// {
-//     MODIFY_REG(RCC->CR, RCC_CR_HSITRIM, 0x80U);
-//     CLEAR_REG(RCC->CFGR);
-//     while (READ_BIT(RCC->CFGR, RCC_CFGR_SWS) != RESET);
-//     CLEAR_BIT(RCC->CR, RCC_CR_PLLON);
-//     while (READ_BIT(RCC->CR, RCC_CR_PLLRDY) != RESET);
-//     CLEAR_BIT(RCC->CR, RCC_CR_HSEON | RCC_CR_CSSON);
-//     while (READ_BIT(RCC->CR, RCC_CR_HSERDY) != RESET);
-//     CLEAR_BIT(RCC->CR, RCC_CR_HSEBYP);
-
-//     SET_BIT(RCC->CR, RCC_CR_HSEON);                                 //Включение внешнего источника тактирования высокой частоты
-//     while (READ_BIT(RCC->CR, RCC_CR_HSERDY) == RESET);
-//     SET_BIT(RCC->CR, RCC_CR_CSSON);                                 //Включение Clock Security
-
-//     CLEAR_REG(RCC->PLLCFGR);
-//     SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLSRC_HSE);                  //Источник тактирвоания HSE
-//     SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLM_2);                      //Деление источника тактирования на 4 (PLLM)
-//     SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLN_3 | RCC_PLLCFGR_PLLN_5 |
-//                           RCC_PLLCFGR_PLLN_6 | RCC_PLLCFGR_PLLN_8); //Настройка умножения на 360 (PLLN)
-//     SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLP_1 | RCC_PLLCFGR_PLLP_0); //Деление частоты после умножения на 4 (PLLP)
-//     SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLQ_0 | RCC_PLLCFGR_PLLQ_1 |
-//                           RCC_PLLCFGR_PLLQ_2 | RCC_PLLCFGR_PLLQ_3); //Деление частоты после умножения на 15 (PLLQ)
-
-//     SET_BIT(RCC->CFGR, RCC_CFGR_SW_PLL);                            //В качестве системного тактирования выбран PLL
-//     SET_BIT(RCC->CFGR, RCC_CFGR_HPRE_DIV1);                         //Предделитель шины AHB1 настроен на 1 (без деления)
-//     SET_BIT(RCC->CFGR, RCC_CFGR_PPRE1_DIV4);                        //Предделитель шины APB1 настроен на 4 (45МГц)
-//     SET_BIT(RCC->CFGR, RCC_CFGR_PPRE2_DIV2);                        //Предделитель шины APB2 настроен на 2 (90МГц)
-//     SET_BIT(RCC->CFGR, RCC_CFGR_MCO1);                              //Нстройка вывода частоты PLL на MCO1
-//     SET_BIT(RCC->CFGR, RCC_CFGR_MCO1PRE_2 | RCC_CFGR_MCO1PRE_1);    //Предделитель 4 для вывода на MCO1
-//     CLEAR_BIT(RCC->CFGR, RCC_CFGR_MCO2);                            //Настройка вывода частоты SYSCLK на MCO2
-//     SET_BIT(RCC->CFGR, RCC_CFGR_MCO2PRE_2 | RCC_CFGR_MCO2PRE_1 | RCC_CFGR_MCO2PRE_0);    //Предделитель 4 для вывода на MCO2
-
-//     SET_BIT(FLASH->ACR, FLASH_ACR_LATENCY_5WS);                     //Установка 5 циклов ожидания для FLASH памяти
-
-//     SET_BIT(RCC->CR, RCC_CR_PLLON);                                 //Включение блока PLL
-//     while (READ_BIT(RCC->CR, RCC_CR_PLLRDY) == RESET);
-// }
-
-// void RCC_Init(void)
-// {
-//     MODIFY_REG(RCC->CR, RCC_CR_HSITRIM, 0x80U);
-//     CLEAR_REG(RCC->CFGR);
-//     while (READ_BIT(RCC->CFGR, RCC_CFGR_SWS) != RESET);
-//     CLEAR_BIT(RCC->CR, RCC_CR_PLLON);
-//     while (READ_BIT(RCC->CR, RCC_CR_PLLRDY) != RESET);
-//     CLEAR_BIT(RCC->CR, RCC_CR_HSEON | RCC_CR_CSSON);
-//     while (READ_BIT(RCC->CR, RCC_CR_HSERDY) != RESET);
-//     CLEAR_BIT(RCC->CR, RCC_CR_HSEBYP);
-
-//     SET_BIT(RCC->CR, RCC_CR_HSEON);
-//     while(READ_BIT(RCC->CR, RCC_CR_HSERDY) == RESET);
-//     SET_BIT(RCC->CR, RCC_CR_CSSON);
-//     SET_BIT(RCC->CR, RCC_CR_HSEBYP);
-//     CLEAR_BIT(RCC->CR, RCC_CR_HSION);
-
-//     CLEAR_REG(RCC->PLLCFGR);
-//     SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLSRC_HSE);                   //Источник тактирвоания HSE
-//     SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLM_2);                       //Деление источника тактирования на 4
-//     SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLN_3 | RCC_PLLCFGR_PLLN_5 |
-//                           RCC_PLLCFGR_PLLN_6 | RCC_PLLCFGR_PLLN_8);  //Настройка умножения на 360
-//     SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLP_0);                       //Делитель для выхода PLL(PLLCLK) на 4
-//     SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLQ_0 | RCC_PLLCFGR_PLLQ_1 |
-//                           RCC_PLLCFGR_PLLQ_2 | RCC_PLLCFGR_PLLQ_3);  //Делитель для USB на 1111
-
-//     SET_BIT(RCC->CFGR, RCC_CFGR_SW_PLL);                             //Источник системного тактирования -> выход PLL
-//     CLEAR_BIT(RCC->CFGR, RCC_CFGR_HPRE_DIV1);                        //Делитель AHB1 -> 0
-//     SET_BIT(RCC->CFGR, RCC_CFGR_PPRE1_DIV4);                         //Делитель AРB1 -> 4 (45 МГц)
-//     SET_BIT(RCC->CFGR, RCC_CFGR_PPRE2_DIV2);                         //Делитель AРB2 -> 2 (90 МГц)
-//     CLEAR_BIT(RCC->CFGR, RCC_CFGR_MCO2);                             //Выход МСО2 -> Sysclk
-//     SET_BIT(RCC->CFGR, RCC_CFGR_MCO2PRE_0 | RCC_CFGR_MCO2PRE_1 | RCC_CFGR_MCO2PRE_2);     //Делитель для МСО2 -> 4
-
-//     SET_BIT(FLASH->ACR, FLASH_ACR_LATENCY_5WS);
-
-//     SET_BIT(RCC->CR, RCC_CR_PLLON);
-//     while(READ_BIT(RCC->CR, RCC_CR_PLLRDY) == RESET);
-// }
-
-
-
-// void GPIO_Init_Memory(void)
-// {
-//     *(uint32_t *)(0x40023800UL + 0x30UL) |= 0x06UL;
-
-//     *(uint32_t *)(0x40020400UL + 0x00UL) |= 0x4000UL; // Настройка пина PB7 на вывод, регистр MODER
-//     *(uint32_t *)(0x40020400UL + 0x08UL) |= 0x4000UL; // Натсройка скорости пина PB7 на среднюю, регистр OSPEEDR
-//     *(uint32_t *)(0x40020400UL + 0x0CUL) |= 0x00UL;   // Настройка подтягивающих/стягивающих резисторов, регистр PUPDR
-
-//     *(uint32_t *)(0x40020400UL + 0x18UL) |= 0x800000UL; // Выключение светодиода PB7, регистр BSRR
-// }
-
-// void GPIO_Init_With_Miself_Macros(void)
-// {
-//     BIT_SET(RCC_AHB1ENR, RCC_GPIOB_EN | RCC_GPIOC_EN);
-
-//     BIT_SET(GPIOB_MODER, GPIO_OUTPUT_MODE_PIN_7);
-//     BIT_SET(GPIOB_OSPEEDR, GPIO_SPEED_MED_PIN_7);
-//     BIT_SET(GPIOB_PUPDR, GPIO_OFF);
-
-//     BIT_SET(GPIOB_BSRR, GPIO_PIN_RESET_7);
-// }
-
-// void GPIO_Init_Memory(void){
-//     *(uint32_t *)(0x40023800UL + 0x30UL) |= 0x06UL;     //Включение тактирования на периферии GPIOB и GPIOC, регистр AHB1ENR
-
-//     *(uint32_t *)(0x40020400UL + 0x00UL) |= 0x4000UL;   //Настройка пина PB7 на вывод, регистр MODER
-//     *(uint32_t *)(0x40020400UL + 0x04UL) |= 0x00UL;     //Настройка режима работы выхода на push-pull, регистр OTYPER
-//     *(uint32_t *)(0x40020400UL + 0x08UL) |= 0x4000UL;   //Настройка скорости работы вывода PB7, регистр OSPEEDR
-//     *(uint32_t *)(0x40020400UL + 0x18UL) |= 0x80000UL;  //Предварительное выключение светодиода, регистр BSRR, бит BR7
-// }
-
-// void GPIO_Init_With_Myself_Macros(void){
-//     RCC_AHB1ENR |= RCC_GPIOB_EN | RCC_GPIOC_EN; //Включение тактирования на периферии GPIOB и GPIOC, регистр AHB1ENR
-
-//     BIT_SET(GPIOB_MODER,   GPIO_PIN_OUT_7);     //Настройка пина PB7 на вывод, регистр MODER
-//     BIT_SET(GPIOB_OTYPER,  GPIO_OFF);           //Настройка режима работы выхода на push-pull, регистр OTYPER
-//     BIT_SET(GPIOB_OSPEEDR, GPIO_PIN_Med_7);     //Настройка скорости работы вывода PB7, регистр OSPEEDR
-//     BIT_SET(GPIOB_BSRR,    GPIO_PIN_RESET_7);   //Предварительное выключение светодиода, регистр BSRR, бит BR7
-// }
-
-// void GPIO_Init_CMSIS(void){
-//     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN);
-
-//     SET_BIT(GPIOB->MODER, GPIO_MODER_MODER14_0);  //Настройка пина PB14 на вывод, регистр MODER
-//     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT14); //Настройка режима работы выхода на push-pull, регистр OTYPER
-//     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR14_0); //Настройка скорости работы вывода PB14, регистр OSPEEDR
-//     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14); //Предварительное выключение светодиода, регистр BSRR, бит BR14
-// }
-
-// void GPIO_Init_CMSIS(void){
-//     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN);
-
-//     SET_BIT(GPIOB->MODER, GPIO_MODER_MODER14_0);
-//     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDR_OSPEED14_0);
-//     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);
-// }
-
-// void GPIO_Init_Memory(void){
-//     *(uint32_t *)(0x40023800UL + 0x30UL) |= 0x06UL;
-
-//     *(uint32_t *)(0x40020400UL + 0x00UL) |= 0x4000UL;
-//     *(uint32_t *)(0x40020400UL + 0x04UL) |= 0x00UL;
-//     *(uint32_t *)(0x40020400UL + 0x08UL) |= 0x4000UL;
-//     *(uint32_t *)(0x40020400UL + 0x18UL) |= 0x80000UL;
-// }
-
-// void GPIO_Init_With_Myself_Macros(void){
-//     RCC_AHB1ENR |= RCC_GPIOB_EN | RCC_GPIOC_EN;
-
-//     BIT_SET(GPIOB_MODER, GPIO_PIN_OUT_14);
-//     BIT_SET(GPIOB_OTYPER, GPIO_OFF);
-//     BIT_SET(GPIOB_OSPEEDR, GPIO_PIN_Med_14);
-//     BIT_SET(GPIOB_BSRR, GPIO_PIN_RESET_14);
-// }
-
-// void GPIO_Init_CMSIS(void){
-//     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN);
-
-//     SET_BIT(GPIOB->MODER, GPIO_MODER_MODER0_0);
-//     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDR_OSPEED0_0);
-//     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR0);
-// }
-
-// void GPIO_Init_Disco(void)
-// {
-//     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOAEN | RCC_AHB1ENR_GPIODEN);
-
-//     SET_BIT(GPIOD->MODER, GPIO_MODER_MODE12_0 |
-//                               GPIO_MODER_MODE13_0 |
-//                               GPIO_MODER_MODE14_0 |
-//                               GPIO_MODER_MODE15_0);
-
-//     SET_BIT(GPIOD->BSRR, GPIO_MODER_MODE12_0 |
-//                              GPIO_MODER_MODE13_0 |
-//                              GPIO_MODER_MODE14_0 |
-//                              GPIO_MODER_MODE15_0);
-
-// }
+    NVIC_EnableIRQ(TIM2_IRQn);
+}

@@ -1,66 +1,64 @@
 #include "interrupt.h"
 
-uint8_t last_state, FLAG_DELAY, FLAG_BUTTON;
-uint32_t delay_count;
-
-void EXTI15_10_IRQHandler(void)
-{
-    SET_BIT(EXTI->PR, EXTI_PR_PR11);
-    SET_BIT(EXTI->PR, EXTI_PR_PR13);
-    if (READ_BIT(GPIOC->IDR, GPIO_IDR_ID11))
-    {
-        FLAG_BUTTON = 1;
-        if (button_delay_tim_count >= 20)
-        {
-            btnCount1++;
-            button_delay_tim_count = 0;
-        }
-        FLAG_BUTTON = 0;
-    }
-    if (READ_BIT(GPIOC->IDR, GPIO_IDR_ID12))
-    {
-        btnCount2++;
-        flag = !flag;
-    }
-}
-
-void EXTI4_IRQHandler(void)
-{
-    SET_BIT(EXTI->PR, EXTI_PR_PR4);
-    btnCount1++;
-    flag = !flag;
-}
+uint16_t TickDelayCount, buttonTickCount;
+uint16_t ENC_CNT, encItr;
+uint8_t FLAG_Delay, encDir;
+uint32_t TIMCount, calculateDeg;
 
 void SysTick_Handler(void)
 {
-    if (FLAG_BUTTON)
-    {
-        button_delay_tim_count++;
-    }
-    global_systick_tim_count++;
-    second_tim_count++;
-    if (FLAG_DELAY)
-    {
-        delay_count++;
-    }
+    buttonTickCount++;
+    GlobalTickCount++;
+    if (FLAG_Delay)
+        TickDelayCount++;
+    ENC_CNT = TIM2->CNT;
+    encDir = READ_BIT(TIM2->CR1, TIM_CR1_DIR) >> 4;
 }
 
-void delay(uint32_t del)
+void delay(int del)
 {
-    FLAG_DELAY = 1;
-    while (del >= delay_count)
+    FLAG_Delay = 1;
+    while (TickDelayCount < del)
     {
     }
-    delay_count = 0;
-    FLAG_DELAY = 0;
+    TickDelayCount = 0;
+    FLAG_Delay = 0;
 }
 
-// void delay(uint32_t delay)
-// {
-//     FLAG_DELAY = 1;
-//     while (delay >= delay_tim_count)
-//     {
-//     }
-//     delay_tim_count = 0;
-//     FLAG_DELAY = 0;
-// }
+void EXTI15_10_IRQHandler(void)
+{
+    SET_BIT(EXTI->PR, EXTI_PR_PR13);
+    if (buttonTickCount > 100)
+    {
+        buttonTickCount = 0;
+        BtnNum = !BtnNum;
+    }
+}
+
+void TIM3_IRQHandler(void)
+{
+    if (READ_BIT(TIM3->SR, TIM_SR_UIF))
+    {
+        TIMCount += 10;
+        if (TIMCount >= calculatePulseARR)
+        {
+            FLAG_Revolution += 0.1;
+            TIMCount = 0;
+        }
+        CLEAR_BIT(TIM3->SR, TIM_SR_UIF);
+    }
+}
+
+void TIM2_IRQHandler(void)
+{
+    if (TIM2->SR & TIM_SR_UIF)
+    {
+        if (READ_BIT(TIM2->CR1, TIM_CR1_DIR) != 0)
+        {
+            encItr--;
+        }
+        else
+            encItr++;
+        CLEAR_BIT(TIM2->SR, TIM_SR_UIF);
+    }
+}
