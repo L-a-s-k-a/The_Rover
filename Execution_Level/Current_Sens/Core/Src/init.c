@@ -1,4 +1,4 @@
-#include "../Inc/init.h"_
+#include "init.h"
 
 void RCC_Init(void)
 {
@@ -29,7 +29,7 @@ void RCC_Init(void)
     SET_BIT(RCC->CFGR, RCC_CFGR_PPRE2_DIV2);                     // Предделитель шины APB2 настроен на 2 (84МГц)
     SET_BIT(RCC->CFGR, RCC_CFGR_MCO1);                           // Нстройка вывода частоты PLL на MCO1
     SET_BIT(RCC->CFGR, RCC_CFGR_MCO1PRE_2 | RCC_CFGR_MCO1PRE_1); // Предделитель 4 для вывода на MCO1
-    CLEAR_BIT(RCC->CFGR, RCC_CFGR_MCO2);                         // Настройка вывода частоты SYSCLK на MCO2
+    SET_BIT(RCC->CFGR, RCC_CFGR_MCO2_1);                         // Настройка вывода частоты SYSCLK на MCO2
     SET_BIT(RCC->CFGR, RCC_CFGR_MCO2PRE_2 | RCC_CFGR_MCO2PRE_1); // Предделитель 4 для вывода на MCO2
 
     SET_BIT(FLASH->ACR, FLASH_ACR_LATENCY_5WS); // Установка 5 циклов ожидания для FLASH памяти
@@ -68,19 +68,23 @@ void SysTick_Init(void){
     CLEAR_BIT(SysTick->CTRL, SysTick_CTRL_ENABLE_Msk);
     SET_BIT(SysTick->CTRL, SysTick_CTRL_TICKINT_Msk);
     SET_BIT(SysTick->CTRL, SysTick_CTRL_CLKSOURCE_Msk);
-    MODIFY_REG(SysTick->LOAD, SysTick_LOAD_RELOAD_Msk, (180000 - 1) << SysTick_LOAD_RELOAD_Pos);
-    MODIFY_REG(SysTick->VAL, SysTick_VAL_CURRENT_Msk, (180000 - 1) << SysTick_VAL_CURRENT_Pos);
+    MODIFY_REG(SysTick->LOAD, SysTick_LOAD_RELOAD_Msk, (168000 - 1) << SysTick_LOAD_RELOAD_Pos);
+    MODIFY_REG(SysTick->VAL, SysTick_VAL_CURRENT_Msk, (168000 - 1) << SysTick_VAL_CURRENT_Pos);
     SET_BIT(SysTick->CTRL, SysTick_CTRL_ENABLE_Msk);
 }
 
 void GPIO_Init(void)
 {
-    SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOAEN);
+    SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOAEN | RCC_AHB1ENR_GPIOCEN);
 
-    SET_BIT(GPIOB->MODER, GPIO_MODER_MODER7_0);
-    SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);
-    SET_BIT(GPIOB->MODER, GPIO_MODER_MODER14_0);
-    SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);
+    SET_BIT(GPIOA->MODER, GPIO_MODER_MODER7_1);
+    // SET_BIT(GPIOA->BSRR, GPIO_BSRR_BR7);
+    SET_BIT(GPIOA->AFR[0], GPIO_AFRL_AFSEL7_1);
+
+    SET_BIT(GPIOA->MODER, GPIO_MODER_MODER6_1);
+    // SET_BIT(GPIOA->BSRR, GPIO_BSRR_BR6);
+    SET_BIT(GPIOA->AFR[0], GPIO_AFRL_AFSEL6_1);
+
     /*--------Настройка работы порта PC9 в качестве MCO2--------*/
     SET_BIT(GPIOC->MODER, GPIO_MODER_MODER9_1);
     SET_BIT(GPIOC->OSPEEDR, GPIO_OSPEEDR_OSPEED9);
@@ -94,12 +98,21 @@ void GPIO_Init(void)
 
 void TIM_PWM_Init(void){
     SET_BIT(RCC->APB1ENR, RCC_APB1ENR_TIM3EN); //Включение тактирования таймера 3
-    TIM3->PSC = 1-1;
-    TIM3->ARR = 18000-1;
-    CLEAR_BIT(TIM3->CCMR1, TIM_CCMR1_CC1S_Msk);
-    SET_BIT(TIM3->CCMR1, TIM_CCMR1_OC1M_0 | TIM_CCMR1_OC1M_1); // OC1REF Toggles when TIM3_CNT=TIM3_CCR1.
+    TIM3->PSC = 100-1; //42 МГц тактовая частота шины АРВ1, но таймеры тактируются от источника, который всегда умножает на 2
+    TIM3->ARR = 8400-1;
 
+    /*--------------Режим переключения--------------*/
+    CLEAR_BIT(TIM3->CCMR1, TIM_CCMR1_CC1S_Msk);
+    // SET_BIT(TIM3->CCMR1, TIM_CCMR1_OC1M_0 | TIM_CCMR1_OC1M_1); // OC1REF Toggles when TIM3_CNT=TIM3_CCR1.
+    SET_BIT(TIM3->CCMR1, TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1PE);
     SET_BIT(TIM3->CCER, TIM_CCER_CC1E); 
+    TIM3->CCR1 = 1050-1; 
+
+    /*------------------Режим ШИМ------------------*/
+    CLEAR_BIT(TIM3->CCMR1, TIM_CCMR1_CC2S_Msk);
+    SET_BIT(TIM3->CCMR1, TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2 | TIM_CCMR1_OC2PE); //  In upcounting, channel 1 is active as long as TIMx_CNT<TIMx_CCR1 else inactive.
+    SET_BIT(TIM3->CCER, TIM_CCER_CC2E);
+    TIM3->CCR2 = 3150-1; 
 
     SET_BIT(TIM3->CR1, TIM_CR1_CEN); //Включение счётчика
     SET_BIT(TIM3->DIER, TIM_DIER_UIE); //Включение Прерывания по переполнению
