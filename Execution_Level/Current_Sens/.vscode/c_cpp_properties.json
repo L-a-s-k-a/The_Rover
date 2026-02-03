@@ -9,10 +9,10 @@
                 "_DEBUG",
                 "UNICODE",
                 "_UNICODE",
-                "STM32F429xx"
+                "STM32F407xx"
             ],
             "intelliSenseMode": "gcc-arm",
-            "compilerPath": "C:\\Users\\Asus\\scoop\\apps\\gcc-arm-none-eabi\\current\\bin\\arm-none-eabi-gcc.exe",
+            "compilerPath": "${env:ARMGCC_DIR}/arm-none-eabi-gcc-14.2.1.exe",
             "compilerArgs": [
                 "-mcpu=cortex-m4",
                 "-mthumb"
