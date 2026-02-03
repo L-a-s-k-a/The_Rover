@@ -1,8 +1,7 @@
 #include "interrupt.h"
 
 uint16_t GlobalTickCount, MotorTickCount;
-uint16_t ENC_CNT, encItr;
-uint8_t encDir, BtnNum;
+uint8_t BtnNum;
 float FLAG_Revolution, calculatePulseARR;
 
 int main(void)

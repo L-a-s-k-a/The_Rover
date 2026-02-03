@@ -134,9 +134,9 @@ endif
 # C sources
 C_SOURCES =  \
 $(SYS) \
-Core/Src/main.c \
-Core/Src/init.c \
-Core/Src/interrupt.c \
+Execution_Level/Current_Sens/Core/Src/main.c \
+Execution_Level/Current_Sens/Core/Src/init.c \
+Execution_Level/Current_Sens/Core/Src/interrupt.c \
 
 # ASM sources
 ASM_SOURCES =  \
