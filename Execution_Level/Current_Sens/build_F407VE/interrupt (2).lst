@@ -1,0 +1,510 @@
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"interrupt.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/interrupt.c"
+  20              		.section	.text.SysTick_Handler,"ax",%progbits
+  21              		.align	1
+  22              		.global	SysTick_Handler
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	SysTick_Handler:
+  28              	.LFB130:
+   1:Core/Src/interrupt.c **** #include "interrupt.h"
+   2:Core/Src/interrupt.c **** 
+   3:Core/Src/interrupt.c **** uint16_t TickDelayCount, buttonTickCount;
+   4:Core/Src/interrupt.c **** uint16_t ENC_CNT, encItr;
+   5:Core/Src/interrupt.c **** uint8_t FLAG_Delay, encDir;
+   6:Core/Src/interrupt.c **** uint32_t TIMCount, calculateDeg;
+   7:Core/Src/interrupt.c **** 
+   8:Core/Src/interrupt.c **** void SysTick_Handler(void)
+   9:Core/Src/interrupt.c **** {
+  29              		.loc 1 9 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  10:Core/Src/interrupt.c ****     buttonTickCount++;
+  34              		.loc 1 10 5 view .LVU1
+  35              		.loc 1 10 20 is_stmt 0 view .LVU2
+  36 0000 0C4A     		ldr	r2, .L3
+  37 0002 1388     		ldrh	r3, [r2]
+  38 0004 0133     		adds	r3, r3, #1
+  39 0006 1380     		strh	r3, [r2]	@ movhi
+  11:Core/Src/interrupt.c ****     GlobalTickCount++;
+  40              		.loc 1 11 5 is_stmt 1 view .LVU3
+  41              		.loc 1 11 20 is_stmt 0 view .LVU4
+  42 0008 0B4A     		ldr	r2, .L3+4
+  43 000a 1388     		ldrh	r3, [r2]
+  44 000c 0133     		adds	r3, r3, #1
+  45 000e 1380     		strh	r3, [r2]	@ movhi
+  12:Core/Src/interrupt.c ****     if (FLAG_Delay)
+  46              		.loc 1 12 5 is_stmt 1 view .LVU5
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s 			page 2
+
+
+  47              		.loc 1 12 9 is_stmt 0 view .LVU6
+  48 0010 0A4B     		ldr	r3, .L3+8
+  49 0012 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  50              		.loc 1 12 8 view .LVU7
+  51 0014 1BB1     		cbz	r3, .L2
+  13:Core/Src/interrupt.c ****         TickDelayCount++;
+  52              		.loc 1 13 9 is_stmt 1 view .LVU8
+  53              		.loc 1 13 23 is_stmt 0 view .LVU9
+  54 0016 0A4A     		ldr	r2, .L3+12
+  55 0018 1388     		ldrh	r3, [r2]
+  56 001a 0133     		adds	r3, r3, #1
+  57 001c 1380     		strh	r3, [r2]	@ movhi
+  58              	.L2:
+  14:Core/Src/interrupt.c ****     ENC_CNT = TIM2->CNT;
+  59              		.loc 1 14 5 is_stmt 1 view .LVU10
+  60              		.loc 1 14 19 is_stmt 0 view .LVU11
+  61 001e 4FF08043 		mov	r3, #1073741824
+  62 0022 596A     		ldr	r1, [r3, #36]
+  63              		.loc 1 14 13 view .LVU12
+  64 0024 074A     		ldr	r2, .L3+16
+  65 0026 1180     		strh	r1, [r2]	@ movhi
+  15:Core/Src/interrupt.c ****     encDir = READ_BIT(TIM2->CR1, TIM_CR1_DIR) >> 4;
+  66              		.loc 1 15 5 is_stmt 1 view .LVU13
+  67              		.loc 1 15 14 is_stmt 0 view .LVU14
+  68 0028 1B68     		ldr	r3, [r3]
+  69              		.loc 1 15 47 view .LVU15
+  70 002a C3F30013 		ubfx	r3, r3, #4, #1
+  71              		.loc 1 15 12 view .LVU16
+  72 002e 064A     		ldr	r2, .L3+20
+  73 0030 1370     		strb	r3, [r2]
+  16:Core/Src/interrupt.c **** }
+  74              		.loc 1 16 1 view .LVU17
+  75 0032 7047     		bx	lr
+  76              	.L4:
+  77              		.align	2
+  78              	.L3:
+  79 0034 00000000 		.word	buttonTickCount
+  80 0038 00000000 		.word	GlobalTickCount
+  81 003c 00000000 		.word	FLAG_Delay
+  82 0040 00000000 		.word	TickDelayCount
+  83 0044 00000000 		.word	ENC_CNT
+  84 0048 00000000 		.word	encDir
+  85              		.cfi_endproc
+  86              	.LFE130:
+  88              		.section	.text.delay,"ax",%progbits
+  89              		.align	1
+  90              		.global	delay
+  91              		.syntax unified
+  92              		.thumb
+  93              		.thumb_func
+  95              	delay:
+  96              	.LVL0:
+  97              	.LFB131:
+  17:Core/Src/interrupt.c **** 
+  18:Core/Src/interrupt.c **** void delay(int del)
+  19:Core/Src/interrupt.c **** {
+  98              		.loc 1 19 1 is_stmt 1 view -0
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s 			page 3
+
+
+  99              		.cfi_startproc
+ 100              		@ args = 0, pretend = 0, frame = 0
+ 101              		@ frame_needed = 0, uses_anonymous_args = 0
+ 102              		@ link register save eliminated.
+  20:Core/Src/interrupt.c ****     FLAG_Delay = 1;
+ 103              		.loc 1 20 5 view .LVU19
+ 104              		.loc 1 20 16 is_stmt 0 view .LVU20
+ 105 0000 064B     		ldr	r3, .L7
+ 106 0002 0122     		movs	r2, #1
+ 107 0004 1A70     		strb	r2, [r3]
+  21:Core/Src/interrupt.c ****     while (TickDelayCount < del)
+ 108              		.loc 1 21 5 is_stmt 1 view .LVU21
+ 109              	.L6:
+  22:Core/Src/interrupt.c ****     {
+  23:Core/Src/interrupt.c ****     }
+ 110              		.loc 1 23 5 view .LVU22
+  21:Core/Src/interrupt.c ****     while (TickDelayCount < del)
+ 111              		.loc 1 21 27 discriminator 1 view .LVU23
+ 112 0006 064B     		ldr	r3, .L7+4
+ 113 0008 1B88     		ldrh	r3, [r3]
+ 114 000a 8342     		cmp	r3, r0
+ 115 000c FBDB     		blt	.L6
+  24:Core/Src/interrupt.c ****     TickDelayCount = 0;
+ 116              		.loc 1 24 5 view .LVU24
+ 117              		.loc 1 24 20 is_stmt 0 view .LVU25
+ 118 000e 0023     		movs	r3, #0
+ 119 0010 034A     		ldr	r2, .L7+4
+ 120 0012 1380     		strh	r3, [r2]	@ movhi
+  25:Core/Src/interrupt.c ****     FLAG_Delay = 0;
+ 121              		.loc 1 25 5 is_stmt 1 view .LVU26
+ 122              		.loc 1 25 16 is_stmt 0 view .LVU27
+ 123 0014 014A     		ldr	r2, .L7
+ 124 0016 1370     		strb	r3, [r2]
+  26:Core/Src/interrupt.c **** }
+ 125              		.loc 1 26 1 view .LVU28
+ 126 0018 7047     		bx	lr
+ 127              	.L8:
+ 128 001a 00BF     		.align	2
+ 129              	.L7:
+ 130 001c 00000000 		.word	FLAG_Delay
+ 131 0020 00000000 		.word	TickDelayCount
+ 132              		.cfi_endproc
+ 133              	.LFE131:
+ 135              		.section	.text.EXTI15_10_IRQHandler,"ax",%progbits
+ 136              		.align	1
+ 137              		.global	EXTI15_10_IRQHandler
+ 138              		.syntax unified
+ 139              		.thumb
+ 140              		.thumb_func
+ 142              	EXTI15_10_IRQHandler:
+ 143              	.LFB132:
+  27:Core/Src/interrupt.c **** 
+  28:Core/Src/interrupt.c **** void EXTI15_10_IRQHandler(void)
+  29:Core/Src/interrupt.c **** {
+ 144              		.loc 1 29 1 is_stmt 1 view -0
+ 145              		.cfi_startproc
+ 146              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s 			page 4
+
+
+ 147              		@ frame_needed = 0, uses_anonymous_args = 0
+ 148              		@ link register save eliminated.
+  30:Core/Src/interrupt.c ****     SET_BIT(EXTI->PR, EXTI_PR_PR13);
+ 149              		.loc 1 30 5 view .LVU30
+ 150 0000 094A     		ldr	r2, .L11
+ 151 0002 5369     		ldr	r3, [r2, #20]
+ 152 0004 43F40053 		orr	r3, r3, #8192
+ 153 0008 5361     		str	r3, [r2, #20]
+  31:Core/Src/interrupt.c ****     if (buttonTickCount > 100)
+ 154              		.loc 1 31 5 view .LVU31
+ 155              		.loc 1 31 25 is_stmt 0 view .LVU32
+ 156 000a 084B     		ldr	r3, .L11+4
+ 157 000c 1B88     		ldrh	r3, [r3]
+ 158              		.loc 1 31 8 view .LVU33
+ 159 000e 642B     		cmp	r3, #100
+ 160 0010 08D9     		bls	.L9
+  32:Core/Src/interrupt.c ****     {
+  33:Core/Src/interrupt.c ****         buttonTickCount = 0;
+ 161              		.loc 1 33 9 is_stmt 1 view .LVU34
+ 162              		.loc 1 33 25 is_stmt 0 view .LVU35
+ 163 0012 064B     		ldr	r3, .L11+4
+ 164 0014 0022     		movs	r2, #0
+ 165 0016 1A80     		strh	r2, [r3]	@ movhi
+  34:Core/Src/interrupt.c ****         BtnNum = !BtnNum;
+ 166              		.loc 1 34 9 is_stmt 1 view .LVU36
+ 167              		.loc 1 34 18 is_stmt 0 view .LVU37
+ 168 0018 054A     		ldr	r2, .L11+8
+ 169 001a 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 170 001c B3FA83F3 		clz	r3, r3
+ 171 0020 5B09     		lsrs	r3, r3, #5
+ 172              		.loc 1 34 16 view .LVU38
+ 173 0022 1370     		strb	r3, [r2]
+ 174              	.L9:
+  35:Core/Src/interrupt.c ****     }
+  36:Core/Src/interrupt.c **** }
+ 175              		.loc 1 36 1 view .LVU39
+ 176 0024 7047     		bx	lr
+ 177              	.L12:
+ 178 0026 00BF     		.align	2
+ 179              	.L11:
+ 180 0028 003C0140 		.word	1073822720
+ 181 002c 00000000 		.word	buttonTickCount
+ 182 0030 00000000 		.word	BtnNum
+ 183              		.cfi_endproc
+ 184              	.LFE132:
+ 186              		.global	__aeabi_f2d
+ 187              		.global	__aeabi_dadd
+ 188              		.global	__aeabi_d2f
+ 189              		.section	.text.TIM3_IRQHandler,"ax",%progbits
+ 190              		.align	1
+ 191              		.global	TIM3_IRQHandler
+ 192              		.syntax unified
+ 193              		.thumb
+ 194              		.thumb_func
+ 196              	TIM3_IRQHandler:
+ 197              	.LFB133:
+  37:Core/Src/interrupt.c **** 
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s 			page 5
+
+
+  38:Core/Src/interrupt.c **** void TIM3_IRQHandler(void)
+  39:Core/Src/interrupt.c **** {
+ 198              		.loc 1 39 1 is_stmt 1 view -0
+ 199              		.cfi_startproc
+ 200              		@ args = 0, pretend = 0, frame = 0
+ 201              		@ frame_needed = 0, uses_anonymous_args = 0
+  40:Core/Src/interrupt.c ****     if (READ_BIT(TIM3->SR, TIM_SR_UIF))
+ 202              		.loc 1 40 5 view .LVU41
+ 203              		.loc 1 40 9 is_stmt 0 view .LVU42
+ 204 0000 1B4B     		ldr	r3, .L23+8
+ 205 0002 1B69     		ldr	r3, [r3, #16]
+ 206              		.loc 1 40 8 view .LVU43
+ 207 0004 13F0010F 		tst	r3, #1
+ 208 0008 2BD0     		beq	.L19
+  41:Core/Src/interrupt.c ****     {
+  42:Core/Src/interrupt.c ****         TIMCount += 10;
+ 209              		.loc 1 42 9 is_stmt 1 view .LVU44
+ 210              		.loc 1 42 18 is_stmt 0 view .LVU45
+ 211 000a 1A4A     		ldr	r2, .L23+12
+ 212 000c 1368     		ldr	r3, [r2]
+ 213 000e 0A33     		adds	r3, r3, #10
+ 214 0010 1360     		str	r3, [r2]
+  43:Core/Src/interrupt.c ****         if (TIMCount >= calculatePulseARR)
+ 215              		.loc 1 43 9 is_stmt 1 view .LVU46
+ 216              		.loc 1 43 22 is_stmt 0 view .LVU47
+ 217 0012 07EE903A 		vmov	s15, r3	@ int
+ 218 0016 F8EE677A 		vcvt.f32.u32	s15, s15
+ 219 001a 174B     		ldr	r3, .L23+16
+ 220 001c 93ED007A 		vldr.32	s14, [r3]
+ 221              		.loc 1 43 12 view .LVU48
+ 222 0020 F4EEC77A 		vcmpe.f32	s15, s14
+ 223 0024 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 224 0028 15DB     		blt	.L20
+  39:Core/Src/interrupt.c ****     if (READ_BIT(TIM3->SR, TIM_SR_UIF))
+ 225              		.loc 1 39 1 view .LVU49
+ 226 002a 10B5     		push	{r4, lr}
+ 227              	.LCFI0:
+ 228              		.cfi_def_cfa_offset 8
+ 229              		.cfi_offset 4, -8
+ 230              		.cfi_offset 14, -4
+  44:Core/Src/interrupt.c ****         {
+  45:Core/Src/interrupt.c ****             FLAG_Revolution += 0.1;
+ 231              		.loc 1 45 13 is_stmt 1 view .LVU50
+ 232              		.loc 1 45 29 is_stmt 0 view .LVU51
+ 233 002c 134C     		ldr	r4, .L23+20
+ 234 002e 2068     		ldr	r0, [r4]	@ float
+ 235 0030 FFF7FEFF 		bl	__aeabi_f2d
+ 236              	.LVL1:
+ 237 0034 0CA3     		adr	r3, .L23
+ 238 0036 D3E90023 		ldrd	r2, [r3]
+ 239 003a FFF7FEFF 		bl	__aeabi_dadd
+ 240              	.LVL2:
+ 241 003e FFF7FEFF 		bl	__aeabi_d2f
+ 242              	.LVL3:
+ 243 0042 2060     		str	r0, [r4]	@ float
+  46:Core/Src/interrupt.c ****             TIMCount = 0;
+ 244              		.loc 1 46 13 is_stmt 1 view .LVU52
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s 			page 6
+
+
+ 245              		.loc 1 46 22 is_stmt 0 view .LVU53
+ 246 0044 0B4B     		ldr	r3, .L23+12
+ 247 0046 0022     		movs	r2, #0
+ 248 0048 1A60     		str	r2, [r3]
+  47:Core/Src/interrupt.c ****         }
+  48:Core/Src/interrupt.c ****         CLEAR_BIT(TIM3->SR, TIM_SR_UIF);
+ 249              		.loc 1 48 9 is_stmt 1 view .LVU54
+ 250 004a 094A     		ldr	r2, .L23+8
+ 251 004c 1369     		ldr	r3, [r2, #16]
+ 252 004e 23F00103 		bic	r3, r3, #1
+ 253 0052 1361     		str	r3, [r2, #16]
+  49:Core/Src/interrupt.c ****     }
+  50:Core/Src/interrupt.c **** }
+ 254              		.loc 1 50 1 is_stmt 0 view .LVU55
+ 255 0054 10BD     		pop	{r4, pc}
+ 256              	.L20:
+ 257              	.LCFI1:
+ 258              		.cfi_def_cfa_offset 0
+ 259              		.cfi_restore 4
+ 260              		.cfi_restore 14
+  48:Core/Src/interrupt.c ****     }
+ 261              		.loc 1 48 9 is_stmt 1 view .LVU56
+ 262 0056 064A     		ldr	r2, .L23+8
+ 263 0058 1369     		ldr	r3, [r2, #16]
+ 264 005a 23F00103 		bic	r3, r3, #1
+ 265 005e 1361     		str	r3, [r2, #16]
+ 266 0060 7047     		bx	lr
+ 267              	.L19:
+ 268 0062 7047     		bx	lr
+ 269              	.L24:
+ 270 0064 AFF30080 		.align	3
+ 271              	.L23:
+ 272 0068 9A999999 		.word	-1717986918
+ 273 006c 9999B93F 		.word	1069128089
+ 274 0070 00040040 		.word	1073742848
+ 275 0074 00000000 		.word	TIMCount
+ 276 0078 00000000 		.word	calculatePulseARR
+ 277 007c 00000000 		.word	FLAG_Revolution
+ 278              		.cfi_endproc
+ 279              	.LFE133:
+ 281              		.section	.text.TIM2_IRQHandler,"ax",%progbits
+ 282              		.align	1
+ 283              		.global	TIM2_IRQHandler
+ 284              		.syntax unified
+ 285              		.thumb
+ 286              		.thumb_func
+ 288              	TIM2_IRQHandler:
+ 289              	.LFB134:
+  51:Core/Src/interrupt.c **** 
+  52:Core/Src/interrupt.c **** void TIM2_IRQHandler(void)
+  53:Core/Src/interrupt.c **** {
+ 290              		.loc 1 53 1 view -0
+ 291              		.cfi_startproc
+ 292              		@ args = 0, pretend = 0, frame = 0
+ 293              		@ frame_needed = 0, uses_anonymous_args = 0
+ 294              		@ link register save eliminated.
+  54:Core/Src/interrupt.c ****     if (TIM2->SR & TIM_SR_UIF)
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s 			page 7
+
+
+ 295              		.loc 1 54 5 view .LVU58
+ 296              		.loc 1 54 13 is_stmt 0 view .LVU59
+ 297 0000 4FF08043 		mov	r3, #1073741824
+ 298 0004 1B69     		ldr	r3, [r3, #16]
+ 299              		.loc 1 54 8 view .LVU60
+ 300 0006 13F0010F 		tst	r3, #1
+ 301 000a 0FD0     		beq	.L25
+  55:Core/Src/interrupt.c ****     {
+  56:Core/Src/interrupt.c ****         if (READ_BIT(TIM2->CR1, TIM_CR1_DIR) != 0)
+ 302              		.loc 1 56 9 is_stmt 1 view .LVU61
+ 303              		.loc 1 56 13 is_stmt 0 view .LVU62
+ 304 000c 4FF08043 		mov	r3, #1073741824
+ 305 0010 1B68     		ldr	r3, [r3]
+ 306              		.loc 1 56 12 view .LVU63
+ 307 0012 13F0100F 		tst	r3, #16
+ 308 0016 0AD0     		beq	.L27
+  57:Core/Src/interrupt.c ****         {
+  58:Core/Src/interrupt.c ****             encItr--;
+ 309              		.loc 1 58 13 is_stmt 1 view .LVU64
+ 310              		.loc 1 58 19 is_stmt 0 view .LVU65
+ 311 0018 074A     		ldr	r2, .L29
+ 312 001a 1388     		ldrh	r3, [r2]
+ 313 001c 013B     		subs	r3, r3, #1
+ 314 001e 1380     		strh	r3, [r2]	@ movhi
+ 315              	.L28:
+  59:Core/Src/interrupt.c ****         }
+  60:Core/Src/interrupt.c ****         else
+  61:Core/Src/interrupt.c ****             encItr++;
+  62:Core/Src/interrupt.c ****         CLEAR_BIT(TIM2->SR, TIM_SR_UIF);
+ 316              		.loc 1 62 9 is_stmt 1 view .LVU66
+ 317 0020 4FF08042 		mov	r2, #1073741824
+ 318 0024 1369     		ldr	r3, [r2, #16]
+ 319 0026 23F00103 		bic	r3, r3, #1
+ 320 002a 1361     		str	r3, [r2, #16]
+ 321              	.L25:
+  63:Core/Src/interrupt.c ****     }
+  64:Core/Src/interrupt.c **** }...
+ 322              		.loc 1 64 1 is_stmt 0 view .LVU67
+ 323 002c 7047     		bx	lr
+ 324              	.L27:
+  61:Core/Src/interrupt.c ****             encItr++;
+ 325              		.loc 1 61 13 is_stmt 1 view .LVU68
+  61:Core/Src/interrupt.c ****             encItr++;
+ 326              		.loc 1 61 19 is_stmt 0 view .LVU69
+ 327 002e 024A     		ldr	r2, .L29
+ 328 0030 1388     		ldrh	r3, [r2]
+ 329 0032 0133     		adds	r3, r3, #1
+ 330 0034 1380     		strh	r3, [r2]	@ movhi
+ 331 0036 F3E7     		b	.L28
+ 332              	.L30:
+ 333              		.align	2
+ 334              	.L29:
+ 335 0038 00000000 		.word	encItr
+ 336              		.cfi_endproc
+ 337              	.LFE134:
+ 339              		.global	calculateDeg
+ 340              		.section	.bss.calculateDeg,"aw",%nobits
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s 			page 8
+
+
+ 341              		.align	2
+ 344              	calculateDeg:
+ 345 0000 00000000 		.space	4
+ 346              		.global	TIMCount
+ 347              		.section	.bss.TIMCount,"aw",%nobits
+ 348              		.align	2
+ 351              	TIMCount:
+ 352 0000 00000000 		.space	4
+ 353              		.global	encDir
+ 354              		.section	.bss.encDir,"aw",%nobits
+ 357              	encDir:
+ 358 0000 00       		.space	1
+ 359              		.global	FLAG_Delay
+ 360              		.section	.bss.FLAG_Delay,"aw",%nobits
+ 363              	FLAG_Delay:
+ 364 0000 00       		.space	1
+ 365              		.global	encItr
+ 366              		.section	.bss.encItr,"aw",%nobits
+ 367              		.align	1
+ 370              	encItr:
+ 371 0000 0000     		.space	2
+ 372              		.global	ENC_CNT
+ 373              		.section	.bss.ENC_CNT,"aw",%nobits
+ 374              		.align	1
+ 377              	ENC_CNT:
+ 378 0000 0000     		.space	2
+ 379              		.global	buttonTickCount
+ 380              		.section	.bss.buttonTickCount,"aw",%nobits
+ 381              		.align	1
+ 384              	buttonTickCount:
+ 385 0000 0000     		.space	2
+ 386              		.global	TickDelayCount
+ 387              		.section	.bss.TickDelayCount,"aw",%nobits
+ 388              		.align	1
+ 391              	TickDelayCount:
+ 392 0000 0000     		.space	2
+ 393              		.text
+ 394              	.Letext0:
+ 395              		.file 2 "C:/Users/Asus/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include/machine/_default
+ 396              		.file 3 "C:/Users/Asus/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include/sys/_stdint.h"
+ 397              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F407xx/stm32f407xx.h"
+ 398              		.file 5 "Core/Inc/interrupt.h"
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s 			page 9
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 interrupt.c
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:21     .text.SysTick_Handler:00000000 $t
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:27     .text.SysTick_Handler:00000000 SysTick_Handler
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:79     .text.SysTick_Handler:00000034 $d
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:384    .bss.buttonTickCount:00000000 buttonTickCount
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:363    .bss.FLAG_Delay:00000000 FLAG_Delay
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:391    .bss.TickDelayCount:00000000 TickDelayCount
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:377    .bss.ENC_CNT:00000000 ENC_CNT
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:357    .bss.encDir:00000000 encDir
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:89     .text.delay:00000000 $t
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:95     .text.delay:00000000 delay
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:130    .text.delay:0000001c $d
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:136    .text.EXTI15_10_IRQHandler:00000000 $t
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:142    .text.EXTI15_10_IRQHandler:00000000 EXTI15_10_IRQHandler
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:180    .text.EXTI15_10_IRQHandler:00000028 $d
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:190    .text.TIM3_IRQHandler:00000000 $t
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:196    .text.TIM3_IRQHandler:00000000 TIM3_IRQHandler
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:272    .text.TIM3_IRQHandler:00000068 $d
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:351    .bss.TIMCount:00000000 TIMCount
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:282    .text.TIM2_IRQHandler:00000000 $t
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:288    .text.TIM2_IRQHandler:00000000 TIM2_IRQHandler
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:335    .text.TIM2_IRQHandler:00000038 $d
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:370    .bss.encItr:00000000 encItr
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:344    .bss.calculateDeg:00000000 calculateDeg
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:341    .bss.calculateDeg:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:348    .bss.TIMCount:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:358    .bss.encDir:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:364    .bss.FLAG_Delay:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:367    .bss.encItr:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:374    .bss.ENC_CNT:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:381    .bss.buttonTickCount:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\cc8esKFW.s:388    .bss.TickDelayCount:00000000 $d
+
+UNDEFINED SYMBOLS
+GlobalTickCount
+BtnNum
+__aeabi_f2d
+__aeabi_dadd
+__aeabi_d2f
+calculatePulseARR
+FLAG_Revolution

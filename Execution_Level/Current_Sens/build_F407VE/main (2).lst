@@ -1,0 +1,165 @@
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\cc3hebRO.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.section	.text.main,"ax",%progbits
+  21              		.align	1
+  22              		.global	main
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	main:
+  28              	.LFB130:
+   1:Core/Src/main.c **** #include "interrupt.h"
+   2:Core/Src/main.c **** 
+   3:Core/Src/main.c **** uint16_t GlobalTickCount, MotorTickCount;
+   4:Core/Src/main.c **** uint8_t BtnNum;
+   5:Core/Src/main.c **** float FLAG_Revolution, calculatePulseARR;
+   6:Core/Src/main.c **** 
+   7:Core/Src/main.c **** int main(void)
+   8:Core/Src/main.c **** {
+  29              		.loc 1 8 1 view -0
+  30              		.cfi_startproc
+  31              		@ Volatile: function does not return.
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34 0000 08B5     		push	{r3, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 3, -8
+  38              		.cfi_offset 14, -4
+   9:Core/Src/main.c ****     RCC_Init();
+  39              		.loc 1 9 5 view .LVU1
+  40 0002 FFF7FEFF 		bl	RCC_Init
+  41              	.LVL0:
+  10:Core/Src/main.c ****     ITR_Init();
+  42              		.loc 1 10 5 view .LVU2
+  43 0006 FFF7FEFF 		bl	ITR_Init
+  44              	.LVL1:
+  11:Core/Src/main.c ****     GPIO_Init();
+  45              		.loc 1 11 5 view .LVU3
+  46 000a FFF7FEFF 		bl	GPIO_Init
+  47              	.LVL2:
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\cc3hebRO.s 			page 2
+
+
+  12:Core/Src/main.c ****     SysTick_Init();
+  48              		.loc 1 12 5 view .LVU4
+  49 000e FFF7FEFF 		bl	SysTick_Init
+  50              	.LVL3:
+  13:Core/Src/main.c ****     TIM_PWM_Init();
+  51              		.loc 1 13 5 view .LVU5
+  52 0012 FFF7FEFF 		bl	TIM_PWM_Init
+  53              	.LVL4:
+  14:Core/Src/main.c ****     TIM_ENCODER_Init();
+  54              		.loc 1 14 5 view .LVU6
+  55 0016 FFF7FEFF 		bl	TIM_ENCODER_Init
+  56              	.LVL5:
+  15:Core/Src/main.c ****     Enc_Trig_Init();
+  57              		.loc 1 15 5 view .LVU7
+  58 001a FFF7FEFF 		bl	Enc_Trig_Init
+  59              	.LVL6:
+  60              	.L2:
+  16:Core/Src/main.c **** 
+  17:Core/Src/main.c ****     while (1)
+  61              		.loc 1 17 5 view .LVU8
+  18:Core/Src/main.c ****     {
+  19:Core/Src/main.c ****         SET_BIT(GPIOA->BSRR, GPIO_BSRR_BR7);
+  62              		.loc 1 19 9 view .LVU9
+  63 001e 054B     		ldr	r3, .L4
+  64 0020 9A69     		ldr	r2, [r3, #24]
+  65 0022 42F40002 		orr	r2, r2, #8388608
+  66 0026 9A61     		str	r2, [r3, #24]
+  20:Core/Src/main.c ****         SET_BIT(GPIOA->BSRR, GPIO_BSRR_BR6);
+  67              		.loc 1 20 9 discriminator 1 view .LVU10
+  68 0028 9A69     		ldr	r2, [r3, #24]
+  69 002a 42F48002 		orr	r2, r2, #4194304
+  70 002e 9A61     		str	r2, [r3, #24]
+  17:Core/Src/main.c ****     {
+  71              		.loc 1 17 11 view .LVU11
+  72 0030 F5E7     		b	.L2
+  73              	.L5:
+  74 0032 00BF     		.align	2
+  75              	.L4:
+  76 0034 00000240 		.word	1073872896
+  77              		.cfi_endproc
+  78              	.LFE130:
+  80              		.global	calculatePulseARR
+  81              		.section	.bss.calculatePulseARR,"aw",%nobits
+  82              		.align	2
+  85              	calculatePulseARR:
+  86 0000 00000000 		.space	4
+  87              		.global	FLAG_Revolution
+  88              		.section	.bss.FLAG_Revolution,"aw",%nobits
+  89              		.align	2
+  92              	FLAG_Revolution:
+  93 0000 00000000 		.space	4
+  94              		.global	BtnNum
+  95              		.section	.bss.BtnNum,"aw",%nobits
+  98              	BtnNum:
+  99 0000 00       		.space	1
+ 100              		.global	MotorTickCount
+ 101              		.section	.bss.MotorTickCount,"aw",%nobits
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\cc3hebRO.s 			page 3
+
+
+ 102              		.align	1
+ 105              	MotorTickCount:
+ 106 0000 0000     		.space	2
+ 107              		.global	GlobalTickCount
+ 108              		.section	.bss.GlobalTickCount,"aw",%nobits
+ 109              		.align	1
+ 112              	GlobalTickCount:
+ 113 0000 0000     		.space	2
+ 114              		.text
+ 115              	.Letext0:
+ 116              		.file 2 "C:/Programm/tools/xpack-arm-none-eabi-gcc-14.2.1-1.1/arm-none-eabi/include/machine/_defau
+ 117              		.file 3 "C:/Programm/tools/xpack-arm-none-eabi-gcc-14.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 118              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F407xx/stm32f407xx.h"
+ 119              		.file 5 "Core/Inc/interrupt.h"
+ 120              		.file 6 "Core/Inc/init.h"
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\cc3hebRO.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\Asus\AppData\Local\Temp\cc3hebRO.s:21     .text.main:00000000 $t
+C:\Users\Asus\AppData\Local\Temp\cc3hebRO.s:27     .text.main:00000000 main
+C:\Users\Asus\AppData\Local\Temp\cc3hebRO.s:76     .text.main:00000034 $d
+C:\Users\Asus\AppData\Local\Temp\cc3hebRO.s:85     .bss.calculatePulseARR:00000000 calculatePulseARR
+C:\Users\Asus\AppData\Local\Temp\cc3hebRO.s:82     .bss.calculatePulseARR:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\cc3hebRO.s:92     .bss.FLAG_Revolution:00000000 FLAG_Revolution
+C:\Users\Asus\AppData\Local\Temp\cc3hebRO.s:89     .bss.FLAG_Revolution:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\cc3hebRO.s:98     .bss.BtnNum:00000000 BtnNum
+C:\Users\Asus\AppData\Local\Temp\cc3hebRO.s:99     .bss.BtnNum:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\cc3hebRO.s:105    .bss.MotorTickCount:00000000 MotorTickCount
+C:\Users\Asus\AppData\Local\Temp\cc3hebRO.s:102    .bss.MotorTickCount:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\cc3hebRO.s:112    .bss.GlobalTickCount:00000000 GlobalTickCount
+C:\Users\Asus\AppData\Local\Temp\cc3hebRO.s:109    .bss.GlobalTickCount:00000000 $d
+
+UNDEFINED SYMBOLS
+RCC_Init
+ITR_Init
+GPIO_Init
+SysTick_Init
+TIM_PWM_Init
+TIM_ENCODER_Init
+Enc_Trig_Init

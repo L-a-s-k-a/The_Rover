@@ -4,34 +4,29 @@ void RCC_Init(void)
 {
     MODIFY_REG(RCC->CR, RCC_CR_HSITRIM, 0x80U);
     CLEAR_REG(RCC->CFGR);
-    while (READ_BIT(RCC->CFGR, RCC_CFGR_SWS) != RESET)
-        ;
+    while (READ_BIT(RCC->CFGR, RCC_CFGR_SWS) != RESET);
     CLEAR_BIT(RCC->CR, RCC_CR_PLLON);
-    while (READ_BIT(RCC->CR, RCC_CR_PLLRDY) != RESET)
-        ;
+    while (READ_BIT(RCC->CR, RCC_CR_PLLRDY) != RESET);
     CLEAR_BIT(RCC->CR, RCC_CR_HSEON | RCC_CR_CSSON);
-    while (READ_BIT(RCC->CR, RCC_CR_HSERDY) != RESET)
-        ;
+    while (READ_BIT(RCC->CR, RCC_CR_HSERDY) != RESET);
     CLEAR_BIT(RCC->CR, RCC_CR_HSEBYP);
 
     SET_BIT(RCC->CR, RCC_CR_HSEON); // Включение внешнего источника тактирования высокой частоты
-    while (READ_BIT(RCC->CR, RCC_CR_HSERDY) == RESET)
-        ;
+    while (READ_BIT(RCC->CR, RCC_CR_HSERDY) == RESET);
     SET_BIT(RCC->CR, RCC_CR_CSSON); // Включение Clock Security
 
+    /*------------------Настройка на 168 МГц------------------*/
     CLEAR_REG(RCC->PLLCFGR);
     SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLSRC_HSE); // Источник тактирвоания HSE
     SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLM_2);     // Деление источника тактирования на 4 (PLLM)
-    SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLN_3 | RCC_PLLCFGR_PLLN_5 |
-                              RCC_PLLCFGR_PLLN_6 | RCC_PLLCFGR_PLLN_8); // Настройка умножения на 360 (PLLN)
-    SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLP_0);     // Деление частоты после умножения на 4 (PLLP)
-    SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLQ_0 | RCC_PLLCFGR_PLLQ_1 |
-                              RCC_PLLCFGR_PLLQ_2 | RCC_PLLCFGR_PLLQ_3); // Деление частоты после умножения на 15 (PLLQ)
+    SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLN_2 | RCC_PLLCFGR_PLLN_5 | RCC_PLLCFGR_PLLN_7); // Настройка умножения на 84 (PLLN) (0101 0100)
+    CLEAR_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLP);     // Деление частоты после умножения на 2 (PLLP)
+    SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLQ_0 | RCC_PLLCFGR_PLLQ_1); // Деление частоты после умножения на 3 (PLLQ)
 
     SET_BIT(RCC->CFGR, RCC_CFGR_SW_PLL);                         // В качестве системного тактирования выбран PLL
     SET_BIT(RCC->CFGR, RCC_CFGR_HPRE_DIV1);                      // Предделитель шины AHB1 настроен на 1 (без деления)
-    SET_BIT(RCC->CFGR, RCC_CFGR_PPRE1_DIV4);                     // Предделитель шины APB1 настроен на 4 (45МГц)
-    SET_BIT(RCC->CFGR, RCC_CFGR_PPRE2_DIV2);                     // Предделитель шины APB2 настроен на 2 (90МГц)
+    SET_BIT(RCC->CFGR, RCC_CFGR_PPRE1_DIV4);                     // Предделитель шины APB1 настроен на 4 (42МГц)
+    SET_BIT(RCC->CFGR, RCC_CFGR_PPRE2_DIV2);                     // Предделитель шины APB2 настроен на 2 (84МГц)
     SET_BIT(RCC->CFGR, RCC_CFGR_MCO1);                           // Нстройка вывода частоты PLL на MCO1
     SET_BIT(RCC->CFGR, RCC_CFGR_MCO1PRE_2 | RCC_CFGR_MCO1PRE_1); // Предделитель 4 для вывода на MCO1
     CLEAR_BIT(RCC->CFGR, RCC_CFGR_MCO2);                         // Настройка вывода частоты SYSCLK на MCO2
@@ -80,7 +75,7 @@ void SysTick_Init(void){
 
 void GPIO_Init(void)
 {
-    SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN | RCC_AHB1ENR_GPIOAEN | RCC_AHB1ENR_GPIOEEN);
+    SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOAEN);
 
     SET_BIT(GPIOB->MODER, GPIO_MODER_MODER7_0);
     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);
