@@ -122,22 +122,34 @@ void TIM_PWM_Init(void){
 void ADC_Init_Polling(void){
     SET_BIT(RCC->APB2ENR, RCC_APB2ENR_ADC1EN);
 
+    //Натсройка канала PA0 для работы в аналоговом режиме
     SET_BIT(GPIOA->MODER, GPIO_MODER_MODER0);
     CLEAR_BIT(GPIOA->PUPDR, GPIO_PUPDR_PUPD0);
 
-    CLEAR_BIT(ADC->CCR, ADC_CCR_ADCPRE);
+    /* Установка предделителя на 6, АЦП тактируется от шины АРВ2 84МГц, 
+     * а АЦП должно работать на частоте не более 14 МГц, из-за чего
+     * следует устанавливать делитель на 6
+     */
+    SET_BIT(ADC->CCR, ADC_CCR_ADCPRE_1);
+
+    //Включение внутреннего датчика температуры
+    SET_BIT(ADC->CCR, ADC_CCR_TSVREFE);
 
     CLEAR_BIT(ADC1->CR1, ADC_CR1_RES);
-    CLEAR_BIT(ADC1->CR1, ADC_CR1_SCAN);
+    SET_BIT(ADC1->CR1, ADC_CR1_SCAN);
 
     CLEAR_BIT(ADC1->CR2, ADC_CR2_ALIGN);
     CLEAR_BIT(ADC1->CR2, ADC_CR2_CONT);
 
+    //Количество сэмплов преобраования на 15
     SET_BIT(ADC1->SMPR2, ADC_SMPR2_SMP0_0);
 
-    CLEAR_BIT(ADC1->SQR1, ADC_SQR1_L);
-    CLEAR_BIT(ADC1->SQR3, ADC_SQR3_SQ1);
+    //Выбор канала и последовательности считывания
+    CLEAR_BIT(ADC1->SQR1, ADC_SQR1_L); //Общее число преобразований - 2
+    // CLEAR_BIT(ADC1->SQR3, ADC_SQR3_SQ1); //1 канал
+    CLEAR_BIT(ADC1->SQR1, ADC_SQR1_SQ16);
 
+    //Включение АЦП
     SET_BIT(ADC1->CR2, ADC_CR2_ADON);
 }
 

@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\Laska\AppData\Local\Temp\cc3OtRZA.s 			page 1
+ARM GAS  C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -33,9 +33,9 @@ ARM GAS  C:\Users\Laska\AppData\Local\Temp\cc3OtRZA.s 			page 1
    2:Core/Src/main.c **** 
    3:Core/Src/main.c **** uint16_t ADC_Read_Polling(uint8_t channel);
    4:Core/Src/main.c **** 
-   5:Core/Src/main.c **** uint16_t GlobalTickCount, MotorTickCount, adcValue;
+   5:Core/Src/main.c **** uint16_t GlobalTickCount, MotorTickCount, potentiometr, adcTS;
    6:Core/Src/main.c **** uint8_t BtnNum;
-   7:Core/Src/main.c **** float FLAG_Revolution, calculatePulseARR;
+   7:Core/Src/main.c **** float FLAG_Revolution, calculatePulseARR, Temperature, Vsense;
    8:Core/Src/main.c **** 
    9:Core/Src/main.c **** int main(void)
   10:Core/Src/main.c **** {
@@ -50,54 +50,60 @@ ARM GAS  C:\Users\Laska\AppData\Local\Temp\cc3OtRZA.s 			page 1
   19:Core/Src/main.c **** 
   20:Core/Src/main.c ****     while (1)
   21:Core/Src/main.c ****     {
-  22:Core/Src/main.c ****         adcValue = ADC_Read_Polling(0);
-  23:Core/Src/main.c ****         TIM3->CCR2 = (8400 * adcValue) / 4095; 
-  24:Core/Src/main.c **** 
-  25:Core/Src/main.c ****     }
-  26:Core/Src/main.c **** }
-  27:Core/Src/main.c **** 
-  28:Core/Src/main.c **** uint16_t ADC_Read_Polling(uint8_t channel){
-  30              		.loc 1 28 43 view -0
-ARM GAS  C:\Users\Laska\AppData\Local\Temp\cc3OtRZA.s 			page 2
+  22:Core/Src/main.c ****         // potentiometr = ADC_Read_Polling(0);
+  23:Core/Src/main.c ****         adcTS = ADC_Read_Polling(16);
+  24:Core/Src/main.c ****         Vsense = (3.1 * adcTS) / 4095U;
+  25:Core/Src/main.c ****         // TIM3->CCR2 = (8400 * potentiometr) / 4095; 
+  26:Core/Src/main.c ****         Temperature = ((0.76 - Vsense) / 2.5) + 25;
+  27:Core/Src/main.c ****     }
+  28:Core/Src/main.c **** }
+  29:Core/Src/main.c **** 
+ARM GAS  C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s 			page 2
 
 
+  30:Core/Src/main.c **** uint16_t ADC_Read_Polling(uint8_t channel){
+  30              		.loc 1 30 43 view -0
   31              		.cfi_startproc
   32              		@ args = 0, pretend = 0, frame = 0
   33              		@ frame_needed = 0, uses_anonymous_args = 0
   34              		@ link register save eliminated.
-  29:Core/Src/main.c ****     MODIFY_REG(ADC1->SQR3, ADC_SQR3_SQ1, (channel << ADC_SQR3_SQ1_Pos));
-  35              		.loc 1 29 5 view .LVU1
+  31:Core/Src/main.c ****     // if (channel == 0){
+  32:Core/Src/main.c ****         MODIFY_REG(ADC1->SQR3, ADC_SQR3_SQ1, (channel << ADC_SQR3_SQ1_Pos));
+  35              		.loc 1 32 9 view .LVU1
   36 0000 094A     		ldr	r2, .L3
   37 0002 536B     		ldr	r3, [r2, #52]
   38 0004 23F01F03 		bic	r3, r3, #31
   39 0008 0343     		orrs	r3, r3, r0
   40 000a 5363     		str	r3, [r2, #52]
-  30:Core/Src/main.c ****  
-  31:Core/Src/main.c ****     SET_BIT(ADC1->CR2, ADC_CR2_SWSTART); 
-  41              		.loc 1 31 5 view .LVU2
+  33:Core/Src/main.c ****     // }
+  34:Core/Src/main.c ****     // if (channel == 16){
+  35:Core/Src/main.c ****     //     MODIFY_REG(ADC1->SQR1, ADC_SQR1_SQ16, (channel << ADC_SQR1_SQ16_Pos));
+  36:Core/Src/main.c ****     // }
+  37:Core/Src/main.c ****     SET_BIT(ADC1->CR2, ADC_CR2_SWSTART); 
+  41              		.loc 1 37 5 view .LVU2
   42 000c 9368     		ldr	r3, [r2, #8]
   43 000e 43F08043 		orr	r3, r3, #1073741824
   44 0012 9360     		str	r3, [r2, #8]
-  32:Core/Src/main.c **** 
-  33:Core/Src/main.c ****     while(READ_BIT(ADC1->SR, ADC_SR_EOC) == 0);
-  45              		.loc 1 33 5 view .LVU3
+  38:Core/Src/main.c **** 
+  39:Core/Src/main.c ****     while(READ_BIT(ADC1->SR, ADC_SR_EOC) == 0);
+  45              		.loc 1 39 5 view .LVU3
   46              	.L2:
-  47              		.loc 1 33 42 discriminator 1 view .LVU4
-  48              		.loc 1 33 11 is_stmt 0 discriminator 1 view .LVU5
+  47              		.loc 1 39 42 discriminator 1 view .LVU4
+  48              		.loc 1 39 11 is_stmt 0 discriminator 1 view .LVU5
   49 0014 044B     		ldr	r3, .L3
   50 0016 1B68     		ldr	r3, [r3]
-  51              		.loc 1 33 42 discriminator 1 view .LVU6
+  51              		.loc 1 39 42 discriminator 1 view .LVU6
   52 0018 13F0020F 		tst	r3, #2
   53 001c FAD0     		beq	.L2
-  34:Core/Src/main.c **** 
-  35:Core/Src/main.c ****     return READ_REG(ADC1->DR);
-  54              		.loc 1 35 5 is_stmt 1 view .LVU7
-  55              		.loc 1 35 12 is_stmt 0 view .LVU8
+  40:Core/Src/main.c **** 
+  41:Core/Src/main.c ****     return READ_REG(ADC1->DR);
+  54              		.loc 1 41 5 is_stmt 1 view .LVU7
+  55              		.loc 1 41 12 is_stmt 0 view .LVU8
   56 001e 024B     		ldr	r3, .L3
   57 0020 D86C     		ldr	r0, [r3, #76]
   58              	.LVL1:
-  36:Core/Src/main.c **** }...
-  59              		.loc 1 36 1 view .LVU9
+  42:Core/Src/main.c **** }...
+  59              		.loc 1 42 1 view .LVU9
   60 0022 80B2     		uxth	r0, r0
   61 0024 7047     		bx	lr
   62              	.L4:
@@ -112,15 +118,15 @@ ARM GAS  C:\Users\Laska\AppData\Local\Temp\cc3OtRZA.s 			page 1
   72              		.syntax unified
   73              		.thumb
   74              		.thumb_func
+ARM GAS  C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s 			page 3
+
+
   76              	main:
   77              	.LFB130:
   10:Core/Src/main.c **** {
   78              		.loc 1 10 1 is_stmt 1 view -0
   79              		.cfi_startproc
   80              		@ Volatile: function does not return.
-ARM GAS  C:\Users\Laska\AppData\Local\Temp\cc3OtRZA.s 			page 3
-
-
   81              		@ args = 0, pretend = 0, frame = 0
   82              		@ frame_needed = 0, uses_anonymous_args = 0
   83 0000 08B5     		push	{r3, lr}
@@ -155,106 +161,177 @@ ARM GAS  C:\Users\Laska\AppData\Local\Temp\cc3OtRZA.s 			page 1
  106              	.L6:
   20:Core/Src/main.c ****     while (1)
  107              		.loc 1 20 5 view .LVU17
-  22:Core/Src/main.c ****         adcValue = ADC_Read_Polling(0);
- 108              		.loc 1 22 9 view .LVU18
-  22:Core/Src/main.c ****         adcValue = ADC_Read_Polling(0);
- 109              		.loc 1 22 20 is_stmt 0 view .LVU19
- 110 001a 0020     		movs	r0, #0
+  23:Core/Src/main.c ****         adcTS = ADC_Read_Polling(16);
+ 108              		.loc 1 23 9 view .LVU18
+  23:Core/Src/main.c ****         adcTS = ADC_Read_Polling(16);
+ 109              		.loc 1 23 17 is_stmt 0 view .LVU19
+ 110 001a 1020     		movs	r0, #16
  111 001c FFF7FEFF 		bl	ADC_Read_Polling
  112              	.LVL8:
-  22:Core/Src/main.c ****         adcValue = ADC_Read_Polling(0);
- 113              		.loc 1 22 18 discriminator 1 view .LVU20
- 114 0020 064B     		ldr	r3, .L8
+  23:Core/Src/main.c ****         adcTS = ADC_Read_Polling(16);
+ 113              		.loc 1 23 15 discriminator 1 view .LVU20
+ 114 0020 194B     		ldr	r3, .L8+24
  115 0022 1880     		strh	r0, [r3]	@ movhi
-  23:Core/Src/main.c ****         TIM3->CCR2 = (8400 * adcValue) / 4095; 
- 116              		.loc 1 23 9 is_stmt 1 discriminator 1 view .LVU21
-  23:Core/Src/main.c ****         TIM3->CCR2 = (8400 * adcValue) / 4095; 
- 117              		.loc 1 23 28 is_stmt 0 discriminator 1 view .LVU22
- 118 0024 42F2D003 		movw	r3, #8400
- 119 0028 03FB00F0 		mul	r0, r3, r0
-  23:Core/Src/main.c ****         TIM3->CCR2 = (8400 * adcValue) / 4095; 
- 120              		.loc 1 23 40 discriminator 1 view .LVU23
- 121 002c 044B     		ldr	r3, .L8+4
- 122 002e 83FB0023 		smull	r2, r3, r3, r0
- 123 0032 0344     		add	r3, r3, r0
- 124 0034 DB12     		asrs	r3, r3, #11
-ARM GAS  C:\Users\Laska\AppData\Local\Temp\cc3OtRZA.s 			page 4
+  24:Core/Src/main.c ****         Vsense = (3.1 * adcTS) / 4095U;
+ 116              		.loc 1 24 9 is_stmt 1 view .LVU21
+  24:Core/Src/main.c ****         Vsense = (3.1 * adcTS) / 4095U;
+ 117              		.loc 1 24 23 is_stmt 0 view .LVU22
+ 118 0024 FFF7FEFF 		bl	__aeabi_i2d
+ 119              	.LVL9:
+ARM GAS  C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s 			page 4
 
 
-  23:Core/Src/main.c ****         TIM3->CCR2 = (8400 * adcValue) / 4095; 
- 125              		.loc 1 23 20 discriminator 1 view .LVU24
- 126 0036 034A     		ldr	r2, .L8+8
- 127 0038 9363     		str	r3, [r2, #56]
+ 120 0028 11A3     		adr	r3, .L8
+ 121 002a D3E90023 		ldrd	r2, [r3]
+ 122 002e FFF7FEFF 		bl	__aeabi_dmul
+ 123              	.LVL10:
+  24:Core/Src/main.c ****         Vsense = (3.1 * adcTS) / 4095U;
+ 124              		.loc 1 24 32 view .LVU23
+ 125 0032 11A3     		adr	r3, .L8+8
+ 126 0034 D3E90023 		ldrd	r2, [r3]
+ 127 0038 FFF7FEFF 		bl	__aeabi_ddiv
+ 128              	.LVL11:
+ 129 003c FFF7FEFF 		bl	__aeabi_d2f
+ 130              	.LVL12:
+  24:Core/Src/main.c ****         Vsense = (3.1 * adcTS) / 4095U;
+ 131              		.loc 1 24 16 view .LVU24
+ 132 0040 124B     		ldr	r3, .L8+28
+ 133 0042 1860     		str	r0, [r3]	@ float
+  26:Core/Src/main.c ****         Temperature = ((0.76 - Vsense) / 2.5) + 25;
+ 134              		.loc 1 26 9 is_stmt 1 discriminator 1 view .LVU25
+  26:Core/Src/main.c ****         Temperature = ((0.76 - Vsense) / 2.5) + 25;
+ 135              		.loc 1 26 30 is_stmt 0 discriminator 1 view .LVU26
+ 136 0044 FFF7FEFF 		bl	__aeabi_f2d
+ 137              	.LVL13:
+ 138 0048 0246     		mov	r2, r0
+ 139 004a 0B46     		mov	r3, r1
+ 140 004c 0CA1     		adr	r1, .L8+16
+ 141 004e D1E90001 		ldrd	r0, [r1]
+ 142 0052 FFF7FEFF 		bl	__aeabi_dsub
+ 143              	.LVL14:
+  26:Core/Src/main.c ****         Temperature = ((0.76 - Vsense) / 2.5) + 25;
+ 144              		.loc 1 26 40 discriminator 1 view .LVU27
+ 145 0056 0022     		movs	r2, #0
+ 146 0058 0D4B     		ldr	r3, .L8+32
+ 147 005a FFF7FEFF 		bl	__aeabi_ddiv
+ 148              	.LVL15:
+  26:Core/Src/main.c ****         Temperature = ((0.76 - Vsense) / 2.5) + 25;
+ 149              		.loc 1 26 47 discriminator 1 view .LVU28
+ 150 005e 0022     		movs	r2, #0
+ 151 0060 0C4B     		ldr	r3, .L8+36
+ 152 0062 FFF7FEFF 		bl	__aeabi_dadd
+ 153              	.LVL16:
+ 154 0066 FFF7FEFF 		bl	__aeabi_d2f
+ 155              	.LVL17:
+  26:Core/Src/main.c ****         Temperature = ((0.76 - Vsense) / 2.5) + 25;
+ 156              		.loc 1 26 21 discriminator 1 view .LVU29
+ 157 006a 0B4B     		ldr	r3, .L8+40
+ 158 006c 1860     		str	r0, [r3]	@ float
   20:Core/Src/main.c ****     while (1)
- 128              		.loc 1 20 11 is_stmt 1 view .LVU25
- 129 003a EEE7     		b	.L6
- 130              	.L9:
- 131              		.align	2
- 132              	.L8:
- 133 003c 00000000 		.word	adcValue
- 134 0040 81000880 		.word	-2146959231
- 135 0044 00040040 		.word	1073742848
- 136              		.cfi_endproc
- 137              	.LFE130:
- 139              		.global	calculatePulseARR
- 140              		.section	.bss.calculatePulseARR,"aw",%nobits
- 141              		.align	2
- 144              	calculatePulseARR:
- 145 0000 00000000 		.space	4
- 146              		.global	FLAG_Revolution
- 147              		.section	.bss.FLAG_Revolution,"aw",%nobits
- 148              		.align	2
- 151              	FLAG_Revolution:
- 152 0000 00000000 		.space	4
- 153              		.global	BtnNum
- 154              		.section	.bss.BtnNum,"aw",%nobits
- 157              	BtnNum:
- 158 0000 00       		.space	1
- 159              		.global	adcValue
- 160              		.section	.bss.adcValue,"aw",%nobits
- 161              		.align	1
- 164              	adcValue:
- 165 0000 0000     		.space	2
- 166              		.global	MotorTickCount
- 167              		.section	.bss.MotorTickCount,"aw",%nobits
- 168              		.align	1
- 171              	MotorTickCount:
- 172 0000 0000     		.space	2
- 173              		.global	GlobalTickCount
- 174              		.section	.bss.GlobalTickCount,"aw",%nobits
- 175              		.align	1
- 178              	GlobalTickCount:
- 179 0000 0000     		.space	2
- 180              		.text
- 181              	.Letext0:
- 182              		.file 2 "C:/Programm/Embed tools/xpack-arm-none-eabi-gcc-14.2.1-1.1/arm-none-eabi/include/machine/
- 183              		.file 3 "C:/Programm/Embed tools/xpack-arm-none-eabi-gcc-14.2.1-1.1/arm-none-eabi/include/sys/_std
- 184              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F407xx/stm32f407xx.h"
- 185              		.file 5 "Core/Inc/interrupt.h"
- 186              		.file 6 "Core/Inc/init.h"
-ARM GAS  C:\Users\Laska\AppData\Local\Temp\cc3OtRZA.s 			page 5
+ 159              		.loc 1 20 11 is_stmt 1 view .LVU30
+ 160 006e D4E7     		b	.L6
+ 161              	.L9:
+ 162              		.align	3
+ 163              	.L8:
+ 164 0070 CDCCCCCC 		.word	-858993459
+ 165 0074 CCCC0840 		.word	1074318540
+ 166 0078 00000000 		.word	0
+ 167 007c 00FEAF40 		.word	1085275648
+ 168 0080 52B81E85 		.word	-2061584302
+ARM GAS  C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s 			page 5
+
+
+ 169 0084 EB51E83F 		.word	1072189931
+ 170 0088 00000000 		.word	adcTS
+ 171 008c 00000000 		.word	Vsense
+ 172 0090 00000440 		.word	1074003968
+ 173 0094 00003940 		.word	1077477376
+ 174 0098 00000000 		.word	Temperature
+ 175              		.cfi_endproc
+ 176              	.LFE130:
+ 178              		.global	Vsense
+ 179              		.section	.bss.Vsense,"aw",%nobits
+ 180              		.align	2
+ 183              	Vsense:
+ 184 0000 00000000 		.space	4
+ 185              		.global	Temperature
+ 186              		.section	.bss.Temperature,"aw",%nobits
+ 187              		.align	2
+ 190              	Temperature:
+ 191 0000 00000000 		.space	4
+ 192              		.global	calculatePulseARR
+ 193              		.section	.bss.calculatePulseARR,"aw",%nobits
+ 194              		.align	2
+ 197              	calculatePulseARR:
+ 198 0000 00000000 		.space	4
+ 199              		.global	FLAG_Revolution
+ 200              		.section	.bss.FLAG_Revolution,"aw",%nobits
+ 201              		.align	2
+ 204              	FLAG_Revolution:
+ 205 0000 00000000 		.space	4
+ 206              		.global	BtnNum
+ 207              		.section	.bss.BtnNum,"aw",%nobits
+ 210              	BtnNum:
+ 211 0000 00       		.space	1
+ 212              		.global	adcTS
+ 213              		.section	.bss.adcTS,"aw",%nobits
+ 214              		.align	1
+ 217              	adcTS:
+ 218 0000 0000     		.space	2
+ 219              		.global	potentiometr
+ 220              		.section	.bss.potentiometr,"aw",%nobits
+ 221              		.align	1
+ 224              	potentiometr:
+ 225 0000 0000     		.space	2
+ 226              		.global	MotorTickCount
+ 227              		.section	.bss.MotorTickCount,"aw",%nobits
+ 228              		.align	1
+ 231              	MotorTickCount:
+ 232 0000 0000     		.space	2
+ 233              		.global	GlobalTickCount
+ 234              		.section	.bss.GlobalTickCount,"aw",%nobits
+ 235              		.align	1
+ 238              	GlobalTickCount:
+ 239 0000 0000     		.space	2
+ 240              		.text
+ 241              	.Letext0:
+ 242              		.file 2 "C:/Programm/Embed tools/xpack-arm-none-eabi-gcc-14.2.1-1.1/arm-none-eabi/include/machine/
+ 243              		.file 3 "C:/Programm/Embed tools/xpack-arm-none-eabi-gcc-14.2.1-1.1/arm-none-eabi/include/sys/_std
+ 244              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F407xx/stm32f407xx.h"
+ARM GAS  C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s 			page 6
+
+
+ 245              		.file 5 "Core/Inc/interrupt.h"
+ 246              		.file 6 "Core/Inc/init.h"
+ARM GAS  C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s 			page 7
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\Laska\AppData\Local\Temp\cc3OtRZA.s:21     .text.ADC_Read_Polling:00000000 $t
-C:\Users\Laska\AppData\Local\Temp\cc3OtRZA.s:27     .text.ADC_Read_Polling:00000000 ADC_Read_Polling
-C:\Users\Laska\AppData\Local\Temp\cc3OtRZA.s:65     .text.ADC_Read_Polling:00000028 $d
-C:\Users\Laska\AppData\Local\Temp\cc3OtRZA.s:70     .text.main:00000000 $t
-C:\Users\Laska\AppData\Local\Temp\cc3OtRZA.s:76     .text.main:00000000 main
-C:\Users\Laska\AppData\Local\Temp\cc3OtRZA.s:133    .text.main:0000003c $d
-C:\Users\Laska\AppData\Local\Temp\cc3OtRZA.s:164    .bss.adcValue:00000000 adcValue
-C:\Users\Laska\AppData\Local\Temp\cc3OtRZA.s:144    .bss.calculatePulseARR:00000000 calculatePulseARR
-C:\Users\Laska\AppData\Local\Temp\cc3OtRZA.s:141    .bss.calculatePulseARR:00000000 $d
-C:\Users\Laska\AppData\Local\Temp\cc3OtRZA.s:151    .bss.FLAG_Revolution:00000000 FLAG_Revolution
-C:\Users\Laska\AppData\Local\Temp\cc3OtRZA.s:148    .bss.FLAG_Revolution:00000000 $d
-C:\Users\Laska\AppData\Local\Temp\cc3OtRZA.s:157    .bss.BtnNum:00000000 BtnNum
-C:\Users\Laska\AppData\Local\Temp\cc3OtRZA.s:158    .bss.BtnNum:00000000 $d
-C:\Users\Laska\AppData\Local\Temp\cc3OtRZA.s:161    .bss.adcValue:00000000 $d
-C:\Users\Laska\AppData\Local\Temp\cc3OtRZA.s:171    .bss.MotorTickCount:00000000 MotorTickCount
-C:\Users\Laska\AppData\Local\Temp\cc3OtRZA.s:168    .bss.MotorTickCount:00000000 $d
-C:\Users\Laska\AppData\Local\Temp\cc3OtRZA.s:178    .bss.GlobalTickCount:00000000 GlobalTickCount
-C:\Users\Laska\AppData\Local\Temp\cc3OtRZA.s:175    .bss.GlobalTickCount:00000000 $d
+C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s:21     .text.ADC_Read_Polling:00000000 $t
+C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s:27     .text.ADC_Read_Polling:00000000 ADC_Read_Polling
+C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s:65     .text.ADC_Read_Polling:00000028 $d
+C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s:70     .text.main:00000000 $t
+C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s:76     .text.main:00000000 main
+C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s:164    .text.main:00000070 $d
+C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s:217    .bss.adcTS:00000000 adcTS
+C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s:183    .bss.Vsense:00000000 Vsense
+C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s:190    .bss.Temperature:00000000 Temperature
+C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s:180    .bss.Vsense:00000000 $d
+C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s:187    .bss.Temperature:00000000 $d
+C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s:197    .bss.calculatePulseARR:00000000 calculatePulseARR
+C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s:194    .bss.calculatePulseARR:00000000 $d
+C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s:204    .bss.FLAG_Revolution:00000000 FLAG_Revolution
+C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s:201    .bss.FLAG_Revolution:00000000 $d
+C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s:210    .bss.BtnNum:00000000 BtnNum
+C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s:211    .bss.BtnNum:00000000 $d
+C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s:214    .bss.adcTS:00000000 $d
+C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s:224    .bss.potentiometr:00000000 potentiometr
+C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s:221    .bss.potentiometr:00000000 $d
+C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s:231    .bss.MotorTickCount:00000000 MotorTickCount
+C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s:228    .bss.MotorTickCount:00000000 $d
+C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s:238    .bss.GlobalTickCount:00000000 GlobalTickCount
+C:\Users\Laska\AppData\Local\Temp\cczeSmIn.s:235    .bss.GlobalTickCount:00000000 $d
 
 UNDEFINED SYMBOLS
 RCC_Init
@@ -263,3 +340,10 @@ GPIO_Init
 SysTick_Init
 TIM_PWM_Init
 ADC_Init_Polling
+__aeabi_i2d
+__aeabi_dmul
+__aeabi_ddiv
+__aeabi_d2f
+__aeabi_f2d
+__aeabi_dsub
+__aeabi_dadd
