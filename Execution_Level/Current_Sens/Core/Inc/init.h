@@ -10,7 +10,8 @@ void ITR_Init(void);
 void GPIO_Init(void);
 void SysTick_Init(void);
 void TIM_PWM_Init(void);
-void TIM_ENCODER_Init(void);
-void Enc_Trig_Init(void);
+void ADC_Init_Polling(void);
+// void TIM_ENCODER_Init(void);
+// void Enc_Trig_Init(void);
 
 #endif
