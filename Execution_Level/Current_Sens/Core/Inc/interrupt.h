@@ -5,7 +5,7 @@
 #include "init.h"
 
 extern uint16_t GlobalTickCount, MotorTickCount;
-extern uint16_t ENC_CNT, encItr;
+extern uint16_t ENC_CNT, encItr, adcInter;
 extern uint8_t encDir, BtnNum;
 extern float FLAG_Revolution, calculatePulseARR;
 

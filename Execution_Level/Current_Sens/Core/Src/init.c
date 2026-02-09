@@ -114,7 +114,8 @@ void TIM_PWM_Init(void){
     SET_BIT(TIM3->CCER, TIM_CCER_CC2E);
     TIM3->CCR2 = 3150-1; 
 
-    SET_BIT(TIM3->CR1, TIM_CR1_CEN); //Включение счётчика
+    SET_BIT(TIM3->CR2, TIM_CR2_MMS_1); 
+    SET_BIT(TIM3->CR1, TIM_CR1_CEN); //Включение 
     SET_BIT(TIM3->DIER, TIM_DIER_UIE); //Включение Прерывания по переполнению
     NVIC_EnableIRQ(TIM3_IRQn);
 }
@@ -125,32 +126,49 @@ void ADC_Init_Polling(void){
     //Натсройка канала PA0 для работы в аналоговом режиме
     SET_BIT(GPIOA->MODER, GPIO_MODER_MODER0);
     CLEAR_BIT(GPIOA->PUPDR, GPIO_PUPDR_PUPD0);
+    SET_BIT(GPIOA->MODER, GPIO_MODER_MODER1);
+    CLEAR_BIT(GPIOA->PUPDR, GPIO_PUPDR_PUPD1);
+    SET_BIT(GPIOA->MODER, GPIO_MODER_MODER2);
+    CLEAR_BIT(GPIOA->PUPDR, GPIO_PUPDR_PUPD2);
 
-    /* Установка предделителя на 6, АЦП тактируется от шины АРВ2 84МГц, 
-     * а АЦП должно работать на частоте не более 14 МГц, из-за чего
-     * следует устанавливать делитель на 6
+    /* Установка предделителя на 4, АЦП тактируется от шины АРВ2 84МГц, 
+     * а АЦП должно работать на частоте не более 30 МГц, из-за чего
+     * следует устанавливать делитель на 4
      */
-    SET_BIT(ADC->CCR, ADC_CCR_ADCPRE_1);
+    SET_BIT(ADC->CCR, ADC_CCR_ADCPRE_0);
 
     //Включение внутреннего датчика температуры
     SET_BIT(ADC->CCR, ADC_CCR_TSVREFE);
 
     CLEAR_BIT(ADC1->CR1, ADC_CR1_RES);
-    SET_BIT(ADC1->CR1, ADC_CR1_SCAN);
+    CLEAR_BIT(ADC1->CR1, ADC_CR1_SCAN);
+    SET_BIT(ADC1->CR1, ADC_CR1_EOCIE);
 
     CLEAR_BIT(ADC1->CR2, ADC_CR2_ALIGN);
-    CLEAR_BIT(ADC1->CR2, ADC_CR2_CONT);
+    SET_BIT(ADC1->CR2, ADC_CR2_CONT);
+
+    // SET_BIT(ADC1->CR1, ADC_CR1_JAUTO);
+    // SET_BIT(ADC1->CR2, ADC_CR2_JEXTEN_0); //Разрешение запуска преобразований по внешнему триггеру
+    // SET_BIT(ADC1->CR2, ADC_CR2_JEXTSEL_2);//Запуск по CC2 3-го таймера
+
+    // SET_BIT(ADC1->CR2, ADC_CR2_EXTEN_0);
+    // SET_BIT(ADC1->CR2, ADC_CR2_EXTSEL_3);
 
     //Количество сэмплов преобраования на 15
-    SET_BIT(ADC1->SMPR2, ADC_SMPR2_SMP0_0);
+    SET_BIT(ADC1->SMPR2, ADC_SMPR2_SMP0_0); //Для канала 0
+    SET_BIT(ADC1->SMPR2, ADC_SMPR2_SMP1_0); // Для канала 1
+    SET_BIT(ADC1->SMPR1, ADC_SMPR1_SMP16_0); //Для канала 16
 
     //Выбор канала и последовательности считывания
-    CLEAR_BIT(ADC1->SQR1, ADC_SQR1_L); //Общее число преобразований - 2
-    // CLEAR_BIT(ADC1->SQR3, ADC_SQR3_SQ1); //1 канал
-    CLEAR_BIT(ADC1->SQR1, ADC_SQR1_SQ16);
+    CLEAR_BIT(ADC1->SQR1, ADC_SQR1_L); //Общее число преобразований - 3
+    CLEAR_BIT(ADC1->SQR3, ADC_SQR3_SQ1); //1 channel
+
+    // CLEAR_BIT(ADC1->JSQR, ADC_JSQR_JL);
+    // SET_BIT(ADC1->JSQR, ADC_JSQR_JSQ4_0);
 
     //Включение АЦП
     SET_BIT(ADC1->CR2, ADC_CR2_ADON);
+    NVIC_EnableIRQ(ADC_IRQn);
 }
 
 void TIM_ENCODER_Init(void){

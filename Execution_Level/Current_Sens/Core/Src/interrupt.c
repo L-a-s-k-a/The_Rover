@@ -15,6 +15,11 @@ void SysTick_Handler(void)
     encDir = READ_BIT(TIM2->CR1, TIM_CR1_DIR) >> 4;
 }
 
+void ADC_IRQHandler(void){
+    adcInter = ADC1->DR;
+    BtnNum = !BtnNum;
+}
+
 void delay(int del)
 {
     FLAG_Delay = 1;
