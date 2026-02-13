@@ -145,11 +145,11 @@ void ADC_Init_Polling(void){
     SET_BIT(ADC1->CR1, ADC_CR1_EOCIE);
 
     CLEAR_BIT(ADC1->CR2, ADC_CR2_ALIGN);
-    SET_BIT(ADC1->CR2, ADC_CR2_CONT);
+    CLEAR_BIT(ADC1->CR2, ADC_CR2_CONT);
 
     // SET_BIT(ADC1->CR1, ADC_CR1_JAUTO);
     // SET_BIT(ADC1->CR2, ADC_CR2_JEXTEN_0); //Разрешение запуска преобразований по внешнему триггеру
-    // SET_BIT(ADC1->CR2, ADC_CR2_JEXTSEL_2);//Запуск по CC2 3-го таймера
+    // SET_BIT(ADC1->CR2, ADC_CR2_JEXTSEL_2); //Запуск по CC2 3-го таймера
 
     // SET_BIT(ADC1->CR2, ADC_CR2_EXTEN_0);
     // SET_BIT(ADC1->CR2, ADC_CR2_EXTSEL_3);

@@ -25,8 +25,8 @@ int main(void)
     while (1)
     {
         // adcTS = ADC_Read_Polling(0);
-        // adcBuf[0] = ADC_Read_Polling(0);
-        adcBuf[0] = READ_REG(ADC1->DR);
+        adcBuf[0] = ADC_Read_Polling(0);
+        // adcBuf[0] = READ_REG(ADC1->DR);
         // for(int i = 0; i < 10000000; i++);
         // adcTS = ADC_Read_Polling(1);
         // adcBuf[1] = ADC_Read_Polling(1);
@@ -35,7 +35,7 @@ int main(void)
         // adcBuf[2] = ADC_Read_Polling(16);
         // for(int i = 0; i < 10000000; i++);
         // adcBuf[3] = ADC_Read_Inject(2);
-        adcBuf[3] = READ_REG(ADC1->JDR1);
+        // adcBuf[3] = READ_REG(ADC1->JDR1);
         // for(int i = 0; i < 10000000; i++);
         Vsense = (3.1 * adcBuf[2]) / 4095U;
         TIM3->CCR2 = (8400 * adcBuf[0]) / 4095; 
