@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s 			page 1
+ARM GAS  C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s 			page 1
   45 000e 1380     		strh	r3, [r2]	@ movhi
   12:Core/Src/interrupt.c ****     if (FLAG_Delay)
   46              		.loc 1 12 5 is_stmt 1 view .LVU5
-ARM GAS  C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s 			page 2
+ARM GAS  C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s 			page 2
 
 
   47              		.loc 1 12 9 is_stmt 0 view .LVU6
@@ -118,7 +118,7 @@ ARM GAS  C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s 			page 1
   97              		.loc 1 18 26 is_stmt 1 view -0
   98              		.cfi_startproc
   99              		@ args = 0, pretend = 0, frame = 0
-ARM GAS  C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s 			page 3
+ARM GAS  C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s 			page 3
 
 
  100              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -140,8 +140,9 @@ ARM GAS  C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s 			page 1
  114 0010 5B09     		lsrs	r3, r3, #5
  115              		.loc 1 20 12 view .LVU24
  116 0012 1370     		strb	r3, [r2]
-  21:Core/Src/interrupt.c **** }
- 117              		.loc 1 21 1 view .LVU25
+  21:Core/Src/interrupt.c ****     // SET_BIT(ADC1->CR2, ADC_CR2_SWSTART);
+  22:Core/Src/interrupt.c **** }
+ 117              		.loc 1 22 1 view .LVU25
  118 0014 7047     		bx	lr
  119              	.L7:
  120 0016 00BF     		.align	2
@@ -160,48 +161,48 @@ ARM GAS  C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s 			page 1
  135              	delay:
  136              	.LVL0:
  137              	.LFB132:
-  22:Core/Src/interrupt.c **** 
-  23:Core/Src/interrupt.c **** void delay(int del)
-  24:Core/Src/interrupt.c **** {
- 138              		.loc 1 24 1 is_stmt 1 view -0
+  23:Core/Src/interrupt.c **** 
+  24:Core/Src/interrupt.c **** void delay(int del)
+  25:Core/Src/interrupt.c **** {
+ 138              		.loc 1 25 1 is_stmt 1 view -0
  139              		.cfi_startproc
  140              		@ args = 0, pretend = 0, frame = 0
  141              		@ frame_needed = 0, uses_anonymous_args = 0
  142              		@ link register save eliminated.
-  25:Core/Src/interrupt.c ****     FLAG_Delay = 1;
- 143              		.loc 1 25 5 view .LVU27
- 144              		.loc 1 25 16 is_stmt 0 view .LVU28
+  26:Core/Src/interrupt.c ****     FLAG_Delay = 1;
+ 143              		.loc 1 26 5 view .LVU27
+ 144              		.loc 1 26 16 is_stmt 0 view .LVU28
  145 0000 064B     		ldr	r3, .L10
  146 0002 0122     		movs	r2, #1
  147 0004 1A70     		strb	r2, [r3]
-  26:Core/Src/interrupt.c ****     while (TickDelayCount < del)
- 148              		.loc 1 26 5 is_stmt 1 view .LVU29
+  27:Core/Src/interrupt.c ****     while (TickDelayCount < del)
+ 148              		.loc 1 27 5 is_stmt 1 view .LVU29
  149              	.L9:
-  27:Core/Src/interrupt.c ****     {
-ARM GAS  C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s 			page 4
+ARM GAS  C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s 			page 4
 
 
-  28:Core/Src/interrupt.c ****     }
- 150              		.loc 1 28 5 view .LVU30
-  26:Core/Src/interrupt.c ****     while (TickDelayCount < del)
- 151              		.loc 1 26 27 discriminator 1 view .LVU31
+  28:Core/Src/interrupt.c ****     {
+  29:Core/Src/interrupt.c ****     }
+ 150              		.loc 1 29 5 view .LVU30
+  27:Core/Src/interrupt.c ****     while (TickDelayCount < del)
+ 151              		.loc 1 27 27 discriminator 1 view .LVU31
  152 0006 064B     		ldr	r3, .L10+4
  153 0008 1B88     		ldrh	r3, [r3]
  154 000a 8342     		cmp	r3, r0
  155 000c FBDB     		blt	.L9
-  29:Core/Src/interrupt.c ****     TickDelayCount = 0;
- 156              		.loc 1 29 5 view .LVU32
- 157              		.loc 1 29 20 is_stmt 0 view .LVU33
+  30:Core/Src/interrupt.c ****     TickDelayCount = 0;
+ 156              		.loc 1 30 5 view .LVU32
+ 157              		.loc 1 30 20 is_stmt 0 view .LVU33
  158 000e 0023     		movs	r3, #0
  159 0010 034A     		ldr	r2, .L10+4
  160 0012 1380     		strh	r3, [r2]	@ movhi
-  30:Core/Src/interrupt.c ****     FLAG_Delay = 0;
- 161              		.loc 1 30 5 is_stmt 1 view .LVU34
- 162              		.loc 1 30 16 is_stmt 0 view .LVU35
+  31:Core/Src/interrupt.c ****     FLAG_Delay = 0;
+ 161              		.loc 1 31 5 is_stmt 1 view .LVU34
+ 162              		.loc 1 31 16 is_stmt 0 view .LVU35
  163 0014 014A     		ldr	r2, .L10
  164 0016 1370     		strb	r3, [r2]
-  31:Core/Src/interrupt.c **** }
- 165              		.loc 1 31 1 view .LVU36
+  32:Core/Src/interrupt.c **** }
+ 165              		.loc 1 32 1 view .LVU36
  166 0018 7047     		bx	lr
  167              	.L11:
  168 001a 00BF     		.align	2
@@ -218,51 +219,51 @@ ARM GAS  C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s 			page 1
  180              		.thumb_func
  182              	EXTI15_10_IRQHandler:
  183              	.LFB133:
-  32:Core/Src/interrupt.c **** 
-  33:Core/Src/interrupt.c **** void EXTI15_10_IRQHandler(void)
-  34:Core/Src/interrupt.c **** {
- 184              		.loc 1 34 1 is_stmt 1 view -0
+  33:Core/Src/interrupt.c **** 
+  34:Core/Src/interrupt.c **** void EXTI15_10_IRQHandler(void)
+  35:Core/Src/interrupt.c **** {
+ 184              		.loc 1 35 1 is_stmt 1 view -0
  185              		.cfi_startproc
  186              		@ args = 0, pretend = 0, frame = 0
  187              		@ frame_needed = 0, uses_anonymous_args = 0
  188              		@ link register save eliminated.
-  35:Core/Src/interrupt.c ****     SET_BIT(EXTI->PR, EXTI_PR_PR13);
- 189              		.loc 1 35 5 view .LVU38
+  36:Core/Src/interrupt.c ****     SET_BIT(EXTI->PR, EXTI_PR_PR13);
+ 189              		.loc 1 36 5 view .LVU38
  190 0000 094A     		ldr	r2, .L14
  191 0002 5369     		ldr	r3, [r2, #20]
  192 0004 43F40053 		orr	r3, r3, #8192
  193 0008 5361     		str	r3, [r2, #20]
-  36:Core/Src/interrupt.c ****     if (buttonTickCount > 100)
- 194              		.loc 1 36 5 view .LVU39
- 195              		.loc 1 36 25 is_stmt 0 view .LVU40
+  37:Core/Src/interrupt.c ****     if (buttonTickCount > 100)
+ 194              		.loc 1 37 5 view .LVU39
+ 195              		.loc 1 37 25 is_stmt 0 view .LVU40
  196 000a 084B     		ldr	r3, .L14+4
  197 000c 1B88     		ldrh	r3, [r3]
- 198              		.loc 1 36 8 view .LVU41
-ARM GAS  C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s 			page 5
+ARM GAS  C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s 			page 5
 
 
+ 198              		.loc 1 37 8 view .LVU41
  199 000e 642B     		cmp	r3, #100
  200 0010 08D9     		bls	.L12
-  37:Core/Src/interrupt.c ****     {
-  38:Core/Src/interrupt.c ****         buttonTickCount = 0;
- 201              		.loc 1 38 9 is_stmt 1 view .LVU42
- 202              		.loc 1 38 25 is_stmt 0 view .LVU43
+  38:Core/Src/interrupt.c ****     {
+  39:Core/Src/interrupt.c ****         buttonTickCount = 0;
+ 201              		.loc 1 39 9 is_stmt 1 view .LVU42
+ 202              		.loc 1 39 25 is_stmt 0 view .LVU43
  203 0012 064B     		ldr	r3, .L14+4
  204 0014 0022     		movs	r2, #0
  205 0016 1A80     		strh	r2, [r3]	@ movhi
-  39:Core/Src/interrupt.c ****         BtnNum = !BtnNum;
- 206              		.loc 1 39 9 is_stmt 1 view .LVU44
- 207              		.loc 1 39 18 is_stmt 0 view .LVU45
+  40:Core/Src/interrupt.c ****         BtnNum = !BtnNum;
+ 206              		.loc 1 40 9 is_stmt 1 view .LVU44
+ 207              		.loc 1 40 18 is_stmt 0 view .LVU45
  208 0018 054A     		ldr	r2, .L14+8
  209 001a 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
  210 001c B3FA83F3 		clz	r3, r3
  211 0020 5B09     		lsrs	r3, r3, #5
- 212              		.loc 1 39 16 view .LVU46
+ 212              		.loc 1 40 16 view .LVU46
  213 0022 1370     		strb	r3, [r2]
  214              	.L12:
-  40:Core/Src/interrupt.c ****     }
-  41:Core/Src/interrupt.c **** }
- 215              		.loc 1 41 1 view .LVU47
+  41:Core/Src/interrupt.c ****     }
+  42:Core/Src/interrupt.c **** }
+ 215              		.loc 1 42 1 view .LVU47
  216 0024 7047     		bx	lr
  217              	.L15:
  218 0026 00BF     		.align	2
@@ -280,54 +281,54 @@ ARM GAS  C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s 			page 1
  231              		.thumb_func
  233              	TIM3_IRQHandler:
  234              	.LFB134:
-  42:Core/Src/interrupt.c **** 
-  43:Core/Src/interrupt.c **** void TIM3_IRQHandler(void)
-  44:Core/Src/interrupt.c **** {
- 235              		.loc 1 44 1 is_stmt 1 view -0
+  43:Core/Src/interrupt.c **** 
+  44:Core/Src/interrupt.c **** void TIM3_IRQHandler(void)
+  45:Core/Src/interrupt.c **** {
+ 235              		.loc 1 45 1 is_stmt 1 view -0
  236              		.cfi_startproc
  237              		@ args = 0, pretend = 0, frame = 0
  238              		@ frame_needed = 0, uses_anonymous_args = 0
-  45:Core/Src/interrupt.c ****     if (READ_BIT(TIM3->SR, TIM_SR_UIF))
- 239              		.loc 1 45 5 view .LVU49
- 240              		.loc 1 45 9 is_stmt 0 view .LVU50
+  46:Core/Src/interrupt.c ****     if (READ_BIT(TIM3->SR, TIM_SR_UIF))
+ 239              		.loc 1 46 5 view .LVU49
+ 240              		.loc 1 46 9 is_stmt 0 view .LVU50
  241 0000 1B4B     		ldr	r3, .L26+8
  242 0002 1B69     		ldr	r3, [r3, #16]
- 243              		.loc 1 45 8 view .LVU51
+ 243              		.loc 1 46 8 view .LVU51
  244 0004 13F0010F 		tst	r3, #1
  245 0008 2BD0     		beq	.L22
-  46:Core/Src/interrupt.c ****     {
-  47:Core/Src/interrupt.c ****         TIMCount += 10;
- 246              		.loc 1 47 9 is_stmt 1 view .LVU52
-ARM GAS  C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s 			page 6
+  47:Core/Src/interrupt.c ****     {
+  48:Core/Src/interrupt.c ****         TIMCount += 10;
+ARM GAS  C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s 			page 6
 
 
- 247              		.loc 1 47 18 is_stmt 0 view .LVU53
+ 246              		.loc 1 48 9 is_stmt 1 view .LVU52
+ 247              		.loc 1 48 18 is_stmt 0 view .LVU53
  248 000a 1A4A     		ldr	r2, .L26+12
  249 000c 1368     		ldr	r3, [r2]
  250 000e 0A33     		adds	r3, r3, #10
  251 0010 1360     		str	r3, [r2]
-  48:Core/Src/interrupt.c ****         if (TIMCount >= calculatePulseARR)
- 252              		.loc 1 48 9 is_stmt 1 view .LVU54
- 253              		.loc 1 48 22 is_stmt 0 view .LVU55
+  49:Core/Src/interrupt.c ****         if (TIMCount >= calculatePulseARR)
+ 252              		.loc 1 49 9 is_stmt 1 view .LVU54
+ 253              		.loc 1 49 22 is_stmt 0 view .LVU55
  254 0012 07EE903A 		vmov	s15, r3	@ int
  255 0016 F8EE677A 		vcvt.f32.u32	s15, s15
  256 001a 174B     		ldr	r3, .L26+16
  257 001c 93ED007A 		vldr.32	s14, [r3]
- 258              		.loc 1 48 12 view .LVU56
+ 258              		.loc 1 49 12 view .LVU56
  259 0020 F4EEC77A 		vcmpe.f32	s15, s14
  260 0024 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
  261 0028 15DB     		blt	.L23
-  44:Core/Src/interrupt.c ****     if (READ_BIT(TIM3->SR, TIM_SR_UIF))
- 262              		.loc 1 44 1 view .LVU57
+  45:Core/Src/interrupt.c ****     if (READ_BIT(TIM3->SR, TIM_SR_UIF))
+ 262              		.loc 1 45 1 view .LVU57
  263 002a 10B5     		push	{r4, lr}
  264              	.LCFI0:
  265              		.cfi_def_cfa_offset 8
  266              		.cfi_offset 4, -8
  267              		.cfi_offset 14, -4
-  49:Core/Src/interrupt.c ****         {
-  50:Core/Src/interrupt.c ****             FLAG_Revolution += 0.1;
- 268              		.loc 1 50 13 is_stmt 1 view .LVU58
- 269              		.loc 1 50 29 is_stmt 0 view .LVU59
+  50:Core/Src/interrupt.c ****         {
+  51:Core/Src/interrupt.c ****             FLAG_Revolution += 0.1;
+ 268              		.loc 1 51 13 is_stmt 1 view .LVU58
+ 269              		.loc 1 51 29 is_stmt 0 view .LVU59
  270 002c 134C     		ldr	r4, .L26+20
  271 002e 2068     		ldr	r0, [r4]	@ float
  272 0030 FFF7FEFF 		bl	__aeabi_f2d
@@ -339,33 +340,33 @@ ARM GAS  C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s 			page 1
  278 003e FFF7FEFF 		bl	__aeabi_d2f
  279              	.LVL3:
  280 0042 2060     		str	r0, [r4]	@ float
-  51:Core/Src/interrupt.c ****             TIMCount = 0;
- 281              		.loc 1 51 13 is_stmt 1 view .LVU60
- 282              		.loc 1 51 22 is_stmt 0 view .LVU61
+  52:Core/Src/interrupt.c ****             TIMCount = 0;
+ 281              		.loc 1 52 13 is_stmt 1 view .LVU60
+ 282              		.loc 1 52 22 is_stmt 0 view .LVU61
  283 0044 0B4B     		ldr	r3, .L26+12
  284 0046 0022     		movs	r2, #0
  285 0048 1A60     		str	r2, [r3]
-  52:Core/Src/interrupt.c ****         }
-  53:Core/Src/interrupt.c ****         CLEAR_BIT(TIM3->SR, TIM_SR_UIF);
- 286              		.loc 1 53 9 is_stmt 1 view .LVU62
+  53:Core/Src/interrupt.c ****         }
+  54:Core/Src/interrupt.c ****         CLEAR_BIT(TIM3->SR, TIM_SR_UIF);
+ 286              		.loc 1 54 9 is_stmt 1 view .LVU62
  287 004a 094A     		ldr	r2, .L26+8
  288 004c 1369     		ldr	r3, [r2, #16]
  289 004e 23F00103 		bic	r3, r3, #1
  290 0052 1361     		str	r3, [r2, #16]
-  54:Core/Src/interrupt.c ****     }
-  55:Core/Src/interrupt.c **** }
- 291              		.loc 1 55 1 is_stmt 0 view .LVU63
+  55:Core/Src/interrupt.c ****     }
+  56:Core/Src/interrupt.c **** }
+ 291              		.loc 1 56 1 is_stmt 0 view .LVU63
  292 0054 10BD     		pop	{r4, pc}
  293              	.L23:
+ARM GAS  C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s 			page 7
+
+
  294              	.LCFI1:
-ARM GAS  C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s 			page 7
-
-
  295              		.cfi_def_cfa_offset 0
  296              		.cfi_restore 4
  297              		.cfi_restore 14
-  53:Core/Src/interrupt.c ****     }
- 298              		.loc 1 53 9 is_stmt 1 view .LVU64
+  54:Core/Src/interrupt.c ****     }
+ 298              		.loc 1 54 9 is_stmt 1 view .LVU64
  299 0056 064A     		ldr	r2, .L26+8
  300 0058 1369     		ldr	r3, [r2, #16]
  301 005a 23F00103 		bic	r3, r3, #1
@@ -392,62 +393,62 @@ ARM GAS  C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s 			page 1
  323              		.thumb_func
  325              	TIM2_IRQHandler:
  326              	.LFB135:
-  56:Core/Src/interrupt.c **** 
-  57:Core/Src/interrupt.c **** void TIM2_IRQHandler(void)
-  58:Core/Src/interrupt.c **** {
- 327              		.loc 1 58 1 view -0
+  57:Core/Src/interrupt.c **** 
+  58:Core/Src/interrupt.c **** void TIM2_IRQHandler(void)
+  59:Core/Src/interrupt.c **** {
+ 327              		.loc 1 59 1 view -0
  328              		.cfi_startproc
  329              		@ args = 0, pretend = 0, frame = 0
  330              		@ frame_needed = 0, uses_anonymous_args = 0
  331              		@ link register save eliminated.
-  59:Core/Src/interrupt.c ****     if (TIM2->SR & TIM_SR_UIF)
- 332              		.loc 1 59 5 view .LVU66
- 333              		.loc 1 59 13 is_stmt 0 view .LVU67
+  60:Core/Src/interrupt.c ****     if (TIM2->SR & TIM_SR_UIF)
+ 332              		.loc 1 60 5 view .LVU66
+ 333              		.loc 1 60 13 is_stmt 0 view .LVU67
  334 0000 4FF08043 		mov	r3, #1073741824
  335 0004 1B69     		ldr	r3, [r3, #16]
- 336              		.loc 1 59 8 view .LVU68
+ 336              		.loc 1 60 8 view .LVU68
  337 0006 13F0010F 		tst	r3, #1
  338 000a 0FD0     		beq	.L28
-  60:Core/Src/interrupt.c ****     {
-  61:Core/Src/interrupt.c ****         if (READ_BIT(TIM2->CR1, TIM_CR1_DIR) != 0)
- 339              		.loc 1 61 9 is_stmt 1 view .LVU69
- 340              		.loc 1 61 13 is_stmt 0 view .LVU70
+  61:Core/Src/interrupt.c ****     {
+  62:Core/Src/interrupt.c ****         if (READ_BIT(TIM2->CR1, TIM_CR1_DIR) != 0)
+ 339              		.loc 1 62 9 is_stmt 1 view .LVU69
+ 340              		.loc 1 62 13 is_stmt 0 view .LVU70
  341 000c 4FF08043 		mov	r3, #1073741824
  342 0010 1B68     		ldr	r3, [r3]
- 343              		.loc 1 61 12 view .LVU71
+ 343              		.loc 1 62 12 view .LVU71
  344 0012 13F0100F 		tst	r3, #16
  345 0016 0AD0     		beq	.L30
-  62:Core/Src/interrupt.c ****         {
-ARM GAS  C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s 			page 8
+ARM GAS  C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s 			page 8
 
 
-  63:Core/Src/interrupt.c ****             encItr--;
- 346              		.loc 1 63 13 is_stmt 1 view .LVU72
- 347              		.loc 1 63 19 is_stmt 0 view .LVU73
+  63:Core/Src/interrupt.c ****         {
+  64:Core/Src/interrupt.c ****             encItr--;
+ 346              		.loc 1 64 13 is_stmt 1 view .LVU72
+ 347              		.loc 1 64 19 is_stmt 0 view .LVU73
  348 0018 074A     		ldr	r2, .L32
  349 001a 1388     		ldrh	r3, [r2]
  350 001c 013B     		subs	r3, r3, #1
  351 001e 1380     		strh	r3, [r2]	@ movhi
  352              	.L31:
-  64:Core/Src/interrupt.c ****         }
-  65:Core/Src/interrupt.c ****         else
-  66:Core/Src/interrupt.c ****             encItr++;
-  67:Core/Src/interrupt.c ****         CLEAR_BIT(TIM2->SR, TIM_SR_UIF);
- 353              		.loc 1 67 9 is_stmt 1 view .LVU74
+  65:Core/Src/interrupt.c ****         }
+  66:Core/Src/interrupt.c ****         else
+  67:Core/Src/interrupt.c ****             encItr++;
+  68:Core/Src/interrupt.c ****         CLEAR_BIT(TIM2->SR, TIM_SR_UIF);
+ 353              		.loc 1 68 9 is_stmt 1 view .LVU74
  354 0020 4FF08042 		mov	r2, #1073741824
  355 0024 1369     		ldr	r3, [r2, #16]
  356 0026 23F00103 		bic	r3, r3, #1
  357 002a 1361     		str	r3, [r2, #16]
  358              	.L28:
-  68:Core/Src/interrupt.c ****     }
-  69:Core/Src/interrupt.c **** }...
- 359              		.loc 1 69 1 is_stmt 0 view .LVU75
+  69:Core/Src/interrupt.c ****     }
+  70:Core/Src/interrupt.c **** }...
+ 359              		.loc 1 70 1 is_stmt 0 view .LVU75
  360 002c 7047     		bx	lr
  361              	.L30:
-  66:Core/Src/interrupt.c ****             encItr++;
- 362              		.loc 1 66 13 is_stmt 1 view .LVU76
-  66:Core/Src/interrupt.c ****             encItr++;
- 363              		.loc 1 66 19 is_stmt 0 view .LVU77
+  67:Core/Src/interrupt.c ****             encItr++;
+ 362              		.loc 1 67 13 is_stmt 1 view .LVU76
+  67:Core/Src/interrupt.c ****             encItr++;
+ 363              		.loc 1 67 19 is_stmt 0 view .LVU77
  364 002e 024A     		ldr	r2, .L32
  365 0030 1388     		ldrh	r3, [r2]
  366 0032 0133     		adds	r3, r3, #1
@@ -477,10 +478,10 @@ ARM GAS  C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s 			page 1
  397              		.section	.bss.FLAG_Delay,"aw",%nobits
  400              	FLAG_Delay:
  401 0000 00       		.space	1
+ARM GAS  C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s 			page 9
+
+
  402              		.global	encItr
-ARM GAS  C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s 			page 9
-
-
  403              		.section	.bss.encItr,"aw",%nobits
  404              		.align	1
  407              	encItr:
@@ -506,45 +507,45 @@ ARM GAS  C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s 			page 1
  433              		.file 3 "C:/Programm/Embed tools/xpack-arm-none-eabi-gcc-14.2.1-1.1/arm-none-eabi/include/sys/_std
  434              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F407xx/stm32f407xx.h"
  435              		.file 5 "Core/Inc/interrupt.h"
-ARM GAS  C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s 			page 10
+ARM GAS  C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s 			page 10
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 interrupt.c
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:21     .text.SysTick_Handler:00000000 $t
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:27     .text.SysTick_Handler:00000000 SysTick_Handler
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:79     .text.SysTick_Handler:00000034 $d
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:421    .bss.buttonTickCount:00000000 buttonTickCount
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:400    .bss.FLAG_Delay:00000000 FLAG_Delay
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:428    .bss.TickDelayCount:00000000 TickDelayCount
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:414    .bss.ENC_CNT:00000000 ENC_CNT
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:394    .bss.encDir:00000000 encDir
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:89     .text.ADC_IRQHandler:00000000 $t
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:95     .text.ADC_IRQHandler:00000000 ADC_IRQHandler
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:122    .text.ADC_IRQHandler:00000018 $d
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:129    .text.delay:00000000 $t
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:135    .text.delay:00000000 delay
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:170    .text.delay:0000001c $d
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:176    .text.EXTI15_10_IRQHandler:00000000 $t
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:182    .text.EXTI15_10_IRQHandler:00000000 EXTI15_10_IRQHandler
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:220    .text.EXTI15_10_IRQHandler:00000028 $d
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:227    .text.TIM3_IRQHandler:00000000 $t
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:233    .text.TIM3_IRQHandler:00000000 TIM3_IRQHandler
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:309    .text.TIM3_IRQHandler:00000068 $d
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:388    .bss.TIMCount:00000000 TIMCount
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:319    .text.TIM2_IRQHandler:00000000 $t
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:325    .text.TIM2_IRQHandler:00000000 TIM2_IRQHandler
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:372    .text.TIM2_IRQHandler:00000038 $d
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:407    .bss.encItr:00000000 encItr
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:381    .bss.calculateDeg:00000000 calculateDeg
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:378    .bss.calculateDeg:00000000 $d
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:385    .bss.TIMCount:00000000 $d
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:395    .bss.encDir:00000000 $d
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:401    .bss.FLAG_Delay:00000000 $d
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:404    .bss.encItr:00000000 $d
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:411    .bss.ENC_CNT:00000000 $d
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:418    .bss.buttonTickCount:00000000 $d
-C:\Users\Laska\AppData\Local\Temp\ccgYOK8g.s:425    .bss.TickDelayCount:00000000 $d
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:21     .text.SysTick_Handler:00000000 $t
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:27     .text.SysTick_Handler:00000000 SysTick_Handler
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:79     .text.SysTick_Handler:00000034 $d
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:421    .bss.buttonTickCount:00000000 buttonTickCount
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:400    .bss.FLAG_Delay:00000000 FLAG_Delay
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:428    .bss.TickDelayCount:00000000 TickDelayCount
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:414    .bss.ENC_CNT:00000000 ENC_CNT
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:394    .bss.encDir:00000000 encDir
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:89     .text.ADC_IRQHandler:00000000 $t
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:95     .text.ADC_IRQHandler:00000000 ADC_IRQHandler
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:122    .text.ADC_IRQHandler:00000018 $d
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:129    .text.delay:00000000 $t
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:135    .text.delay:00000000 delay
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:170    .text.delay:0000001c $d
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:176    .text.EXTI15_10_IRQHandler:00000000 $t
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:182    .text.EXTI15_10_IRQHandler:00000000 EXTI15_10_IRQHandler
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:220    .text.EXTI15_10_IRQHandler:00000028 $d
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:227    .text.TIM3_IRQHandler:00000000 $t
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:233    .text.TIM3_IRQHandler:00000000 TIM3_IRQHandler
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:309    .text.TIM3_IRQHandler:00000068 $d
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:388    .bss.TIMCount:00000000 TIMCount
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:319    .text.TIM2_IRQHandler:00000000 $t
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:325    .text.TIM2_IRQHandler:00000000 TIM2_IRQHandler
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:372    .text.TIM2_IRQHandler:00000038 $d
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:407    .bss.encItr:00000000 encItr
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:381    .bss.calculateDeg:00000000 calculateDeg
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:378    .bss.calculateDeg:00000000 $d
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:385    .bss.TIMCount:00000000 $d
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:395    .bss.encDir:00000000 $d
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:401    .bss.FLAG_Delay:00000000 $d
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:404    .bss.encItr:00000000 $d
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:411    .bss.ENC_CNT:00000000 $d
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:418    .bss.buttonTickCount:00000000 $d
+C:\Users\Laska\AppData\Local\Temp\ccDcG1Sy.s:425    .bss.TickDelayCount:00000000 $d
 
 UNDEFINED SYMBOLS
 GlobalTickCount

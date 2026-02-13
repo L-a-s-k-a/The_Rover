@@ -18,6 +18,7 @@ void SysTick_Handler(void)
 void ADC_IRQHandler(void){
     adcInter = ADC1->DR;
     BtnNum = !BtnNum;
+    // SET_BIT(ADC1->CR2, ADC_CR2_SWSTART);
 }
 
 void delay(int del)

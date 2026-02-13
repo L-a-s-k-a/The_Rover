@@ -77,6 +77,9 @@ void GPIO_Init(void)
 {
     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOAEN | RCC_AHB1ENR_GPIOCEN);
 
+    SET_BIT(GPIOA->MODER, GPIO_MODER_MODER4_0);
+    SET_BIT(GPIOA->OSPEEDR, GPIO_OSPEEDR_OSPEED4_1);
+
     SET_BIT(GPIOA->MODER, GPIO_MODER_MODER7_1);
     // SET_BIT(GPIOA->BSRR, GPIO_BSRR_BR7);
     SET_BIT(GPIOA->AFR[0], GPIO_AFRL_AFSEL7_1);
@@ -100,6 +103,8 @@ void TIM_PWM_Init(void){
     SET_BIT(RCC->APB1ENR, RCC_APB1ENR_TIM3EN); //Включение тактирования таймера 3
     TIM3->PSC = 100-1; //42 МГц тактовая частота шины АРВ1, но таймеры тактируются от источника, который всегда умножает на 2
     TIM3->ARR = 8400-1;
+
+    SET_BIT(TIM3->CR1, TIM_CR1_CMS_0);
 
     /*--------------Режим переключения--------------*/
     CLEAR_BIT(TIM3->CCMR1, TIM_CCMR1_CC1S_Msk);
@@ -140,19 +145,17 @@ void ADC_Init_Polling(void){
     //Включение внутреннего датчика температуры
     SET_BIT(ADC->CCR, ADC_CCR_TSVREFE);
 
-    CLEAR_BIT(ADC1->CR1, ADC_CR1_RES);
-    CLEAR_BIT(ADC1->CR1, ADC_CR1_SCAN);
-    SET_BIT(ADC1->CR1, ADC_CR1_EOCIE);
+    CLEAR_BIT(ADC1->CR1, ADC_CR1_RES);    //Разрешение АЦП 12 бит (15 циклов частоты АЦП)
+    CLEAR_BIT(ADC1->CR1, ADC_CR1_SCAN);   //Выключение сканирования нескольких каналов
+    SET_BIT(ADC1->CR1, ADC_CR1_EOCIE);    //Включение прерывания по окончанию преобразования
 
-    CLEAR_BIT(ADC1->CR2, ADC_CR2_ALIGN);
-    CLEAR_BIT(ADC1->CR2, ADC_CR2_CONT);
+    CLEAR_BIT(ADC1->CR2, ADC_CR2_ALIGN);  //Выравнивание по правому краю (не отрицательные значения)
+    SET_BIT(ADC1->CR2, ADC_CR2_CONT);     //Включение непрерывного преобразования
 
-    // SET_BIT(ADC1->CR1, ADC_CR1_JAUTO);
-    // SET_BIT(ADC1->CR2, ADC_CR2_JEXTEN_0); //Разрешение запуска преобразований по внешнему триггеру
-    // SET_BIT(ADC1->CR2, ADC_CR2_JEXTSEL_2); //Запуск по CC2 3-го таймера
+    SET_BIT(ADC1->CR2, ADC_CR2_EXTEN_0);  //Включение преобразований по фронту внешнего триггера
+    SET_BIT(ADC1->CR2, ADC_CR2_EXTSEL_3); //Выбор в качестве внешнего триггера TIM3 Update event
 
-    // SET_BIT(ADC1->CR2, ADC_CR2_EXTEN_0);
-    // SET_BIT(ADC1->CR2, ADC_CR2_EXTSEL_3);
+    SET_BIT(ADC1->CR2, ADC_CR2_DMA);      //Включение DMA
 
     //Количество сэмплов преобраования на 15
     SET_BIT(ADC1->SMPR2, ADC_SMPR2_SMP0_0); //Для канала 0
@@ -162,9 +165,6 @@ void ADC_Init_Polling(void){
     //Выбор канала и последовательности считывания
     CLEAR_BIT(ADC1->SQR1, ADC_SQR1_L); //Общее число преобразований - 3
     CLEAR_BIT(ADC1->SQR3, ADC_SQR3_SQ1); //1 channel
-
-    // CLEAR_BIT(ADC1->JSQR, ADC_JSQR_JL);
-    // SET_BIT(ADC1->JSQR, ADC_JSQR_JSQ4_0);
 
     //Включение АЦП
     SET_BIT(ADC1->CR2, ADC_CR2_ADON);
