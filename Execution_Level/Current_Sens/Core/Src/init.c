@@ -171,6 +171,13 @@ void ADC_Init_Polling(void){
     NVIC_EnableIRQ(ADC_IRQn);
 }
 
+void DMA_Init(void){
+    SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_DMA2EN);
+
+    CLEAR_BIT(DMA2_Stream0->CR, DMA_SxCR_CHSEL);
+
+}
+
 void TIM_ENCODER_Init(void){
     SET_BIT(RCC->APB1ENR, RCC_APB1ENR_TIM2EN); //Включение тактирования таймера 2
     SET_BIT(TIM2->CCMR1, TIM_CCMR1_CC1S_0); //Настройка выхода CC1 (Capture/Compare 1) на вход, IC1(Input capture 1) используется как TI1

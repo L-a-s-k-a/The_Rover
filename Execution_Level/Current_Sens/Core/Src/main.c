@@ -21,6 +21,7 @@ int main(void)
 
     while (1)
     {
+        
         Vsense = (3.1 * adcBuf[2]) / 4095U;
         TIM3->CCR2 = (8400 * adcInter) / 4095; 
         Temperature = ((0.76 - Vsense) / 2.5) + 25;
