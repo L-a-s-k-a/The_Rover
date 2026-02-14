@@ -5,13 +5,18 @@
 #include "../../CMSIS/Devices/STM32F4xx/Inc/stm32f4xx.h"
 #include "../../CMSIS/Devices/STM32F4xx/Inc/STM32F407xx/stm32f407xx.h"
 
+#define ADC_NUM_CHANNEL 4
+
+// Буфер для одного значения АЦП (16 бит)
+extern volatile uint16_t adcBuf[4];
+// Флаг готовности данных (устанавливается в прерывании DMA)
+extern volatile uint8_t adc_conversion_complete, adc_overrun_count;
+
 void RCC_Init(void);
-void ITR_Init(void);
 void GPIO_Init(void);
 void SysTick_Init(void);
 void TIM_PWM_Init(void);
-void ADC_Init_Polling(void);
-// void TIM_ENCODER_Init(void);
-// void Enc_Trig_Init(void);
+void ADC_Init(void);
+void DMA_Init(void);
 
 #endif

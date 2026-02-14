@@ -4,10 +4,8 @@
 
 #include "init.h"
 
-extern uint16_t GlobalTickCount, MotorTickCount;
-extern uint16_t ENC_CNT, encItr, adcInter;
-extern uint8_t encDir, BtnNum;
-extern float FLAG_Revolution, calculatePulseARR;
+extern volatile uint16_t adcInter;
+extern uint16_t GlobalTickCount;
 
 void EXTI15_10_IRQHandler(void);
 void SysTick_Handler(void);

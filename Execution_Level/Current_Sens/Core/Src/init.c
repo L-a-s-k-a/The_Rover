@@ -38,32 +38,6 @@ void RCC_Init(void)
     while (READ_BIT(RCC->CR, RCC_CR_PLLRDY) == RESET);
 }
 
-void ITR_Init(void)
-{
-    SET_BIT(RCC->APB2ENR, RCC_APB2ENR_SYSCFGEN);
-
-    SET_BIT(SYSCFG->EXTICR[2], SYSCFG_EXTICR3_EXTI11_PC);
-    SET_BIT(EXTI->IMR, EXTI_IMR_IM11);
-    SET_BIT(EXTI->RTSR, EXTI_RTSR_TR11);
-    CLEAR_BIT(EXTI->FTSR, EXTI_FTSR_TR11);
-
-    SET_BIT(SYSCFG->EXTICR[3], SYSCFG_EXTICR4_EXTI12_PC);
-    SET_BIT(EXTI->IMR, EXTI_IMR_IM12);
-    SET_BIT(EXTI->RTSR, EXTI_RTSR_TR12);
-    CLEAR_BIT(EXTI->FTSR, EXTI_FTSR_TR12);
-
-    NVIC_SetPriority(EXTI15_10_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 0, 0));
-    NVIC_EnableIRQ(EXTI15_10_IRQn);
-
-    SET_BIT(SYSCFG->EXTICR[1], SYSCFG_EXTICR2_EXTI4_PA);
-    SET_BIT(EXTI->IMR, EXTI_IMR_IM4);
-    SET_BIT(EXTI->RTSR, EXTI_RTSR_TR4);
-    CLEAR_BIT(EXTI->FTSR, EXTI_FTSR_TR4);
-
-    NVIC_SetPriority(EXTI4_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 0, 0));
-    NVIC_EnableIRQ(EXTI4_IRQn);
-}
-
 void SysTick_Init(void){
     CLEAR_BIT(SysTick->CTRL, SysTick_CTRL_ENABLE_Msk);
     SET_BIT(SysTick->CTRL, SysTick_CTRL_TICKINT_Msk);
@@ -81,12 +55,11 @@ void GPIO_Init(void)
     SET_BIT(GPIOA->OSPEEDR, GPIO_OSPEEDR_OSPEED4_1);
 
     SET_BIT(GPIOA->MODER, GPIO_MODER_MODER7_1);
-    // SET_BIT(GPIOA->BSRR, GPIO_BSRR_BR7);
     SET_BIT(GPIOA->AFR[0], GPIO_AFRL_AFSEL7_1);
 
-    SET_BIT(GPIOA->MODER, GPIO_MODER_MODER6_1);
-    // SET_BIT(GPIOA->BSRR, GPIO_BSRR_BR6);
-    SET_BIT(GPIOA->AFR[0], GPIO_AFRL_AFSEL6_1);
+    SET_BIT(GPIOA->MODER, GPIO_MODER_MODER6_0);
+    SET_BIT(GPIOA->BSRR, GPIO_BSRR_BS6);
+    // SET_BIT(GPIOA->AFR[0], GPIO_AFRL_AFSEL6_1);
 
     /*--------Настройка работы порта PC9 в качестве MCO2--------*/
     SET_BIT(GPIOC->MODER, GPIO_MODER_MODER9_1);
@@ -101,31 +74,24 @@ void GPIO_Init(void)
 
 void TIM_PWM_Init(void){
     SET_BIT(RCC->APB1ENR, RCC_APB1ENR_TIM3EN); //Включение тактирования таймера 3
-    TIM3->PSC = 100-1; //42 МГц тактовая частота шины АРВ1, но таймеры тактируются от источника, который всегда умножает на 2
-    TIM3->ARR = 8400-1;
+    TIM3->PSC = 10-1; //42 МГц тактовая частота шины АРВ1, но таймеры тактируются от источника, который всегда умножает на 2
+    TIM3->ARR = 4200-1;
 
     SET_BIT(TIM3->CR1, TIM_CR1_CMS_0);
 
-    /*--------------Режим переключения--------------*/
-    CLEAR_BIT(TIM3->CCMR1, TIM_CCMR1_CC1S_Msk);
-    // SET_BIT(TIM3->CCMR1, TIM_CCMR1_OC1M_0 | TIM_CCMR1_OC1M_1); // OC1REF Toggles when TIM3_CNT=TIM3_CCR1.
-    SET_BIT(TIM3->CCMR1, TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1PE);
-    SET_BIT(TIM3->CCER, TIM_CCER_CC1E); 
-    TIM3->CCR1 = 8050-1; 
-
     /*------------------Режим ШИМ------------------*/
     CLEAR_BIT(TIM3->CCMR1, TIM_CCMR1_CC2S_Msk);
-    SET_BIT(TIM3->CCMR1, TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2 | TIM_CCMR1_OC2PE); //  In upcounting, channel 1 is active as long as TIMx_CNT<TIMx_CCR1 else inactive.
+    SET_BIT(TIM3->CCMR1, TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2 | TIM_CCMR1_OC2PE);
     SET_BIT(TIM3->CCER, TIM_CCER_CC2E);
-    TIM3->CCR2 = 3150-1; 
 
-    SET_BIT(TIM3->CR2, TIM_CR2_MMS_1); 
-    SET_BIT(TIM3->CR1, TIM_CR1_CEN); //Включение 
+    // SET_BIT(TIM3->EGR, TIM_EGR_UG);    // Принудительная генерация обновления для загрузки предделителя и ARR
+    SET_BIT(TIM3->CR2, TIM_CR2_MMS_1); // Настройка выхода триггера на событие обновления (Update event)
+    SET_BIT(TIM3->CR1, TIM_CR1_CEN);   // Включение таймера
     SET_BIT(TIM3->DIER, TIM_DIER_UIE); //Включение Прерывания по переполнению
     NVIC_EnableIRQ(TIM3_IRQn);
 }
 
-void ADC_Init_Polling(void){
+void ADC_Init(void){
     SET_BIT(RCC->APB2ENR, RCC_APB2ENR_ADC1EN);
 
     //Натсройка канала PA0 для работы в аналоговом режиме
@@ -146,72 +112,73 @@ void ADC_Init_Polling(void){
     SET_BIT(ADC->CCR, ADC_CCR_TSVREFE);
 
     CLEAR_BIT(ADC1->CR1, ADC_CR1_RES);    //Разрешение АЦП 12 бит (15 циклов частоты АЦП)
-    CLEAR_BIT(ADC1->CR1, ADC_CR1_SCAN);   //Выключение сканирования нескольких каналов
-    SET_BIT(ADC1->CR1, ADC_CR1_EOCIE);    //Включение прерывания по окончанию преобразования
+    SET_BIT(ADC1->CR1, ADC_CR1_SCAN);   //Выключение сканирования нескольких каналов
+    // SET_BIT(ADC1->CR1, ADC_CR1_EOCIE);    //Включение прерывания по окончанию преобразования
 
     CLEAR_BIT(ADC1->CR2, ADC_CR2_ALIGN);  //Выравнивание по правому краю (не отрицательные значения)
-    SET_BIT(ADC1->CR2, ADC_CR2_CONT);     //Включение непрерывного преобразования
+    // SET_BIT(ADC1->CR2, ADC_CR2_CONT);     //Включение непрерывного преобразования
 
     SET_BIT(ADC1->CR2, ADC_CR2_EXTEN_0);  //Включение преобразований по фронту внешнего триггера
     SET_BIT(ADC1->CR2, ADC_CR2_EXTSEL_3); //Выбор в качестве внешнего триггера TIM3 Update event
 
     SET_BIT(ADC1->CR2, ADC_CR2_DMA);      //Включение DMA
+    SET_BIT(ADC1->CR2, ADC_CR2_DDS);      //Режим работы DMA - непрерывный запрос (новой запрос на преобразование не будет отправляться, пока не будет считано предыдущее значение)
+    // SET_BIT(ADC123_COMMON->CCR, ADC_CCR_DMA_0);    //Режим работы DMA - однократный обмен (1 запрос на 1 преобразование)
+    // SET_BIT(ADC123_COMMON->CCR, ADC_CCR_DDS);      //Режим работы DMA - непрерывный запрос (новой запрос на преобразование не будет отправляться, пока не будет считано предыдущее значение)
 
     //Количество сэмплов преобраования на 15
     SET_BIT(ADC1->SMPR2, ADC_SMPR2_SMP0_0); //Для канала 0
     SET_BIT(ADC1->SMPR2, ADC_SMPR2_SMP1_0); // Для канала 1
-    SET_BIT(ADC1->SMPR1, ADC_SMPR1_SMP16_0); //Для канала 16
+    SET_BIT(ADC1->SMPR2, ADC_SMPR2_SMP2_0); // Для канала 2
+    SET_BIT(ADC1->SMPR2, ADC_SMPR2_SMP3_0); //Для канала 3
 
-    //Выбор канала и последовательности считывания
-    CLEAR_BIT(ADC1->SQR1, ADC_SQR1_L); //Общее число преобразований - 3
-    CLEAR_BIT(ADC1->SQR3, ADC_SQR3_SQ1); //1 channel
+    // SET_BIT(ADC1->SQR1, ADC_SQR1_L_0 | ADC_SQR1_L_1); // Количество каналов в последовательности - 1 (4 канала)
+    // Задаём последовательность из 4 каналов (L[3:0] = 3)
+    ADC1->SQR1 = (3 << 20);   // L = 3 (всего 4 канала)
+    // Заполняем SQ1..SQ4 в регистре SQR3 (каналы 0,1,2,3)
+    ADC1->SQR3 = (0 << 0) | (1 << 5) | (2 << 10) | (3 << 15);
 
     //Включение АЦП
     SET_BIT(ADC1->CR2, ADC_CR2_ADON);
     NVIC_EnableIRQ(ADC_IRQn);
+
+    // Небольшая задержка для стабилизации аналоговой части (рекомендуется)
+    for(volatile int i = 0; i < 1000; i++);
 }
 
 void DMA_Init(void){
     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_DMA2EN);
 
-    CLEAR_BIT(DMA2_Stream0->CR, DMA_SxCR_CHSEL);
+    // Отключение потока перед настройкой
+    DMA2_Stream0->CR &= ~DMA_SxCR_EN;
+    while(DMA2_Stream0->CR & DMA_SxCR_EN);
 
-}
+    DMA2_Stream0->NDTR = 4; // Количество данных для передачи (1 в нашем случае)
+    DMA2_Stream0->PAR = (uint32_t)(&ADC1->DR);
+    DMA2_Stream0->M0AR = (uint32_t)adcBuf; // Адрес буфера в памяти для хранения данных
 
-void TIM_ENCODER_Init(void){
-    SET_BIT(RCC->APB1ENR, RCC_APB1ENR_TIM2EN); //Включение тактирования таймера 2
-    SET_BIT(TIM2->CCMR1, TIM_CCMR1_CC1S_0); //Настройка выхода CC1 (Capture/Compare 1) на вход, IC1(Input capture 1) используется как TI1
-    SET_BIT(TIM2->CCMR1, TIM_CCMR1_CC2S_0); //Настройка выхода CC2 (Capture/Compare 1) на вход, IC2(Input capture 1) используется как TI2
-    /*
-     *Настройка режима подчинения (Slave Mode Selection). 
-     *Выбран режим энкодерного интерфейса.
-     *Счётчик считает ввех/вниз по фронту сигнала на линии 1 - TI1FP1 (CH1-PA5)
-     *в зависимости от уровня сигнала на линии 2 - TI2FP2. (CH2-PB3)
-     */
-    SET_BIT(TIM2->SMCR, TIM_SMCR_SMS_0); 
-    SET_BIT(TIM2->CCMR1, TIM_CCMR1_IC1F_0 | TIM_CCMR1_IC1F_1 | TIM_CCMR1_IC1F_2 | TIM_CCMR1_IC1F_3); //Установка количества пропускаемых сэмплов N = 8
-    SET_BIT(TIM2->CCMR1, TIM_CCMR1_IC2F_0 | TIM_CCMR1_IC2F_1 | TIM_CCMR1_IC2F_2 | TIM_CCMR1_IC2F_3); //Установка количества пропускаемых сэмплов N = 8
-    
-    TIM2->ARR = 6000 - 1;
-    CLEAR_BIT(TIM2->CCER, TIM_CCER_CC1P);
-    SET_BIT(TIM2->CCER, TIM_CCER_CC1E); 
-    SET_BIT(TIM2->DIER, TIM_DIER_UIE); //Включение Прерывания по переполнению
-    // Enc_Trig_Init();
-    
-    SET_BIT(TIM2->CR1, TIM_CR1_CEN); //Включение счётчика
-    NVIC_EnableIRQ(TIM2_IRQn);
-}
+    /* Конфигурация:
+    *   - канал 0 (для ADC1)
+    *   - направление: периферия → память (DIR=00)
+    *   - размер данных: 16 бит (PSIZE=01, MSIZE=01)
+    *   - инкремент памяти (MINC=1)
+    *   - циклический режим (CIRC=1) – автоматический перезапуск
+    *   - прерывание по завершении передачи (TCIE=1)
+    *   - приоритет средний (PL=01)
+    */
+    DMA2_Stream0->CR = (0 << DMA_SxCR_CHSEL_Pos)   // канал 0
+                     | (1 << DMA_SxCR_PSIZE_Pos)   // PSIZE = 01 (16 бит)
+                     | (1 << DMA_SxCR_MSIZE_Pos)   // MSIZE = 01 (16 бит)
+                     | (0 << DMA_SxCR_DIR_Pos)     // DIR = 00 (периферия → память)
+                     | DMA_SxCR_MINC               // Увеличение адреса памяти после каждого успешного обмена
+                     | DMA_SxCR_CIRC               // Циклический режим
+                     | DMA_SxCR_TCIE               // Включение прерывания по окончанию передачи
+                     | (1 << DMA_SxCR_PL_Pos);     // PL[0]=1, PL[1]=0 → средний приоритет
 
-void Enc_Trig_Init(void){
-    /* 0000: No filter, sampling is done at fDTS */
-    CLEAR_BIT(TIM2->SMCR, TIM_SMCR_ETF);
+    // Включение потока
+    DMA2_Stream0->CR |= DMA_SxCR_EN;
 
-    /* 100: TI1 Edge Detector (TI1F_ED) */
-    CLEAR_BIT(TIM2->SMCR, TIM_SMCR_TS_0 | TIM_SMCR_TS_1);
-    SET_BIT(TIM2->SMCR, TIM_SMCR_TS_2);
-
-    /* 1: Trigger interrupt enabled */
-    SET_BIT(TIM2->DIER, TIM_DIER_TIE); //Включение Прерывания по переполнению
-
-    NVIC_EnableIRQ(TIM2_IRQn);
+    // Настройка NVIC для прерывания DMA2 Stream0
+    NVIC_EnableIRQ(DMA2_Stream0_IRQn);
+    NVIC_SetPriority(DMA2_Stream0_IRQn, 1);
 }

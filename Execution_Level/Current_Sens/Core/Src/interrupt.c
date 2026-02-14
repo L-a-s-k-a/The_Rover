@@ -1,24 +1,46 @@
 #include "interrupt.h"
 
-uint16_t TickDelayCount, buttonTickCount;
-uint16_t ENC_CNT, encItr;
-uint8_t FLAG_Delay, encDir;
-uint32_t TIMCount, calculateDeg;
+uint16_t TickDelayCount, miiliseconds;
+uint8_t FLAG_Delay;
 
 void SysTick_Handler(void)
 {
-    buttonTickCount++;
     GlobalTickCount++;
     if (FLAG_Delay)
         TickDelayCount++;
-    ENC_CNT = TIM2->CNT;
-    encDir = READ_BIT(TIM2->CR1, TIM_CR1_DIR) >> 4;
 }
 
 void ADC_IRQHandler(void){
     adcInter = ADC1->DR;
-    BtnNum = !BtnNum;
     // SET_BIT(ADC1->CR2, ADC_CR2_SWSTART);
+}
+
+void DMA2_Stream0_IRQHandler(void){
+    if (READ_BIT(DMA2->LISR, DMA_LISR_TCIF0))
+    {
+        SET_BIT(DMA2->LIFCR, DMA_LIFCR_CTCIF0); // Очистка флага прерывания
+        adc_conversion_complete = 1; // Установка флага готовности данных
+        GPIOA->ODR ^= (0 << 6); // Переключение бита 6 порта A
+    }
+    // Диагностика: проверка переполнения АЦП
+    if (ADC1->SR & ADC_SR_OVR) {
+        adc_overrun_count++;
+        ADC1->SR &= ~ADC_SR_OVR; // Сбрасываем флаг
+        // Зажжем красный светодиод, если есть
+        // GPIOA->ODR ^= (0 << 6); // Переключение бита 6 порта A
+    }
+}
+
+void TIM3_IRQHandler(void){
+    if (READ_BIT(TIM3->SR, TIM_SR_UIF))
+    {
+        TIM3->SR &= ~TIM_SR_UIF; // Очистка флага прерывания
+        TickDelayCount++;
+        if(TickDelayCount >= 1000){
+            TickDelayCount = 0;
+            miiliseconds++;
+        }
+    }
 }
 
 void delay(int del)
@@ -29,42 +51,4 @@ void delay(int del)
     }
     TickDelayCount = 0;
     FLAG_Delay = 0;
-}
-
-void EXTI15_10_IRQHandler(void)
-{
-    SET_BIT(EXTI->PR, EXTI_PR_PR13);
-    if (buttonTickCount > 100)
-    {
-        buttonTickCount = 0;
-        BtnNum = !BtnNum;
-    }
-}
-
-void TIM3_IRQHandler(void)
-{
-    if (READ_BIT(TIM3->SR, TIM_SR_UIF))
-    {
-        TIMCount += 10;
-        if (TIMCount >= calculatePulseARR)
-        {
-            FLAG_Revolution += 0.1;
-            TIMCount = 0;
-        }
-        CLEAR_BIT(TIM3->SR, TIM_SR_UIF);
-    }
-}
-
-void TIM2_IRQHandler(void)
-{
-    if (TIM2->SR & TIM_SR_UIF)
-    {
-        if (READ_BIT(TIM2->CR1, TIM_CR1_DIR) != 0)
-        {
-            encItr--;
-        }
-        else
-            encItr++;
-        CLEAR_BIT(TIM2->SR, TIM_SR_UIF);
-    }
 }
