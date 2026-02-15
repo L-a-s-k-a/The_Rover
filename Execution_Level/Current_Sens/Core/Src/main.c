@@ -6,6 +6,8 @@ volatile uint8_t adc_conversion_complete, adc_overrun_count;
 uint16_t GlobalTickCount, adc_value[ADC_NUM_CHANNEL - 1];
 float Temperature, Vsense;
 
+//Пишу это для проверки Branch
+
 int main(void)
 {
     RCC_Init();
