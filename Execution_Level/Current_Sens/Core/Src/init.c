@@ -94,7 +94,7 @@ void TIM_PWM_Init(void){
 void ADC_Init(void){
     SET_BIT(RCC->APB2ENR, RCC_APB2ENR_ADC1EN);
 
-    //Натсройка канала PA0 для работы в аналоговом режиме
+    //Настройка каналов PA0, PA1, PA2 для работы в аналоговом режиме
     SET_BIT(GPIOA->MODER, GPIO_MODER_MODER0);
     CLEAR_BIT(GPIOA->PUPDR, GPIO_PUPDR_PUPD0);
     SET_BIT(GPIOA->MODER, GPIO_MODER_MODER1);
@@ -104,7 +104,7 @@ void ADC_Init(void){
 
     /* Установка предделителя на 4, АЦП тактируется от шины АРВ2 84МГц, 
      * а АЦП должно работать на частоте не более 30 МГц, из-за чего
-     * следует устанавливать делитель на 4. В резултате частота АЦП будет 21 МГц, 
+     * следует устанавливать делитель на 4. В результате частота АЦП будет 21 МГц, 
      * что подходит для стабильной работы.
      */
     SET_BIT(ADC->CCR, ADC_CCR_ADCPRE_0);
