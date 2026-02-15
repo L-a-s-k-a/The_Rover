@@ -153,7 +153,7 @@ void DMA_Init(void){
     DMA2_Stream0->CR &= ~DMA_SxCR_EN;
     while(DMA2_Stream0->CR & DMA_SxCR_EN);
 
-    DMA2_Stream0->NDTR = 4; // Количество данных для передачи (1 в нашем случае)
+    DMA2_Stream0->NDTR = 4; // Количество данных для передачи (4 в нашем случае)
     DMA2_Stream0->PAR = (uint32_t)(&ADC1->DR);
     DMA2_Stream0->M0AR = (uint32_t)adcBuf; // Адрес буфера в памяти для хранения данных
 
