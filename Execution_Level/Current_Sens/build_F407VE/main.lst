@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\Asus\AppData\Local\Temp\cclevpoL.s 			page 1
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -58,111 +58,113 @@ ARM GAS  C:\Users\Asus\AppData\Local\Temp\cclevpoL.s 			page 1
   44              	.LVL1:
   13:Core/Src/main.c ****     SysTick_Init();
   45              		.loc 1 13 5 view .LVU3
-ARM GAS  C:\Users\Asus\AppData\Local\Temp\cclevpoL.s 			page 2
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s 			page 2
 
 
   46 000a FFF7FEFF 		bl	SysTick_Init
   47              	.LVL2:
-  14:Core/Src/main.c ****     //Здесь важен порядок инициализации, так как АЦП дол�
-  15:Core/Src/main.c ****     DMA_Init();
-  48              		.loc 1 15 5 view .LVU4
-  49 000e FFF7FEFF 		bl	DMA_Init
+  14:Core/Src/main.c ****     /*Здесь важен порядок инициализации, так как АЦП дол�
+  15:Core/Src/main.c ****      *а DMA до таймера, который запускает преобразование
+  16:Core/Src/main.c ****      */   
+  17:Core/Src/main.c ****     ADC_Init();
+  48              		.loc 1 17 5 view .LVU4
+  49 000e FFF7FEFF 		bl	ADC_Init
   50              	.LVL3:
-  16:Core/Src/main.c ****     ADC_Init();
-  51              		.loc 1 16 5 view .LVU5
-  52 0012 FFF7FEFF 		bl	ADC_Init
+  18:Core/Src/main.c ****     DMA_Init();
+  51              		.loc 1 18 5 view .LVU5
+  52 0012 FFF7FEFF 		bl	DMA_Init
   53              	.LVL4:
-  17:Core/Src/main.c ****     TIM_PWM_Init();
-  54              		.loc 1 17 5 view .LVU6
+  19:Core/Src/main.c ****     TIM_PWM_Init();
+  54              		.loc 1 19 5 view .LVU6
   55 0016 FFF7FEFF 		bl	TIM_PWM_Init
   56              	.LVL5:
   57 001a 0CE0     		b	.L3
   58              	.L2:
-  18:Core/Src/main.c **** 
-  19:Core/Src/main.c ****     while (1)
-  20:Core/Src/main.c ****     {
-  21:Core/Src/main.c ****         if(adc_conversion_complete) {
-  22:Core/Src/main.c ****             adc_conversion_complete = 0; // Сброс флага готовности данных
-  23:Core/Src/main.c ****             adc_value[0] = adcBuf[0];
-  24:Core/Src/main.c ****             adc_value[1] = adcBuf[1];
-  25:Core/Src/main.c ****             adc_value[2] = adcBuf[2];
-  26:Core/Src/main.c ****             adc_value[3] = adcBuf[3];
-  27:Core/Src/main.c ****         }
-  28:Core/Src/main.c ****         // Vsense = (3.1 * adcBuf[2]) / 4095U;
-  29:Core/Src/main.c ****         TIM3->CCR2 = (4199 * adc_value[0]) / 4095;
-  59              		.loc 1 29 9 view .LVU7
-  60              		.loc 1 29 39 is_stmt 0 view .LVU8
+  20:Core/Src/main.c **** 
+  21:Core/Src/main.c ****     while (1)
+  22:Core/Src/main.c ****     {
+  23:Core/Src/main.c ****         if(adc_conversion_complete) {
+  24:Core/Src/main.c ****             adc_conversion_complete = 0; // Сброс флага готовности данных
+  25:Core/Src/main.c ****             adc_value[0] = adcBuf[0];
+  26:Core/Src/main.c ****             adc_value[1] = adcBuf[1];
+  27:Core/Src/main.c ****             adc_value[2] = adcBuf[2];
+  28:Core/Src/main.c ****             adc_value[3] = adcBuf[3];
+  29:Core/Src/main.c ****         }
+  30:Core/Src/main.c ****         // Vsense = (3.1 * adcBuf[2]) / 4095U;
+  31:Core/Src/main.c ****         TIM3->CCR2 = (4199 * adc_value[0]) / 4095;
+  59              		.loc 1 31 9 view .LVU7
+  60              		.loc 1 31 39 is_stmt 0 view .LVU8
   61 001c 0F4B     		ldr	r3, .L5
   62 001e 1A88     		ldrh	r2, [r3]
-  63              		.loc 1 29 28 view .LVU9
+  63              		.loc 1 31 28 view .LVU9
   64 0020 41F26703 		movw	r3, #4199
   65 0024 03FB02F2 		mul	r2, r3, r2
-  66              		.loc 1 29 44 view .LVU10
+  66              		.loc 1 31 44 view .LVU10
   67 0028 0D4B     		ldr	r3, .L5+4
   68 002a 83FB0213 		smull	r1, r3, r3, r2
   69 002e 1344     		add	r3, r3, r2
   70 0030 DB12     		asrs	r3, r3, #11
-  71              		.loc 1 29 20 view .LVU11
+  71              		.loc 1 31 20 view .LVU11
   72 0032 0C4A     		ldr	r2, .L5+8
   73 0034 9363     		str	r3, [r2, #56]
-  19:Core/Src/main.c ****     {
-  74              		.loc 1 19 11 is_stmt 1 view .LVU12
+  21:Core/Src/main.c ****     {
+  74              		.loc 1 21 11 is_stmt 1 view .LVU12
   75              	.L3:
-  19:Core/Src/main.c ****     {
-  76              		.loc 1 19 5 view .LVU13
-  21:Core/Src/main.c ****             adc_conversion_complete = 0; // Сброс флага готовности данных
-  77              		.loc 1 21 9 view .LVU14
-  21:Core/Src/main.c ****             adc_conversion_complete = 0; // Сброс флага готовности данных
-  78              		.loc 1 21 12 is_stmt 0 view .LVU15
+  21:Core/Src/main.c ****     {
+  76              		.loc 1 21 5 view .LVU13
+  23:Core/Src/main.c ****             adc_conversion_complete = 0; // Сброс флага готовности данных
+  77              		.loc 1 23 9 view .LVU14
+  23:Core/Src/main.c ****             adc_conversion_complete = 0; // Сброс флага готовности данных
+  78              		.loc 1 23 12 is_stmt 0 view .LVU15
   79 0036 0C4B     		ldr	r3, .L5+12
   80 0038 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
-  21:Core/Src/main.c ****             adc_conversion_complete = 0; // Сброс флага готовности данных
-  81              		.loc 1 21 11 view .LVU16
-ARM GAS  C:\Users\Asus\AppData\Local\Temp\cclevpoL.s 			page 3
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s 			page 3
 
 
+  23:Core/Src/main.c ****             adc_conversion_complete = 0; // Сброс флага готовности данных
+  81              		.loc 1 23 11 view .LVU16
   82 003a 002B     		cmp	r3, #0
   83 003c EED0     		beq	.L2
-  22:Core/Src/main.c ****             adc_value[0] = adcBuf[0];
-  84              		.loc 1 22 13 is_stmt 1 view .LVU17
-  22:Core/Src/main.c ****             adc_value[0] = adcBuf[0];
-  85              		.loc 1 22 37 is_stmt 0 view .LVU18
+  24:Core/Src/main.c ****             adc_value[0] = adcBuf[0];
+  84              		.loc 1 24 13 is_stmt 1 view .LVU17
+  24:Core/Src/main.c ****             adc_value[0] = adcBuf[0];
+  85              		.loc 1 24 37 is_stmt 0 view .LVU18
   86 003e 0A4B     		ldr	r3, .L5+12
   87 0040 0022     		movs	r2, #0
   88 0042 1A70     		strb	r2, [r3]
-  23:Core/Src/main.c ****             adc_value[1] = adcBuf[1];
-  89              		.loc 1 23 13 is_stmt 1 view .LVU19
-  23:Core/Src/main.c ****             adc_value[1] = adcBuf[1];
-  90              		.loc 1 23 34 is_stmt 0 view .LVU20
+  25:Core/Src/main.c ****             adc_value[1] = adcBuf[1];
+  89              		.loc 1 25 13 is_stmt 1 view .LVU19
+  25:Core/Src/main.c ****             adc_value[1] = adcBuf[1];
+  90              		.loc 1 25 34 is_stmt 0 view .LVU20
   91 0044 094A     		ldr	r2, .L5+16
   92 0046 1188     		ldrh	r1, [r2]
-  23:Core/Src/main.c ****             adc_value[1] = adcBuf[1];
-  93              		.loc 1 23 26 view .LVU21
+  25:Core/Src/main.c ****             adc_value[1] = adcBuf[1];
+  93              		.loc 1 25 26 view .LVU21
   94 0048 044B     		ldr	r3, .L5
   95 004a 1980     		strh	r1, [r3]	@ movhi
-  24:Core/Src/main.c ****             adc_value[2] = adcBuf[2];
-  96              		.loc 1 24 13 is_stmt 1 view .LVU22
-  24:Core/Src/main.c ****             adc_value[2] = adcBuf[2];
-  97              		.loc 1 24 34 is_stmt 0 view .LVU23
+  26:Core/Src/main.c ****             adc_value[2] = adcBuf[2];
+  96              		.loc 1 26 13 is_stmt 1 view .LVU22
+  26:Core/Src/main.c ****             adc_value[2] = adcBuf[2];
+  97              		.loc 1 26 34 is_stmt 0 view .LVU23
   98 004c 5188     		ldrh	r1, [r2, #2]
-  24:Core/Src/main.c ****             adc_value[2] = adcBuf[2];
-  99              		.loc 1 24 26 view .LVU24
+  26:Core/Src/main.c ****             adc_value[2] = adcBuf[2];
+  99              		.loc 1 26 26 view .LVU24
  100 004e 5980     		strh	r1, [r3, #2]	@ movhi
-  25:Core/Src/main.c ****             adc_value[3] = adcBuf[3];
- 101              		.loc 1 25 13 is_stmt 1 view .LVU25
-  25:Core/Src/main.c ****             adc_value[3] = adcBuf[3];
- 102              		.loc 1 25 34 is_stmt 0 view .LVU26
+  27:Core/Src/main.c ****             adc_value[3] = adcBuf[3];
+ 101              		.loc 1 27 13 is_stmt 1 view .LVU25
+  27:Core/Src/main.c ****             adc_value[3] = adcBuf[3];
+ 102              		.loc 1 27 34 is_stmt 0 view .LVU26
  103 0050 9188     		ldrh	r1, [r2, #4]
-  25:Core/Src/main.c ****             adc_value[3] = adcBuf[3];
- 104              		.loc 1 25 26 view .LVU27
+  27:Core/Src/main.c ****             adc_value[3] = adcBuf[3];
+ 104              		.loc 1 27 26 view .LVU27
  105 0052 9980     		strh	r1, [r3, #4]	@ movhi
-  26:Core/Src/main.c ****         }
- 106              		.loc 1 26 13 is_stmt 1 view .LVU28
-  26:Core/Src/main.c ****         }
- 107              		.loc 1 26 34 is_stmt 0 view .LVU29
+  28:Core/Src/main.c ****         }
+ 106              		.loc 1 28 13 is_stmt 1 view .LVU28
+  28:Core/Src/main.c ****         }
+ 107              		.loc 1 28 34 is_stmt 0 view .LVU29
  108 0054 D288     		ldrh	r2, [r2, #6]
-  26:Core/Src/main.c ****         }
- 109              		.loc 1 26 26 view .LVU30
+  28:Core/Src/main.c ****         }
+ 109              		.loc 1 28 26 view .LVU30
  110 0056 DA80     		strh	r2, [r3, #6]	@ movhi
  111 0058 E0E7     		b	.L2
  112              	.L6:
@@ -176,11 +178,11 @@ ARM GAS  C:\Users\Asus\AppData\Local\Temp\cclevpoL.s 			page 1
  120              		.cfi_endproc
  121              	.LFE130:
  123              		.global	Vsense
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s 			page 4
+
+
  124              		.section	.bss.Vsense,"aw",%nobits
  125              		.align	2
-ARM GAS  C:\Users\Asus\AppData\Local\Temp\cclevpoL.s 			page 4
-
-
  128              	Vsense:
  129 0000 00000000 		.space	4
  130              		.global	Temperature
@@ -225,35 +227,35 @@ ARM GAS  C:\Users\Asus\AppData\Local\Temp\cclevpoL.s 			page 1
  181              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F407xx/stm32f407xx.h"
  182              		.file 5 "Core/Inc/init.h"
  183              		.file 6 "Core/Inc/interrupt.h"
-ARM GAS  C:\Users\Asus\AppData\Local\Temp\cclevpoL.s 			page 5
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s 			page 5
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\Asus\AppData\Local\Temp\cclevpoL.s:21     .text.main:00000000 $t
-C:\Users\Asus\AppData\Local\Temp\cclevpoL.s:27     .text.main:00000000 main
-C:\Users\Asus\AppData\Local\Temp\cclevpoL.s:115    .text.main:0000005c $d
-C:\Users\Asus\AppData\Local\Temp\cclevpoL.s:142    .bss.adc_value:00000000 adc_value
-C:\Users\Asus\AppData\Local\Temp\cclevpoL.s:161    .bss.adc_conversion_complete:00000000 adc_conversion_complete
-C:\Users\Asus\AppData\Local\Temp\cclevpoL.s:175    .bss.adcBuf:00000000 adcBuf
-C:\Users\Asus\AppData\Local\Temp\cclevpoL.s:128    .bss.Vsense:00000000 Vsense
-C:\Users\Asus\AppData\Local\Temp\cclevpoL.s:125    .bss.Vsense:00000000 $d
-C:\Users\Asus\AppData\Local\Temp\cclevpoL.s:135    .bss.Temperature:00000000 Temperature
-C:\Users\Asus\AppData\Local\Temp\cclevpoL.s:132    .bss.Temperature:00000000 $d
-C:\Users\Asus\AppData\Local\Temp\cclevpoL.s:139    .bss.adc_value:00000000 $d
-C:\Users\Asus\AppData\Local\Temp\cclevpoL.s:149    .bss.GlobalTickCount:00000000 GlobalTickCount
-C:\Users\Asus\AppData\Local\Temp\cclevpoL.s:146    .bss.GlobalTickCount:00000000 $d
-C:\Users\Asus\AppData\Local\Temp\cclevpoL.s:155    .bss.adc_overrun_count:00000000 adc_overrun_count
-C:\Users\Asus\AppData\Local\Temp\cclevpoL.s:156    .bss.adc_overrun_count:00000000 $d
-C:\Users\Asus\AppData\Local\Temp\cclevpoL.s:162    .bss.adc_conversion_complete:00000000 $d
-C:\Users\Asus\AppData\Local\Temp\cclevpoL.s:168    .bss.adcInter:00000000 adcInter
-C:\Users\Asus\AppData\Local\Temp\cclevpoL.s:165    .bss.adcInter:00000000 $d
-C:\Users\Asus\AppData\Local\Temp\cclevpoL.s:172    .bss.adcBuf:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:21     .text.main:00000000 $t
+C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:27     .text.main:00000000 main
+C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:115    .text.main:0000005c $d
+C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:142    .bss.adc_value:00000000 adc_value
+C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:161    .bss.adc_conversion_complete:00000000 adc_conversion_complete
+C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:175    .bss.adcBuf:00000000 adcBuf
+C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:128    .bss.Vsense:00000000 Vsense
+C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:125    .bss.Vsense:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:135    .bss.Temperature:00000000 Temperature
+C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:132    .bss.Temperature:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:139    .bss.adc_value:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:149    .bss.GlobalTickCount:00000000 GlobalTickCount
+C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:146    .bss.GlobalTickCount:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:155    .bss.adc_overrun_count:00000000 adc_overrun_count
+C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:156    .bss.adc_overrun_count:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:162    .bss.adc_conversion_complete:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:168    .bss.adcInter:00000000 adcInter
+C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:165    .bss.adcInter:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:172    .bss.adcBuf:00000000 $d
 
 UNDEFINED SYMBOLS
 RCC_Init
 GPIO_Init
 SysTick_Init
-DMA_Init
 ADC_Init
+DMA_Init
 TIM_PWM_Init
