@@ -94,7 +94,7 @@ void TIM_PWM_Init(void){
 void ADC_Init(void){
     SET_BIT(RCC->APB2ENR, RCC_APB2ENR_ADC1EN);
 
-    //Натсройка канала PA0 для работы в аналоговом режиме
+    //Настройка каналов PA0, PA1, PA2 для работы в аналоговом режиме
     SET_BIT(GPIOA->MODER, GPIO_MODER_MODER0);
     CLEAR_BIT(GPIOA->PUPDR, GPIO_PUPDR_PUPD0);
     SET_BIT(GPIOA->MODER, GPIO_MODER_MODER1);
@@ -104,7 +104,8 @@ void ADC_Init(void){
 
     /* Установка предделителя на 4, АЦП тактируется от шины АРВ2 84МГц, 
      * а АЦП должно работать на частоте не более 30 МГц, из-за чего
-     * следует устанавливать делитель на 4
+     * следует устанавливать делитель на 4. В результате частота АЦП будет 21 МГц, 
+     * что подходит для стабильной работы.
      */
     SET_BIT(ADC->CCR, ADC_CCR_ADCPRE_0);
 
@@ -124,11 +125,10 @@ void ADC_Init(void){
     SET_BIT(ADC1->CR2, ADC_CR2_DMA);      //Включение DMA
     SET_BIT(ADC1->CR2, ADC_CR2_DDS);      //Режим работы DMA - непрерывный запрос (новой запрос на преобразование не будет отправляться, пока не будет считано предыдущее значение)
     
-    //Количество сэмплов преобраования на 15
-    SET_BIT(ADC1->SMPR2, ADC_SMPR2_SMP0_0); //Для канала 0
-    SET_BIT(ADC1->SMPR2, ADC_SMPR2_SMP1_0); //Для канала 1
-    SET_BIT(ADC1->SMPR2, ADC_SMPR2_SMP2_0); //Для канала 2
-    SET_BIT(ADC1->SMPR2, ADC_SMPR2_SMP3_0); //Для канала 3
+    SET_BIT(ADC1->SMPR2, ADC_SMPR2_SMP0_0 | ADC_SMPR2_SMP0_1); //56 циклов преобразования для канала 0
+    SET_BIT(ADC1->SMPR2, ADC_SMPR2_SMP1_1 | ADC_SMPR2_SMP1_2); //144 циклов преобразования для канала 1 (Из-за высокого сопротивления на входе АЦП)
+    SET_BIT(ADC1->SMPR2, ADC_SMPR2_SMP2_0); //15 циклов преобразования для канала 2
+    SET_BIT(ADC1->SMPR2, ADC_SMPR2_SMP3_0); //15 циклов преобразования для канала 3
 
     // Задаём последовательность из 4 каналов (L[3:0] = 3)
     ADC1->SQR1 = (3 << 20);   // L = 3 (всего 4 канала)

@@ -8,7 +8,7 @@
 #define ADC_NUM_CHANNEL 4
 
 // Буфер для одного значения АЦП (16 бит)
-extern volatile uint16_t adcBuf[4];
+extern volatile uint16_t adcBuf[ADC_NUM_CHANNEL - 1];
 // Флаг готовности данных (устанавливается в прерывании DMA)
 extern volatile uint8_t adc_conversion_complete, adc_overrun_count;
 
