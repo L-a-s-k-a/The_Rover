@@ -1,9 +1,9 @@
 #include "interrupt.h"
 
-volatile uint16_t adcBuf[4], adcInter;
+volatile uint16_t adcBuf[ADC_NUM_CHANNEL - 1], adcInter;
 volatile uint8_t adc_conversion_complete, adc_overrun_count;
 
-uint16_t GlobalTickCount, adc_value[4];
+uint16_t GlobalTickCount, adc_value[ADC_NUM_CHANNEL - 1];
 float Temperature, Vsense;
 
 int main(void)
