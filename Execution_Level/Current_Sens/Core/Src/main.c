@@ -1,4 +1,5 @@
 #include "interrupt.h"
+#include "../FreeRTOS_Inc/FreeRTOS.h"
 
 volatile uint16_t adcBuf[ADC_NUM_CHANNEL - 1], adcInter;
 volatile uint8_t adc_conversion_complete, adc_overrun_count;

@@ -137,6 +137,13 @@ $(SYS) \
 Core/Src/main.c \
 Core/Src/init.c \
 Core/Src/interrupt.c \
+FreeRTOS_Src/croutine.c \
+FreeRTOS_Src/event_groups.c \
+FreeRTOS_Src/list.c \
+FreeRTOS_Src/queue.c \
+FreeRTOS_Src/stream_buffer.c \
+FreeRTOS_Src/tasks.c \
+FreeRTOS_Src/timers.c \
 
 # ASM sources
 ASM_SOURCES =  \
@@ -195,6 +202,7 @@ C_INCLUDES =  \
 -I$(CMSIS_INC_UNIT) \
 -I$(CMSIS_INC) \
 -ICore/Inc \
+-ICore/FreeRTOS_Inc \
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
