@@ -684,7 +684,7 @@ LOAD C:/Programm/tools/xpack-arm-none-eabi-gcc-14.2.1-1.1/bin/../lib/gcc/arm-non
                 0x10000000                        _eccmram = .
                 0x10000000                        . = ALIGN (0x4)
 
-.bss            0x20000000       0x3c
+.bss            0x20000000       0x34
                 0x20000000                        _sbss = .
                 0x20000000                        __bss_start__ = _sbss
  *(.bss)
@@ -694,49 +694,47 @@ LOAD C:/Programm/tools/xpack-arm-none-eabi-gcc-14.2.1-1.1/bin/../lib/gcc/arm-non
  *fill*         0x20000001        0x3 
  .bss.object.0  0x20000004       0x18 C:/Programm/tools/xpack-arm-none-eabi-gcc-14.2.1-1.1/bin/../lib/gcc/arm-none-eabi/14.2.1/thumb/v7e-m+fp/hard/crtbegin.o
  .bss.adc_value
-                0x2000001c        0x8 build_F407VE/main.o
+                0x2000001c        0x6 build_F407VE/main.o
                 0x2000001c                adc_value
  .bss.GlobalTickCount
-                0x20000024        0x2 build_F407VE/main.o
-                0x20000024                GlobalTickCount
+                0x20000022        0x2 build_F407VE/main.o
+                0x20000022                GlobalTickCount
  .bss.adc_overrun_count
-                0x20000026        0x1 build_F407VE/main.o
-                0x20000026                adc_overrun_count
+                0x20000024        0x1 build_F407VE/main.o
+                0x20000024                adc_overrun_count
  .bss.adc_conversion_complete
-                0x20000027        0x1 build_F407VE/main.o
-                0x20000027                adc_conversion_complete
- .bss.adcInter  0x20000028        0x2 build_F407VE/main.o
-                0x20000028                adcInter
- *fill*         0x2000002a        0x2 
- .bss.adcBuf    0x2000002c        0x8 build_F407VE/main.o
-                0x2000002c                adcBuf
+                0x20000025        0x1 build_F407VE/main.o
+                0x20000025                adc_conversion_complete
+ .bss.adcInter  0x20000026        0x2 build_F407VE/main.o
+                0x20000026                adcInter
+ .bss.adcBuf    0x20000028        0x6 build_F407VE/main.o
+                0x20000028                adcBuf
  .bss.FLAG_Delay
-                0x20000034        0x1 build_F407VE/interrupt.o
-                0x20000034                FLAG_Delay
- *fill*         0x20000035        0x1 
+                0x2000002e        0x1 build_F407VE/interrupt.o
+                0x2000002e                FLAG_Delay
+ *fill*         0x2000002f        0x1 
  .bss.miiliseconds
-                0x20000036        0x2 build_F407VE/interrupt.o
-                0x20000036                miiliseconds
+                0x20000030        0x2 build_F407VE/interrupt.o
+                0x20000030                miiliseconds
  .bss.TickDelayCount
-                0x20000038        0x2 build_F407VE/interrupt.o
-                0x20000038                TickDelayCount
+                0x20000032        0x2 build_F407VE/interrupt.o
+                0x20000032                TickDelayCount
  *(COMMON)
-                0x2000003c                        . = ALIGN (0x4)
- *fill*         0x2000003a        0x2 
-                0x2000003c                        _ebss = .
-                0x2000003c                        __bss_end__ = _ebss
+                0x20000034                        . = ALIGN (0x4)
+                0x20000034                        _ebss = .
+                0x20000034                        __bss_end__ = _ebss
 
 ._user_heap_stack
-                0x2000003c      0x604
-                0x20000040                        . = ALIGN (0x8)
- *fill*         0x2000003c        0x4 
+                0x20000034      0x604
+                0x20000038                        . = ALIGN (0x8)
+ *fill*         0x20000034        0x4 
                 [!provide]                        PROVIDE (end = .)
-                0x20000040                        PROVIDE (_end = .)
-                0x20000240                        . = (. + _Min_Heap_Size)
- *fill*         0x20000040      0x200 
-                0x20000640                        . = (. + _Min_Stack_Size)
- *fill*         0x20000240      0x400 
-                0x20000640                        . = ALIGN (0x8)
+                0x20000038                        PROVIDE (_end = .)
+                0x20000238                        . = (. + _Min_Heap_Size)
+ *fill*         0x20000038      0x200 
+                0x20000638                        . = (. + _Min_Stack_Size)
+ *fill*         0x20000238      0x400 
+                0x20000638                        . = ALIGN (0x8)
 
 /DISCARD/
  libc.a(*)

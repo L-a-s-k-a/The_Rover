@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s 			page 1
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\cc8RUiiI.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -30,10 +30,10 @@ ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s 			page 1
   28              	.LFB130:
    1:Core/Src/main.c **** #include "interrupt.h"
    2:Core/Src/main.c **** 
-   3:Core/Src/main.c **** volatile uint16_t adcBuf[4], adcInter;
+   3:Core/Src/main.c **** volatile uint16_t adcBuf[ADC_NUM_CHANNEL - 1], adcInter;
    4:Core/Src/main.c **** volatile uint8_t adc_conversion_complete, adc_overrun_count;
    5:Core/Src/main.c **** 
-   6:Core/Src/main.c **** uint16_t GlobalTickCount, adc_value[4];
+   6:Core/Src/main.c **** uint16_t GlobalTickCount, adc_value[ADC_NUM_CHANNEL - 1];
    7:Core/Src/main.c **** float Temperature, Vsense;
    8:Core/Src/main.c **** 
    9:Core/Src/main.c **** int main(void)
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s 			page 1
   44              	.LVL1:
   13:Core/Src/main.c ****     SysTick_Init();
   45              		.loc 1 13 5 view .LVU3
-ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s 			page 2
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\cc8RUiiI.s 			page 2
 
 
   46 000a FFF7FEFF 		bl	SysTick_Init
@@ -118,7 +118,7 @@ ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s 			page 1
   78              		.loc 1 23 12 is_stmt 0 view .LVU15
   79 0036 0C4B     		ldr	r3, .L5+12
   80 0038 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
-ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s 			page 3
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\cc8RUiiI.s 			page 3
 
 
   23:Core/Src/main.c ****             adc_conversion_complete = 0; // Сброс флага готовности данных
@@ -178,7 +178,7 @@ ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s 			page 1
  120              		.cfi_endproc
  121              	.LFE130:
  123              		.global	Vsense
-ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s 			page 4
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\cc8RUiiI.s 			page 4
 
 
  124              		.section	.bss.Vsense,"aw",%nobits
@@ -194,8 +194,8 @@ ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s 			page 1
  138              		.section	.bss.adc_value,"aw",%nobits
  139              		.align	2
  142              	adc_value:
- 143 0000 00000000 		.space	8
- 143      00000000 
+ 143 0000 00000000 		.space	6
+ 143      0000
  144              		.global	GlobalTickCount
  145              		.section	.bss.GlobalTickCount,"aw",%nobits
  146              		.align	1
@@ -218,8 +218,8 @@ ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s 			page 1
  171              		.section	.bss.adcBuf,"aw",%nobits
  172              		.align	2
  175              	adcBuf:
- 176 0000 00000000 		.space	8
- 176      00000000 
+ 176 0000 00000000 		.space	6
+ 176      0000
  177              		.text
  178              	.Letext0:
  179              		.file 2 "C:/Programm/tools/xpack-arm-none-eabi-gcc-14.2.1-1.1/arm-none-eabi/include/machine/_defau
@@ -227,30 +227,30 @@ ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s 			page 1
  181              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F407xx/stm32f407xx.h"
  182              		.file 5 "Core/Inc/init.h"
  183              		.file 6 "Core/Inc/interrupt.h"
-ARM GAS  C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s 			page 5
+ARM GAS  C:\Users\Asus\AppData\Local\Temp\cc8RUiiI.s 			page 5
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:21     .text.main:00000000 $t
-C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:27     .text.main:00000000 main
-C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:115    .text.main:0000005c $d
-C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:142    .bss.adc_value:00000000 adc_value
-C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:161    .bss.adc_conversion_complete:00000000 adc_conversion_complete
-C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:175    .bss.adcBuf:00000000 adcBuf
-C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:128    .bss.Vsense:00000000 Vsense
-C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:125    .bss.Vsense:00000000 $d
-C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:135    .bss.Temperature:00000000 Temperature
-C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:132    .bss.Temperature:00000000 $d
-C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:139    .bss.adc_value:00000000 $d
-C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:149    .bss.GlobalTickCount:00000000 GlobalTickCount
-C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:146    .bss.GlobalTickCount:00000000 $d
-C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:155    .bss.adc_overrun_count:00000000 adc_overrun_count
-C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:156    .bss.adc_overrun_count:00000000 $d
-C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:162    .bss.adc_conversion_complete:00000000 $d
-C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:168    .bss.adcInter:00000000 adcInter
-C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:165    .bss.adcInter:00000000 $d
-C:\Users\Asus\AppData\Local\Temp\ccSra1jO.s:172    .bss.adcBuf:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\cc8RUiiI.s:21     .text.main:00000000 $t
+C:\Users\Asus\AppData\Local\Temp\cc8RUiiI.s:27     .text.main:00000000 main
+C:\Users\Asus\AppData\Local\Temp\cc8RUiiI.s:115    .text.main:0000005c $d
+C:\Users\Asus\AppData\Local\Temp\cc8RUiiI.s:142    .bss.adc_value:00000000 adc_value
+C:\Users\Asus\AppData\Local\Temp\cc8RUiiI.s:161    .bss.adc_conversion_complete:00000000 adc_conversion_complete
+C:\Users\Asus\AppData\Local\Temp\cc8RUiiI.s:175    .bss.adcBuf:00000000 adcBuf
+C:\Users\Asus\AppData\Local\Temp\cc8RUiiI.s:128    .bss.Vsense:00000000 Vsense
+C:\Users\Asus\AppData\Local\Temp\cc8RUiiI.s:125    .bss.Vsense:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\cc8RUiiI.s:135    .bss.Temperature:00000000 Temperature
+C:\Users\Asus\AppData\Local\Temp\cc8RUiiI.s:132    .bss.Temperature:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\cc8RUiiI.s:139    .bss.adc_value:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\cc8RUiiI.s:149    .bss.GlobalTickCount:00000000 GlobalTickCount
+C:\Users\Asus\AppData\Local\Temp\cc8RUiiI.s:146    .bss.GlobalTickCount:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\cc8RUiiI.s:155    .bss.adc_overrun_count:00000000 adc_overrun_count
+C:\Users\Asus\AppData\Local\Temp\cc8RUiiI.s:156    .bss.adc_overrun_count:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\cc8RUiiI.s:162    .bss.adc_conversion_complete:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\cc8RUiiI.s:168    .bss.adcInter:00000000 adcInter
+C:\Users\Asus\AppData\Local\Temp\cc8RUiiI.s:165    .bss.adcInter:00000000 $d
+C:\Users\Asus\AppData\Local\Temp\cc8RUiiI.s:172    .bss.adcBuf:00000000 $d
 
 UNDEFINED SYMBOLS
 RCC_Init
