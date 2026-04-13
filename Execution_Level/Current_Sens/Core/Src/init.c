@@ -51,6 +51,8 @@ void GPIO_Init(void)
 {
     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOAEN | RCC_AHB1ENR_GPIOCEN);
 
+    SET_BIT(GPIOC->MODER, GPIO_MODER_MODER0_0);
+
     SET_BIT(GPIOA->MODER, GPIO_MODER_MODER4_0);
     SET_BIT(GPIOA->OSPEEDR, GPIO_OSPEEDR_OSPEED4_1);
 
@@ -152,7 +154,7 @@ void DMA_Init(void){
 
     DMA2_Stream0->NDTR = 4; // Количество данных для передачи (4 в нашем случае)
     DMA2_Stream0->PAR = (uint32_t)(&ADC1->DR);
-    DMA2_Stream0->M0AR = (uint32_t)adcBuf; // Адрес буфера в памяти для хранения данных
+    DMA2_Stream0->M0AR = (uint32_t)adc_buf; // Адрес буфера в памяти для хранения данных
 
     /* Конфигурация:
     *   - канал 0 (для ADC1)
