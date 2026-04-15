@@ -26,7 +26,7 @@ void RCC_Init(void)
     SET_BIT(RCC->CFGR, RCC_CFGR_SW_PLL);                         // В качестве системного тактирования выбран PLL
     SET_BIT(RCC->CFGR, RCC_CFGR_HPRE_DIV1);                      // Предделитель шины AHB1 настроен на 1 (без деления)
     SET_BIT(RCC->CFGR, RCC_CFGR_PPRE1_DIV2);                     // Предделитель шины APB1 настроен на 2 (48МГц)
-    SET_BIT(RCC->CFGR, RCC_CFGR_PPRE2_DIV1);                     // Предделитель шины APB2 настроен на 2 (96МГц)
+    SET_BIT(RCC->CFGR, RCC_CFGR_PPRE2_DIV1);                     // Предделитель шины APB2 настроен на 1 (96МГц)
     SET_BIT(RCC->CFGR, RCC_CFGR_MCO1);                           // Нстройка вывода частоты PLL на MCO1
     SET_BIT(RCC->CFGR, RCC_CFGR_MCO1PRE_2 | RCC_CFGR_MCO1PRE_1); // Предделитель 4 для вывода на MCO1
     CLEAR_BIT(RCC->CFGR, RCC_CFGR_MCO2);                         // Настройка вывода частоты SYSCLK на MCO2
@@ -76,8 +76,8 @@ void GPIO_Init(void)
 
 void TIM_PWM_Init(void){
     SET_BIT(RCC->APB1ENR, RCC_APB1ENR_TIM3EN); //Включение тактирования таймера 3
-    TIM3->PSC = 10-1; //42 МГц тактовая частота шины АРВ1, но таймеры тактируются от источника, который всегда умножает на 2
-    TIM3->ARR = 4200-1;
+    TIM3->PSC = 5-1; //48 МГц тактовая частота шины АРВ1, но таймеры тактируются от источника, который всегда умножает на 2
+    TIM3->ARR = 4800-1;
 
     SET_BIT(TIM3->CR1, TIM_CR1_CMS_0);
 
@@ -104,9 +104,9 @@ void ADC_Init(void){
     SET_BIT(GPIOA->MODER, GPIO_MODER_MODER2);
     CLEAR_BIT(GPIOA->PUPDR, GPIO_PUPDR_PUPD2);
 
-    /* Установка предделителя на 4, АЦП тактируется от шины АРВ2 84МГц, 
+    /* Установка предделителя на 4, АЦП тактируется от шины АРВ2 96 МГц, 
      * а АЦП должно работать на частоте не более 30 МГц, из-за чего
-     * следует устанавливать делитель на 4. В резултате частота АЦП будет 21 МГц, 
+     * следует устанавливать делитель на 4. В резултате частота АЦП будет 24 МГц, 
      * что подходит для стабильной работы.
      */
     SET_BIT(ADC->CCR, ADC_CCR_ADCPRE_0);

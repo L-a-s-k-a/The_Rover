@@ -13,12 +13,12 @@ int main(void)
     RCC_Init();
     GPIO_Init();
     SysTick_Init();
-    // /*Здесь важен порядок инициализации, так как АЦП должен быть настроен до DMA,
-    //  *а DMA до таймера, который запускает преобразование
-    //  */   
-    // ADC_Init();
-    // DMA_Init();
-    // TIM_PWM_Init();
+    /*Здесь важен порядок инициализации, так как АЦП должен быть настроен до DMA,
+     *а DMA до таймера, который запускает преобразование
+     */   
+    ADC_Init();
+    DMA_Init();
+    TIM_PWM_Init();
 
     while (1)
     {
@@ -38,7 +38,8 @@ int main(void)
     
         // Vsense = (3.1 * adcBuf[2]) / 4095U;
         // TIM3->CCR2 = (4199 * adc_value[0]) / 4095;
-        TIM3->CCR2 = motor_freq;
+        // TIM3->CCR2 = motor_freq;
+        TIM3->CCR2 = 2400-1;
         // Temperature = ((0.76 - Vsense) / 2.5) + 25;
     }
 }

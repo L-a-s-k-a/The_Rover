@@ -20,7 +20,7 @@ void DMA2_Stream0_IRQHandler(void){
     {
         SET_BIT(DMA2->LIFCR, DMA_LIFCR_CTCIF0); // Очистка флага прерывания
         adc_conversion_complete = 1; // Установка флага готовности данных
-        GPIOA->ODR ^= (0 << 6); // Переключение бита 6 порта A
+        // GPIOA->ODR ^= (0 << 6); // Переключение бита 6 порта A
     }
     // Диагностика: проверка переполнения АЦП
     if (ADC1->SR & ADC_SR_OVR) {
