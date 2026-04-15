@@ -15,21 +15,21 @@ void RCC_Init(void)
     while (READ_BIT(RCC->CR, RCC_CR_HSERDY) == RESET);
     SET_BIT(RCC->CR, RCC_CR_CSSON); // Включение Clock Security
 
-    /*------------------Настройка на 168 МГц------------------*/
+    /*------------------Настройка HCLK на 96 МГц и настройка USB_OTG на 48 МГц------------------*/
     CLEAR_REG(RCC->PLLCFGR);
     SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLSRC_HSE); // Источник тактирвоания HSE
-    SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLM_2);     // Деление источника тактирования на 4 (PLLM)
-    SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLN_2 | RCC_PLLCFGR_PLLN_5 | RCC_PLLCFGR_PLLN_7); // Настройка умножения на 84 (PLLN) (0101 0100)
+    SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLM_3);     // Деление источника тактирования на 8 (PLLM)
+    SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLN_6 | RCC_PLLCFGR_PLLN_7); // Настройка умножения на 192 (PLLN) (0 1100 0000)
     CLEAR_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLP);     // Деление частоты после умножения на 2 (PLLP)
-    SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLQ_0 | RCC_PLLCFGR_PLLQ_1); // Деление частоты после умножения на 3 (PLLQ)
+    SET_BIT(RCC->PLLCFGR, RCC_PLLCFGR_PLLQ_2);     // Деление частоты после умножения на 4 (PLLQ)
 
     SET_BIT(RCC->CFGR, RCC_CFGR_SW_PLL);                         // В качестве системного тактирования выбран PLL
     SET_BIT(RCC->CFGR, RCC_CFGR_HPRE_DIV1);                      // Предделитель шины AHB1 настроен на 1 (без деления)
-    SET_BIT(RCC->CFGR, RCC_CFGR_PPRE1_DIV4);                     // Предделитель шины APB1 настроен на 4 (42МГц)
-    SET_BIT(RCC->CFGR, RCC_CFGR_PPRE2_DIV2);                     // Предделитель шины APB2 настроен на 2 (84МГц)
+    SET_BIT(RCC->CFGR, RCC_CFGR_PPRE1_DIV2);                     // Предделитель шины APB1 настроен на 2 (48МГц)
+    SET_BIT(RCC->CFGR, RCC_CFGR_PPRE2_DIV1);                     // Предделитель шины APB2 настроен на 2 (96МГц)
     SET_BIT(RCC->CFGR, RCC_CFGR_MCO1);                           // Нстройка вывода частоты PLL на MCO1
     SET_BIT(RCC->CFGR, RCC_CFGR_MCO1PRE_2 | RCC_CFGR_MCO1PRE_1); // Предделитель 4 для вывода на MCO1
-    SET_BIT(RCC->CFGR, RCC_CFGR_MCO2_1);                         // Настройка вывода частоты SYSCLK на MCO2
+    CLEAR_BIT(RCC->CFGR, RCC_CFGR_MCO2);                         // Настройка вывода частоты SYSCLK на MCO2
     SET_BIT(RCC->CFGR, RCC_CFGR_MCO2PRE_2 | RCC_CFGR_MCO2PRE_1); // Предделитель 4 для вывода на MCO2
 
     SET_BIT(FLASH->ACR, FLASH_ACR_LATENCY_5WS); // Установка 5 циклов ожидания для FLASH памяти

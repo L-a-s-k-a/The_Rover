@@ -1,0 +1,311 @@
+ARM GAS  C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/main.c"
+  20              		.global	__aeabi_i2d
+  21              		.global	__aeabi_dmul
+  22              		.global	__aeabi_ddiv
+  23              		.global	__aeabi_d2f
+  24              		.section	.text.main,"ax",%progbits
+  25              		.align	1
+  26              		.global	main
+  27              		.syntax unified
+  28              		.thumb
+  29              		.thumb_func
+  31              	main:
+  32              	.LFB130:
+   1:Core/Src/main.c **** #include "interrupt.h"
+   2:Core/Src/main.c **** 
+   3:Core/Src/main.c **** #define ADC_DIVISION 3.26 / 4095
+   4:Core/Src/main.c **** 
+   5:Core/Src/main.c **** volatile uint16_t adc_buf[ADC_NUM_CHANNEL - 1], adcInter, motor_freq;
+   6:Core/Src/main.c **** volatile uint8_t adc_conversion_complete, adc_overrun_count, motor_direction;
+   7:Core/Src/main.c **** 
+   8:Core/Src/main.c **** uint16_t GlobalTickCount, adc_value[ADC_NUM_CHANNEL - 1];
+   9:Core/Src/main.c **** float Temperature, Vsense, voltage;
+  10:Core/Src/main.c **** 
+  11:Core/Src/main.c **** int main(void)
+  12:Core/Src/main.c **** {
+  33              		.loc 1 12 1 view -0
+  34              		.cfi_startproc
+  35              		@ Volatile: function does not return.
+  36              		@ args = 0, pretend = 0, frame = 0
+  37              		@ frame_needed = 0, uses_anonymous_args = 0
+  38 0000 08B5     		push	{r3, lr}
+  39              	.LCFI0:
+  40              		.cfi_def_cfa_offset 8
+  41              		.cfi_offset 3, -8
+  42              		.cfi_offset 14, -4
+  13:Core/Src/main.c ****     RCC_Init();
+  43              		.loc 1 13 5 view .LVU1
+  44 0002 FFF7FEFF 		bl	RCC_Init
+  45              	.LVL0:
+ARM GAS  C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s 			page 2
+
+
+  14:Core/Src/main.c ****     GPIO_Init();
+  46              		.loc 1 14 5 view .LVU2
+  47 0006 FFF7FEFF 		bl	GPIO_Init
+  48              	.LVL1:
+  15:Core/Src/main.c ****     SysTick_Init();
+  49              		.loc 1 15 5 view .LVU3
+  50 000a FFF7FEFF 		bl	SysTick_Init
+  51              	.LVL2:
+  52 000e 09E0     		b	.L5
+  53              	.L7:
+  16:Core/Src/main.c ****     // /*Здесь важен порядок инициализации, так как АЦП до
+  17:Core/Src/main.c ****     //  *а DMA до таймера, который запускает преобразование
+  18:Core/Src/main.c ****     //  */   
+  19:Core/Src/main.c ****     // ADC_Init();
+  20:Core/Src/main.c ****     // DMA_Init();
+  21:Core/Src/main.c ****     // TIM_PWM_Init();
+  22:Core/Src/main.c **** 
+  23:Core/Src/main.c ****     while (1)
+  24:Core/Src/main.c ****     {
+  25:Core/Src/main.c ****         if(adc_conversion_complete) {
+  26:Core/Src/main.c ****             adc_conversion_complete = 0; // Сброс флага готовности данных
+  27:Core/Src/main.c ****             adc_value[0] = adc_buf[0];
+  28:Core/Src/main.c ****             // adc_value[1] = adc_buf[1];
+  29:Core/Src/main.c ****             // adc_value[2] = adc_buf[2];
+  30:Core/Src/main.c ****             // adc_value[3] = adc_buf[3];
+  31:Core/Src/main.c ****         }
+  32:Core/Src/main.c ****         voltage = adc_value[0] * ADC_DIVISION;
+  33:Core/Src/main.c **** 
+  34:Core/Src/main.c ****         if (motor_direction){
+  35:Core/Src/main.c ****             SET_BIT(GPIOA->BSRR, GPIO_BSRR_BS6);
+  54              		.loc 1 35 13 view .LVU4
+  55 0010 1B4A     		ldr	r2, .L8+16
+  56 0012 9369     		ldr	r3, [r2, #24]
+  57 0014 43F04003 		orr	r3, r3, #64
+  58 0018 9361     		str	r3, [r2, #24]
+  59              	.L4:
+  36:Core/Src/main.c ****         }
+  37:Core/Src/main.c ****         else SET_BIT(GPIOA->BSRR, GPIO_BSRR_BR6);
+  38:Core/Src/main.c ****     
+  39:Core/Src/main.c ****         // Vsense = (3.1 * adcBuf[2]) / 4095U;
+  40:Core/Src/main.c ****         // TIM3->CCR2 = (4199 * adc_value[0]) / 4095;
+  41:Core/Src/main.c ****         TIM3->CCR2 = motor_freq;
+  60              		.loc 1 41 9 view .LVU5
+  61              		.loc 1 41 20 is_stmt 0 view .LVU6
+  62 001a 1A4B     		ldr	r3, .L8+20
+  63 001c 1B88     		ldrh	r3, [r3]
+  64 001e 9BB2     		uxth	r3, r3
+  65 0020 194A     		ldr	r2, .L8+24
+  66 0022 9363     		str	r3, [r2, #56]
+  23:Core/Src/main.c ****     {
+  67              		.loc 1 23 11 is_stmt 1 view .LVU7
+  68              	.L5:
+  23:Core/Src/main.c ****     {
+  69              		.loc 1 23 5 view .LVU8
+  25:Core/Src/main.c ****             adc_conversion_complete = 0; // Сброс флага готовности данных
+  70              		.loc 1 25 9 view .LVU9
+  25:Core/Src/main.c ****             adc_conversion_complete = 0; // Сброс флага готовности данных
+ARM GAS  C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s 			page 3
+
+
+  71              		.loc 1 25 12 is_stmt 0 view .LVU10
+  72 0024 194B     		ldr	r3, .L8+28
+  73 0026 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  25:Core/Src/main.c ****             adc_conversion_complete = 0; // Сброс флага готовности данных
+  74              		.loc 1 25 11 view .LVU11
+  75 0028 33B1     		cbz	r3, .L2
+  26:Core/Src/main.c ****             adc_value[0] = adc_buf[0];
+  76              		.loc 1 26 13 is_stmt 1 view .LVU12
+  26:Core/Src/main.c ****             adc_value[0] = adc_buf[0];
+  77              		.loc 1 26 37 is_stmt 0 view .LVU13
+  78 002a 184B     		ldr	r3, .L8+28
+  79 002c 0022     		movs	r2, #0
+  80 002e 1A70     		strb	r2, [r3]
+  27:Core/Src/main.c ****             // adc_value[1] = adc_buf[1];
+  81              		.loc 1 27 13 is_stmt 1 view .LVU14
+  27:Core/Src/main.c ****             // adc_value[1] = adc_buf[1];
+  82              		.loc 1 27 35 is_stmt 0 view .LVU15
+  83 0030 174B     		ldr	r3, .L8+32
+  84 0032 1A88     		ldrh	r2, [r3]
+  27:Core/Src/main.c ****             // adc_value[1] = adc_buf[1];
+  85              		.loc 1 27 26 view .LVU16
+  86 0034 174B     		ldr	r3, .L8+36
+  87 0036 1A80     		strh	r2, [r3]	@ movhi
+  88              	.L2:
+  32:Core/Src/main.c **** 
+  89              		.loc 1 32 9 is_stmt 1 view .LVU17
+  32:Core/Src/main.c **** 
+  90              		.loc 1 32 32 is_stmt 0 view .LVU18
+  91 0038 164B     		ldr	r3, .L8+36
+  92 003a 1888     		ldrh	r0, [r3]
+  93 003c FFF7FEFF 		bl	__aeabi_i2d
+  94              	.LVL3:
+  95 0040 0BA3     		adr	r3, .L8
+  96 0042 D3E90023 		ldrd	r2, [r3]
+  97 0046 FFF7FEFF 		bl	__aeabi_dmul
+  98              	.LVL4:
+  32:Core/Src/main.c **** 
+  99              		.loc 1 32 34 view .LVU19
+ 100 004a 0BA3     		adr	r3, .L8+8
+ 101 004c D3E90023 		ldrd	r2, [r3]
+ 102 0050 FFF7FEFF 		bl	__aeabi_ddiv
+ 103              	.LVL5:
+ 104 0054 FFF7FEFF 		bl	__aeabi_d2f
+ 105              	.LVL6:
+  32:Core/Src/main.c **** 
+ 106              		.loc 1 32 17 view .LVU20
+ 107 0058 0F4B     		ldr	r3, .L8+40
+ 108 005a 1860     		str	r0, [r3]	@ float
+  34:Core/Src/main.c ****             SET_BIT(GPIOA->BSRR, GPIO_BSRR_BS6);
+ 109              		.loc 1 34 9 is_stmt 1 view .LVU21
+  34:Core/Src/main.c ****             SET_BIT(GPIOA->BSRR, GPIO_BSRR_BS6);
+ 110              		.loc 1 34 13 is_stmt 0 view .LVU22
+ 111 005c 0F4B     		ldr	r3, .L8+44
+ 112 005e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  34:Core/Src/main.c ****             SET_BIT(GPIOA->BSRR, GPIO_BSRR_BS6);
+ 113              		.loc 1 34 12 view .LVU23
+ 114 0060 002B     		cmp	r3, #0
+ARM GAS  C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s 			page 4
+
+
+ 115 0062 D5D1     		bne	.L7
+  37:Core/Src/main.c ****     
+ 116              		.loc 1 37 14 is_stmt 1 view .LVU24
+ 117 0064 064A     		ldr	r2, .L8+16
+ 118 0066 9369     		ldr	r3, [r2, #24]
+ 119 0068 43F48003 		orr	r3, r3, #4194304
+ 120 006c 9361     		str	r3, [r2, #24]
+ 121 006e D4E7     		b	.L4
+ 122              	.L9:
+ 123              		.align	3
+ 124              	.L8:
+ 125 0070 14AE47E1 		.word	-515396076
+ 126 0074 7A140A40 		.word	1074402426
+ 127 0078 00000000 		.word	0
+ 128 007c 00FEAF40 		.word	1085275648
+ 129 0080 00000240 		.word	1073872896
+ 130 0084 00000000 		.word	motor_freq
+ 131 0088 00040040 		.word	1073742848
+ 132 008c 00000000 		.word	adc_conversion_complete
+ 133 0090 00000000 		.word	adc_buf
+ 134 0094 00000000 		.word	adc_value
+ 135 0098 00000000 		.word	voltage
+ 136 009c 00000000 		.word	motor_direction
+ 137              		.cfi_endproc
+ 138              	.LFE130:
+ 140              		.global	voltage
+ 141              		.section	.bss.voltage,"aw",%nobits
+ 142              		.align	2
+ 145              	voltage:
+ 146 0000 00000000 		.space	4
+ 147              		.global	Vsense
+ 148              		.section	.bss.Vsense,"aw",%nobits
+ 149              		.align	2
+ 152              	Vsense:
+ 153 0000 00000000 		.space	4
+ 154              		.global	Temperature
+ 155              		.section	.bss.Temperature,"aw",%nobits
+ 156              		.align	2
+ 159              	Temperature:
+ 160 0000 00000000 		.space	4
+ 161              		.global	adc_value
+ 162              		.section	.bss.adc_value,"aw",%nobits
+ 163              		.align	2
+ 166              	adc_value:
+ 167 0000 00000000 		.space	6
+ 167      0000
+ 168              		.global	GlobalTickCount
+ 169              		.section	.bss.GlobalTickCount,"aw",%nobits
+ 170              		.align	1
+ 173              	GlobalTickCount:
+ 174 0000 0000     		.space	2
+ 175              		.global	motor_direction
+ 176              		.section	.bss.motor_direction,"aw",%nobits
+ 179              	motor_direction:
+ 180 0000 00       		.space	1
+ 181              		.global	adc_overrun_count
+ 182              		.section	.bss.adc_overrun_count,"aw",%nobits
+ARM GAS  C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s 			page 5
+
+
+ 185              	adc_overrun_count:
+ 186 0000 00       		.space	1
+ 187              		.global	adc_conversion_complete
+ 188              		.section	.bss.adc_conversion_complete,"aw",%nobits
+ 191              	adc_conversion_complete:
+ 192 0000 00       		.space	1
+ 193              		.global	motor_freq
+ 194              		.section	.bss.motor_freq,"aw",%nobits
+ 195              		.align	1
+ 198              	motor_freq:
+ 199 0000 0000     		.space	2
+ 200              		.global	adcInter
+ 201              		.section	.bss.adcInter,"aw",%nobits
+ 202              		.align	1
+ 205              	adcInter:
+ 206 0000 0000     		.space	2
+ 207              		.global	adc_buf
+ 208              		.section	.bss.adc_buf,"aw",%nobits
+ 209              		.align	2
+ 212              	adc_buf:
+ 213 0000 00000000 		.space	6
+ 213      0000
+ 214              		.text
+ 215              	.Letext0:
+ 216              		.file 2 "C:/Programs/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_defau
+ 217              		.file 3 "C:/Programs/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 218              		.file 4 "CMSIS/Devices/STM32F4xx/Inc/STM32F411xE/stm32f411xe.h"
+ 219              		.file 5 "Core/Inc/init.h"
+ 220              		.file 6 "Core/Inc/interrupt.h"
+ARM GAS  C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s:25     .text.main:00000000 $t
+C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s:31     .text.main:00000000 main
+C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s:125    .text.main:00000070 $d
+C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s:198    .bss.motor_freq:00000000 motor_freq
+C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s:191    .bss.adc_conversion_complete:00000000 adc_conversion_complete
+C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s:212    .bss.adc_buf:00000000 adc_buf
+C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s:166    .bss.adc_value:00000000 adc_value
+C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s:145    .bss.voltage:00000000 voltage
+C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s:179    .bss.motor_direction:00000000 motor_direction
+C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s:142    .bss.voltage:00000000 $d
+C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s:152    .bss.Vsense:00000000 Vsense
+C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s:149    .bss.Vsense:00000000 $d
+C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s:159    .bss.Temperature:00000000 Temperature
+C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s:156    .bss.Temperature:00000000 $d
+C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s:163    .bss.adc_value:00000000 $d
+C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s:173    .bss.GlobalTickCount:00000000 GlobalTickCount
+C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s:170    .bss.GlobalTickCount:00000000 $d
+C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s:180    .bss.motor_direction:00000000 $d
+C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s:185    .bss.adc_overrun_count:00000000 adc_overrun_count
+C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s:186    .bss.adc_overrun_count:00000000 $d
+C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s:192    .bss.adc_conversion_complete:00000000 $d
+C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s:195    .bss.motor_freq:00000000 $d
+C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s:205    .bss.adcInter:00000000 adcInter
+C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s:202    .bss.adcInter:00000000 $d
+C:\Users\nip6\AppData\Local\Temp\ccek6DXf.s:209    .bss.adc_buf:00000000 $d
+
+UNDEFINED SYMBOLS
+__aeabi_i2d
+__aeabi_dmul
+__aeabi_ddiv
+__aeabi_d2f
+RCC_Init
+GPIO_Init
+SysTick_Init

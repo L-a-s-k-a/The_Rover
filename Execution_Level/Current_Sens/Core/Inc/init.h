@@ -3,7 +3,7 @@
 #define INIT_H
 
 #include "../../CMSIS/Devices/STM32F4xx/Inc/stm32f4xx.h"
-#include "../../CMSIS/Devices/STM32F4xx/Inc/STM32F407xx/stm32f407xx.h"
+#include "../../CMSIS/Devices/STM32F4xx/Inc/STM32F411xE/stm32f411xe.h"
 
 #define ADC_NUM_CHANNEL 4
 
