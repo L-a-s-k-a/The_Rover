@@ -1,4 +1,5 @@
 #include "interrupt.h"
+#include "../FreeRTOS_Inc/FreeRTOS.h"
 
 #define ADC_DIVISION 3.26 / 4095
 
@@ -7,6 +8,7 @@ volatile uint8_t adc_conversion_complete, adc_overrun_count, motor_direction;
 
 uint16_t GlobalTickCount, adc_value[ADC_NUM_CHANNEL - 1];
 float Temperature, Vsense, voltage;
+
 
 int main(void)
 {
