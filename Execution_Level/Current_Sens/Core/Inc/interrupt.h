@@ -4,8 +4,11 @@
 
 #include "init.h"
 
+#define ADC_DIVISION (2.979f / 4095.0f)
+
 extern volatile uint16_t adcInter;
 extern uint16_t GlobalTickCount;
+extern volatile float voltage, filter_volt, k_volt;
 
 void EXTI15_10_IRQHandler(void);
 void SysTick_Handler(void);
