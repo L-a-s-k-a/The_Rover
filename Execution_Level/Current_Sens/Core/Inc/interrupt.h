@@ -8,7 +8,7 @@
 
 extern volatile uint16_t adcInter;
 extern uint16_t GlobalTickCount;
-extern volatile float voltage, filter_volt, k_volt;
+extern volatile float voltage, filter_volt, k_volt, current_from_voltage, current_from_filter_volt;
 
 void EXTI15_10_IRQHandler(void);
 void SysTick_Handler(void);

@@ -35,6 +35,8 @@ void TIM3_IRQHandler(void){
         TIM3->SR &= ~TIM_SR_UIF; // Очистка флага прерывания
         voltage = adc_buf[0] * ADC_DIVISION;
         filter_volt += (voltage - filter_volt) * k_volt;
+        current_from_voltage = (voltage - 1.484) / 0.05;           // 1.484 is a mean reference voltage value
+        current_from_filter_volt = (filter_volt - 1.484) / 0.05;   // 0.05 is the shunt resistance value
         tim3_count++;
         if(tim3_count >= 1000){
             tim3_count = 0;
